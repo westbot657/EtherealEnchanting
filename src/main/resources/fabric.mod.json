@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "enchanting_rework",
+  "version": "${version}",
+  "name": "Ethereal Enchanting",
+  "description": "A rework of the XP and Enchanting system",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/ethereal_enchanting/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "com.westbot.ethereal_enchanting.client.EtherealEnchantingClient"
+    ],
+    "main": [
+      "com.westbot.ethereal_enchanting.EtherealEnchanting"
+    ]
+  },
+  "mixins": [
+    "enchanting_rework.mixins.json",
+    {
+      "config": "enchanting_rework.client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
