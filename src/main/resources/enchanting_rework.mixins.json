@@ -4,9 +4,9 @@
   "package": "com.westbot.ethereal_enchanting.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "MerchantMixin"
   ],
   "server": [
-    "VillagerTradesMixin"
   ],
   "client": [
   ],
