@@ -5,6 +5,11 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
   ],
+  "server": [
+    "VillagerTradesMixin"
+  ],
+  "client": [
+  ],
   "injectors": {
     "defaultRequire": 1
   }

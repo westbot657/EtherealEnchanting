@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "___",
+    " A ",
+    " S "
+  ],
+  "key": {
+    "_": {
+      "item": "minecraft:smooth_stone_slab"
+    },
+    "A": {
+      "item": "minecraft:amethyst_shard"
+    },
+    "S": {
+      "item": "minecraft:smooth_stone"
+    }
+  },
+  "result": {
+    "id": "ethereal_enchanting:pedestal",
+    "count": 1
+  }
+}

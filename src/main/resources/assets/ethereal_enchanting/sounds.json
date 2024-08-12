@@ -1,0 +1,31 @@
+{
+  "pedestal_place": {
+    "subtitle": "sound.ethereal_enchanting.pedestal_place",
+    "sounds": [
+      "ethereal_enchanting:block/pedestal/pedestal_place"
+    ]
+  },
+  "pedestal_break": {
+    "subtitle": "sound.ethereal_enchanting.pedestal_break",
+    "sounds": [
+      "ethereal_enchanting:block/pedestal/pedestal_break"
+    ]
+  },
+  "altar_power_up": {
+    "subtitle": "sound.ethereal_enchanting.altar_powers_up",
+    "sounds": [
+      "ethereal_enchanting:block/altar/beacon_ambient"
+    ]
+  },
+  "altar_power_up2": {
+    "sounds": [
+      "ethereal_enchanting:block/altar/beacon_power"
+    ]
+  },
+  "altar_power_down": {
+    "subtitle": "sound.ethereal_enchanting.altar_powers_down",
+    "sounds": [
+      "ethereal_enchanting:block/altar/power_off"
+    ]
+  }
+}

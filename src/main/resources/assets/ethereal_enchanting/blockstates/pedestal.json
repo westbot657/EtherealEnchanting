@@ -1,0 +1,18 @@
+{
+  "variants": {
+    "state=0": { "model": "ethereal_enchanting:block/pedestal" },
+    "state=1": { "model": "ethereal_enchanting:block/pedestal1"},
+    "state=2": { "model": "ethereal_enchanting:block/pedestal2"},
+    "state=3": { "model": "ethereal_enchanting:block/pedestal3"},
+    "state=4": { "model": "ethereal_enchanting:block/pedestal4"},
+    "state=5": { "model": "ethereal_enchanting:block/pedestal5"},
+    "state=6": { "model": "ethereal_enchanting:block/pedestal6"},
+    "state=7": { "model": "ethereal_enchanting:block/pedestal7"},
+    "state=8": { "model": "ethereal_enchanting:block/pedestal8"},
+    "state=9": { "model": "ethereal_enchanting:block/pedestal9"},
+    "state=10": { "model": "ethereal_enchanting:block/pedestal10"},
+    "state=11": { "model": "ethereal_enchanting:block/pedestal11"},
+    "state=12": { "model": "ethereal_enchanting:block/pedestal12"},
+    "state=13": { "model": "ethereal_enchanting:block/pedestal13"}
+  }
+}

@@ -1,5 +1,12 @@
 {
   "variants": {
-    "": { "model": "ethereal_enchanting:block/altar" }
+    "on_fire=false,facing=north": { "model": "ethereal_enchanting:block/enchanting_altar", "y": 0 },
+    "on_fire=true,facing=north": { "model": "ethereal_enchanting:block/enchanting_altar_lit", "y": 0 },
+    "on_fire=false,facing=east": { "model": "ethereal_enchanting:block/enchanting_altar", "y": 90 },
+    "on_fire=true,facing=east": { "model": "ethereal_enchanting:block/enchanting_altar_lit", "y": 90 },
+    "on_fire=false,facing=south": { "model": "ethereal_enchanting:block/enchanting_altar", "y": 180 },
+    "on_fire=true,facing=south": { "model": "ethereal_enchanting:block/enchanting_altar_lit", "y": 180 },
+    "on_fire=false,facing=west": { "model": "ethereal_enchanting:block/enchanting_altar", "y": 270 },
+    "on_fire=true,facing=west": { "model": "ethereal_enchanting:block/enchanting_altar_lit", "y": 270 }
   }
 }

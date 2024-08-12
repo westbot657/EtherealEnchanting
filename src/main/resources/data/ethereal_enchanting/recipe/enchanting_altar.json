@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "DSD",
+    " E "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:enchanting_table"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "S": {
+      "item": "minecraft:soul_sand"
+    },
+    "E": {
+      "item": "ethereal_enchanting:pedestal"
+    }
+  },
+  "result": {
+    "id": "ethereal_enchanting:altar",
+    "count": 1
+  }
+}

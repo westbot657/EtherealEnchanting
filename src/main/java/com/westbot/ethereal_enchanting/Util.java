@@ -1,6 +1,10 @@
 package com.westbot.ethereal_enchanting;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class Util {
 
@@ -63,6 +67,46 @@ public class Util {
 
     public static Vec3d interpolate(Vec3d a, Vec3d b, double t) {
         return new Vec3d(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t);
+    }
+
+    @Nullable
+    public static Vec3d[][] orbitItems(ItemStack stack1, ItemStack stack2, ItemStack stack3, ItemStack stack4, World world) {
+        if (stack1.isEmpty()) {
+            return null;
+        }
+        if (stack2.isEmpty()) { // single item
+            return new Vec3d[][]{new Vec3d[]{new Vec3d(0, 0, 0), new Vec3d(0, 0, 0)}};
+        }
+        if (stack3.isEmpty()) { // dual orbit
+            float yaw = (world.getTime() * 5f) % 360;
+            Vec3d[] points = drawCircle(new Vec3d(0, 0, 0), new Vec3d(0, 1, 0), 0.8, 2, yaw);
+
+            return new Vec3d[][]{
+                new Vec3d[]{points[0], new Vec3d(0, -yaw*2, 0)},
+                new Vec3d[]{points[1], new Vec3d(0, -yaw*2, 0)}
+            };
+        }
+        if (stack4.isEmpty()) { // triple orbit
+            float yaw = (world.getTime() * 5f) % 360;
+            Vec3d[] points = drawCircle(new Vec3d(0, 0, 0), new Vec3d(0, 1, 0), 0.9, 3, yaw);
+
+            return new Vec3d[][]{
+                new Vec3d[]{points[0], new Vec3d(0, -yaw*2, 0)},
+                new Vec3d[]{points[1], new Vec3d(0, -yaw*2, 0)},
+                new Vec3d[]{points[2], new Vec3d(0, -yaw*2, 0)}
+            };
+        } else { // quad orbit
+            float yaw = (world.getTime() * 5f) % 360;
+            Vec3d[] points = drawCircle(new Vec3d(0, 0, 0), new Vec3d(0, 1, 0), 1, 4, yaw);
+
+            return new Vec3d[][]{
+                new Vec3d[]{points[0], new Vec3d(0, -yaw*2, 0)},
+                new Vec3d[]{points[1], new Vec3d(0, -yaw*2, 0)},
+                new Vec3d[]{points[2], new Vec3d(0, -yaw*2, 0)},
+                new Vec3d[]{points[3], new Vec3d(0, -yaw*2, 0)}
+            };
+        }
+
     }
 
 }
