@@ -7,13 +7,18 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
 
+import java.util.logging.Logger;
+
 public class EtherealEnchanting implements ModInitializer {
+
+    public static final String MOD_ID = "ethereal_enchanting";
+    public static final Logger LOGGER = Logger.getLogger(MOD_ID);
 
 
     @Override
     public void onInitialize() {
 
-        Log.info(LogCategory.LOG, "Initializing Ethereal Enchanting...");
+        LOGGER.info("Initializing Ethereal Enchanting...");
 
         ModItems.initialize();
         ModBlocks.initialize();
@@ -22,7 +27,7 @@ public class EtherealEnchanting implements ModInitializer {
         ModLootTables.initialize();
         ModVillagerTrades.registerVillagerTrades();
 
-        Log.info(LogCategory.LOG, "Ethereal Enchanting initialized!");
+        LOGGER.info("Ethereal Enchanting initialized!");
     }
 
 }

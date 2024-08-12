@@ -6,10 +6,6 @@
   "mixins": [
     "MerchantMixin"
   ],
-  "server": [
-  ],
-  "client": [
-  ],
   "injectors": {
     "defaultRequire": 1
   }

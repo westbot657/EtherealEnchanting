@@ -217,8 +217,6 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
 
         world.playSound(null, pos, ModSounds.ALTAR_POWER_DOWN, SoundCategory.BLOCKS, 1, 0.75f);
 
-        Log.info(LogCategory.LOG, "Altar broken!");
-
         BlockState blockLeft = world.getBlockState(pos.offset(state.get(FACING).rotateYClockwise(), 3));
         BlockState blockBack = world.getBlockState(pos.offset(state.get(FACING).getOpposite(), 3));
         BlockState blockRight = world.getBlockState(pos.offset(state.get(FACING).rotateYCounterclockwise(), 3));

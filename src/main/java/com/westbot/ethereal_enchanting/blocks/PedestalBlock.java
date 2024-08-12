@@ -46,7 +46,7 @@ public class PedestalBlock extends Block {
         Block.createCuboidShape(1, 16, 1, 15, 17, 15)
     );
 
-    public PedestalBlock(AbstractBlock.Settings settings) {
+    public PedestalBlock(Settings settings) {
         super(settings);
 
         setDefaultState(getDefaultState().with(STATE, 0));
