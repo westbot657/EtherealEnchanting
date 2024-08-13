@@ -151,6 +151,7 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
                 }
             }
         }
+        blockEntity.dropInvalidItems();
         return ActionResult.CONSUME;
     }
 
@@ -225,7 +226,7 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
             if (blockLeft.get(PedestalBlock.LINKED) && blockLeft.get(PedestalBlock.ALTAR_DIRECTION) == state.get(FACING).rotateYCounterclockwise()) {
                 ((World)world).setBlockState(
                     pos.offset(state.get(FACING).rotateYClockwise(), 3),
-                    blockLeft.with(PedestalBlock.LINKED, false)
+                    blockLeft.with(PedestalBlock.LINKED, false).with(PedestalBlock.STATE, 0)
                 );
             }
         }
@@ -234,7 +235,7 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
             if (blockRight.get(PedestalBlock.LINKED) && blockRight.get(PedestalBlock.ALTAR_DIRECTION) == state.get(FACING).rotateYClockwise()) {
                 ((World)world).setBlockState(
                     pos.offset(state.get(FACING).rotateYCounterclockwise(), 3),
-                    blockRight.with(PedestalBlock.LINKED, false)
+                    blockRight.with(PedestalBlock.LINKED, false).with(PedestalBlock.STATE, 0)
                 );
             }
         }
@@ -243,7 +244,7 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
             if (blockBack.get(PedestalBlock.LINKED) && blockBack.get(PedestalBlock.ALTAR_DIRECTION) == state.get(FACING)) {
                 ((World)world).setBlockState(
                     pos.offset(state.get(FACING).getOpposite(), 3),
-                    blockBack.with(PedestalBlock.LINKED, false)
+                    blockBack.with(PedestalBlock.LINKED, false).with(PedestalBlock.STATE, 0)
                 );
             }
         }

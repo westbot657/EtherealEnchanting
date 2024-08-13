@@ -27,5 +27,11 @@
     "sounds": [
       "ethereal_enchanting:block/altar/power_off"
     ]
+  },
+  "pedestals_placed": {
+    "subtitle": "sound.ethereal_enchanting.pedestals_placed",
+    "sounds": [
+      "ethereal_enchanting:block/altar/pedestals_placed"
+    ]
   }
 }

@@ -12,13 +12,12 @@ import java.util.logging.Logger;
 public class EtherealEnchanting implements ModInitializer {
 
     public static final String MOD_ID = "ethereal_enchanting";
-    public static final Logger LOGGER = Logger.getLogger(MOD_ID);
 
 
     @Override
     public void onInitialize() {
 
-        LOGGER.info("Initializing Ethereal Enchanting...");
+        Log.info(LogCategory.LOG, "Initializing Ethereal Enchanting...");
 
         ModItems.initialize();
         ModBlocks.initialize();
@@ -27,7 +26,7 @@ public class EtherealEnchanting implements ModInitializer {
         ModLootTables.initialize();
         ModVillagerTrades.registerVillagerTrades();
 
-        LOGGER.info("Ethereal Enchanting initialized!");
+        Log.info(LogCategory.LOG, "Ethereal Enchanting initialized!");
     }
 
 }

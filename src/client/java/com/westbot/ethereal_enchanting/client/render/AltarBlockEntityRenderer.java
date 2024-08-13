@@ -1,4 +1,4 @@
-package com.westbot.ethereal_enchanting.client;
+package com.westbot.ethereal_enchanting.client.render;
 
 import com.westbot.ethereal_enchanting.Util;
 import com.westbot.ethereal_enchanting.blocks.AltarBlock;
@@ -14,6 +14,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
@@ -51,7 +52,11 @@ public class AltarBlockEntityRenderer implements BlockEntityRenderer<AltarBlockE
         Vec3d leftPos = new Vec3d(0.5, 0, 0.5).offset(altarBlock.get(AltarBlock.FACING).rotateYClockwise(), 3);
 
         if (blockEntity.getStack(0) != ItemStack.EMPTY) {
-            renderAt(blockEntity.getStack(0), new Vec3d(0.5, 1.5, 0.5), altarBlock.get(AltarBlock.FACING).getOpposite().asRotation(), matrices, overlay, vertexConsumers, blockEntity.getWorld(), blockEntity);
+            if (altarBlock.get(AltarBlock.FACING) == Direction.NORTH || altarBlock.get(AltarBlock.FACING) == Direction.SOUTH) {
+                renderAt(blockEntity.getStack(0), new Vec3d(0.5, 1.5, 0.5), altarBlock.get(AltarBlock.FACING).asRotation(), matrices, overlay, vertexConsumers, blockEntity.getWorld(), blockEntity);
+            } else {
+                renderAt(blockEntity.getStack(0), new Vec3d(0.5, 1.5, 0.5), altarBlock.get(AltarBlock.FACING).getOpposite().asRotation(), matrices, overlay, vertexConsumers, blockEntity.getWorld(), blockEntity);
+            }
         }
 
         Vec3d[][] leftStates = Util.orbitItems(blockEntity.getStack(1), blockEntity.getStack(2), blockEntity.getStack(3), blockEntity.getStack(4), blockEntity.getWorld());

@@ -1,21 +1,25 @@
 {
   "item.ethereal_enchanting.xp_tome": "XP Tome",
   "item.ethereal_enchanting.written_rune": "Written Rune",
+  "item.ethereal_enchanting.enchanted_rune": "Enchanted Rune",
 
   "itemTooltip.ethereal_enchanting.xp_tome_tooltip_line1": "Stores up to 32 levels of XP",
   "itemTooltip.ethereal_enchanting.xp_tome_tooltip_line2": "Place in an enchanting table to manage XP",
-  "itemTooltip.ethereal_enchanting.xp_tome_tooltip_line3": "Xp points stored: %1$s/1628",
+  "itemTooltip.ethereal_enchanting.xp_tome_tooltip_line3": "XP points stored: %1$s/1628",
 
   "itemTooltip.ethereal_enchanting.written_rune_tooltip_line2": "You'll want to keep this for later",
   "itemTooltip.ethereal_enchanting.rune_tooltip_line2": "Place in a spell book to decipher automatically",
 
   "block.ethereal_enchanting.altar": "Enchanting Altar",
   "block.ethereal_enchanting.pedestal": "Pedestal",
+  "block.ethereal_enchanting.ethereal_enchanter": "Ethereal Enchanter",
+  "container.ethereal_enchanting.ethereal_enchanter": "Enchanting Table",
 
   "sound.ethereal_enchanting.pedestal_place": "Pedestal Linked",
   "sound.ethereal_enchanting.pedestal_break": "Pedestal Unlinked",
   "sound.ethereal_enchanting.altar_powers_up": "Altar Powers Up",
   "sound.ethereal_enchanting.altar_powers_down": "Altar Energy Collapses",
+  "sound.ethereal_enchanting.pedestals_placed": "Altar Resonates",
 
   "itemGroup.ethereal_enchanting.group1": "Ethereal Enchanting"
 

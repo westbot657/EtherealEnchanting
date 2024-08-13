@@ -15,6 +15,8 @@ public class ModSounds {
 
     public static final SoundEvent ALTAR_POWER_DOWN = register("altar_power_down");
 
+    public static final SoundEvent PEDESTALS_PLACED = register("pedestals_placed");
+
     private static SoundEvent register(String name) {
         Identifier id = Identifier.of("ethereal_enchanting", name);
         return Registry.register(Registries.SOUND_EVENT, id, SoundEvent.of(id));

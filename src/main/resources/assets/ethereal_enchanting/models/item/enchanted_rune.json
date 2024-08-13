@@ -1,0 +1,173 @@
+{
+  "parent": "ethereal_enchanting:item/enchanted_runes/rune_blank",
+  "overrides": [
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.00
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_a"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.01
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_b"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.02
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_c"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.03
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_d"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.04
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_e"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.05
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_f"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.06
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_g"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.07
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_h"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.08
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_i"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.09
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_j"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.10
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_k"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.11
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_l"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.12
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_m"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.13
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_n"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.14
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_o"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.15
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_p"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.16
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_q"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.17
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_r"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.18
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_s"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.19
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_t"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.20
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_u"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.21
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_v"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.22
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_w"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.23
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_x"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.24
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_y"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.25
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_z"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.26
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_blank"
+    },
+    {
+      "predicate": {
+        "ethereal_enchanting:rune_id": 0.27
+      },
+      "model": "ethereal_enchanting:item/enchanted_runes/rune_a"
+    }
+  ]
+}

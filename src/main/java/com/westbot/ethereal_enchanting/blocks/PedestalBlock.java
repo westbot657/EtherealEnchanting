@@ -201,6 +201,7 @@ public class PedestalBlock extends Block {
             }
         }
 
+
     }
 
     @Override
@@ -221,6 +222,7 @@ public class PedestalBlock extends Block {
             if (altarEntity == null) {
                 return ActionResult.PASS;
             }
+
             if (held_item.isEmpty()) { // try to grab item from pedestal
                 for (int i = 3; i >= 0; i--) {
                     ItemStack stack = altarEntity.getPedestalStack(i, state, world);
@@ -228,6 +230,7 @@ public class PedestalBlock extends Block {
                     if (!stack.isEmpty()) {
                         player.getInventory().offerOrDrop(stack);
                         altarEntity.setPedestalStack(i, ItemStack.EMPTY, state, world);
+                        altarEntity.dropInvalidItems();
                         return ActionResult.SUCCESS;
                     }
 
@@ -237,16 +240,22 @@ public class PedestalBlock extends Block {
                     ItemStack stack = altarEntity.getPedestalStack(i, state, world);
                     if (stack.isEmpty()) {
                         ItemStack display_item = held_item.copyWithCount(1);
-                        held_item.decrementUnlessCreative(1, player);
-                        altarEntity.setPedestalStack(i, display_item, state, world);
-                        return ActionResult.SUCCESS;
+                        if (altarEntity.isValidItem(display_item, state)) {
+                            held_item.decrementUnlessCreative(1, player);
+                            altarEntity.setPedestalStack(i, display_item, state, world);
+                            altarEntity.dropInvalidItems();
+                            return ActionResult.SUCCESS;
+                        } else {
+                            altarEntity.dropInvalidItems();
+                            return ActionResult.SUCCESS_NO_ITEM_USED;
+                        }
                     }
                 }
             }
 
+            altarEntity.dropInvalidItems();
             return ActionResult.CONSUME;
         } else {
-
 
             return ActionResult.SUCCESS_NO_ITEM_USED;
         }

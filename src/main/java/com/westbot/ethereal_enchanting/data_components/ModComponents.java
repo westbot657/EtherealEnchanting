@@ -6,6 +6,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
+import java.util.List;
+
 public class ModComponents {
 
 
@@ -21,10 +23,22 @@ public class ModComponents {
         ComponentType.<String>builder().codec(Codec.STRING).build()
     );
 
-    public static final ComponentType<EtherealEnchantComponent> ETHEREAL_ENCHANT = Registry.register(
+    public static final ComponentType<Float> RUNE_ID = Registry.register(
         Registries.DATA_COMPONENT_TYPE,
-        Identifier.of("ethereal_enchanting", "ethereal_enchant"),
-        ComponentType.<EtherealEnchantComponent>builder().codec(EtherealEnchantComponent.CODEC).build()
+        Identifier.of("ethereal_enchanting", "rune_id"),
+        ComponentType.<Float>builder().codec(Codec.FLOAT).build()
+    );
+
+//    public static final ComponentType<EtherealEnchantComponent> ETHEREAL_ENCHANT = Registry.register(
+//        Registries.DATA_COMPONENT_TYPE,
+//        Identifier.of("ethereal_enchanting", "ethereal_enchant"),
+//        ComponentType.<EtherealEnchantComponent>builder().codec(EtherealEnchantComponent.CODEC).build()
+//    );
+
+    public static final ComponentType<List<EtherealEnchantComponent>> ETHEREAL_ENCHANTS = Registry.register(
+        Registries.DATA_COMPONENT_TYPE,
+        Identifier.of("ethereal_enchanting", "ethereal_enchants"),
+        ComponentType.<List<EtherealEnchantComponent>>builder().codec(Codec.list(EtherealEnchantComponent.CODEC)).build()
     );
 
 

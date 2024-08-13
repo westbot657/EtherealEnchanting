@@ -24,11 +24,11 @@ public class XPTomeItem extends Item {
         tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line3", getXP(stack)).formatted(Formatting.LIGHT_PURPLE));
     }
 
-    public int getXP(ItemStack stack) {
+    public static int getXP(ItemStack stack) {
         return stack.getOrDefault(ModComponents.TOME_XP_POINTS, 0);
     }
 
-    public void setXP(ItemStack stack, int xp) {
+    public static void setXP(ItemStack stack, int xp) {
         if (stack.contains(ModComponents.TOME_XP_POINTS)) {
             stack.set(ModComponents.TOME_XP_POINTS, xp);
         }

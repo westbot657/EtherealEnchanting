@@ -21,10 +21,15 @@ public class ModItemGroup {
         Registry.register(Registries.ITEM_GROUP, ETHEREAL_ENCHANTING_GROUP_KEY, ETHEREAL_ENCHANTING_GROUP);
 
         ItemGroupEvents.modifyEntriesEvent(ETHEREAL_ENCHANTING_GROUP_KEY).register(group -> {
-            group.add(ModItems.XP_TOME);
-            group.add(ModItems.WRITTEN_RUNE);
+            // Blocks
             group.add(ModBlocks.ALTAR_BLOCK);
             group.add(ModBlocks.PEDESTAL_BLOCK);
+            group.add(ModBlocks.ETHEREAL_ENCHANTER_BLOCK);
+
+            // Items
+            group.add(ModItems.XP_TOME);
+            group.add(ModItems.ENCHANTED_RUNE);
+            group.add(ModItems.WRITTEN_RUNE);
         });
 
 

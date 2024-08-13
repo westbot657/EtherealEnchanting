@@ -7,8 +7,10 @@ import com.westbot.ethereal_enchanting.blocks.ModBlocks;
 import com.westbot.ethereal_enchanting.blocks.PedestalBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.Packet;
@@ -16,6 +18,7 @@ import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.potion.Potions;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ItemScatterer;
@@ -28,13 +31,64 @@ import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 
 public class AltarBlockEntity extends BlockEntity {
 
+    private enum PedestalPlacement {
+        LEFT,
+        BACK,
+        RIGHT
+    }
+
+    private enum PedestalState {
+        OFF(0),
+        GREEN1(1),
+        GREEN2(2),
+        GREEN3(3),
+        RED1(4),
+        RED2(5),
+        RED3(6),
+        BLUE1(7),
+        BLUE2(8),
+        BLUE3(9),
+        YELLOW(10),
+        WHITE1(11),
+        WHITE2(12),
+        WHITE3(13);
+
+        ;
+        private final int state;
+
+        PedestalState(int state) {
+            this.state = state;
+        }
+
+        public int getState() {
+            return state;
+        }
+
+    }
+
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(16, ItemStack.EMPTY);
     private final DefaultedList<ItemStack> floorBlocks = DefaultedList.ofSize(4, ItemStack.EMPTY);
+
+
+    public static final int LEFT_0 = 1;
+    public static final int LEFT_1 = 2;
+    public static final int LEFT_2 = 3;
+    public static final int LEFT_3 = 4;
+    public static final int BACK_0 = 5;
+    public static final int BACK_1 = 6;
+    public static final int BACK_2 = 7;
+    public static final int BACK_3 = 8;
+    public static final int RIGHT_0 = 9;
+    public static final int RIGHT_1 = 10;
+    public static final int RIGHT_2 = 11;
+    public static final int RIGHT_3 = 12;
 
 
     private int rotation = 0;
@@ -103,22 +157,293 @@ public class AltarBlockEntity extends BlockEntity {
 
     }
 
-    public boolean isValidItem(ItemStack stack) {
+    private void setPedestalState(PedestalPlacement placement, PedestalState state) {
+        World world = this.getWorld();
+
+        if (world == null) {
+            return;
+        }
+
+        BlockState altar = world.getBlockState(this.getPos());
+        switch (placement) {
+            case LEFT -> {
+                BlockPos pos = this.getPos().offset(altar.get(AltarBlock.FACING).rotateYClockwise(), 3);
+                BlockState pedestalState = world.getBlockState(pos);
+                world.setBlockState(pos, pedestalState.with(PedestalBlock.STATE, state.getState()), 3);
+            }
+            case BACK -> {
+                BlockPos pos = this.getPos().offset(altar.get(AltarBlock.FACING).getOpposite(), 3);
+                BlockState pedestalState = world.getBlockState(pos);
+                world.setBlockState(pos, pedestalState.with(PedestalBlock.STATE, state.getState()), 3);
+            }
+            case RIGHT -> {
+                BlockPos pos = this.getPos().offset(altar.get(AltarBlock.FACING).rotateYCounterclockwise(), 3);
+                BlockState pedestalState = world.getBlockState(pos);
+                world.setBlockState(pos, pedestalState.with(PedestalBlock.STATE, state.getState()), 3);
+            }
+        }
+
+
+    }
+
+    public void dropInvalidItems() {
+        World world = this.getWorld();
+
+        if (world == null) {
+            return;
+        }
+
         switch (getFloorPattern().replace("waxed_","")) {
             case "block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;" -> {
                 // Chilled
                 // 1: slowness arrow
                 // 3: ice, packed ice, blue ice (compound)
-                return true;
+                ItemStack arrow1 = PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.SLOWNESS);
+                ItemStack arrow2 = PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.STRONG_SLOWNESS);
+                ItemStack arrow3 = PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.LONG_SLOWNESS);
+                dropSlot(2,3,4, 5,6,7,8, 12);
+
+                ItemStack left1 = getStack(LEFT_0);
+
+                if (!left1.isEmpty()) {
+                    if (!(ItemStack.areItemsAndComponentsEqual(arrow1, left1) || ItemStack.areItemsAndComponentsEqual(arrow2, left1) || ItemStack.areItemsAndComponentsEqual(arrow3, left1))) {
+                        dropSlot(LEFT_0);
+                        setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    } else {
+                        setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    }
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                }
+
+                setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                if (getStack(RIGHT_0).isOf(Items.ICE)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN1);
+                } else {
+                    dropSlot(RIGHT_0, RIGHT_1, RIGHT_2);
+                }
+
+                if (getStack(RIGHT_1).isOf(Items.PACKED_ICE)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN2);
+                } else {
+                    dropSlot(RIGHT_1, RIGHT_2);
+                }
+
+                if (getStack(RIGHT_2).isOf(Items.BLUE_ICE)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN3);
+                } else {
+                    dropSlot(RIGHT_2);
+                }
+
+                setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+
+
+
             }
             case "block.minecraft.end_stone;block.minecraft.end_stone;block.minecraft.end_stone;block.minecraft.end_stone;" -> {
                 // Celestial Binding
                 // 1: nether star
                 // 2: end stone
                 // 3: eye of ender
+
+                dropSlot(2,3,4, 6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.NETHER_STAR)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.END_STONE)) {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.ENDER_EYE)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+
             }
             case "block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;" -> {
-                // incindiary
+                // Incindiary
+                // 1: netherrack
+                // 2: blaze_rod (optional
+                // 3: blaze powder
+            }
+            case "block.minecraft.soul_soil;block.minecraft.soul_soil;block.minecraft.soul_soil;block.minecraft.soul_soil;" -> {
+                // Soulbound
+                // 1: nether star
+                // 2: soul soil
+                // 3: eye of ender
+            }
+            case "block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;" -> {
+                // Slashing
+                // 1: strength potion I or II
+                // 2: flint
+                // 3: gold sword, iron sword, diamond sword (replace)
+            }
+            case "block.minecraft.iron_block;block.minecraft.iron_block;block.minecraft.iron_block;block.minecraft.iron_block;" -> {
+                // Weighted
+                // 1/3: iron block
+                // 2: anvil (increase damage stage instead of consume)
+            }
+            case "block.minecraft.copper_block;block.minecraft.copper_block;block.minecraft.copper_block;block.minecraft.copper_block;" -> {
+                // Conductive
+                // 1: copper ingot
+                // 2: lightning rod
+                // 3: copper ingot
+            }
+            case "block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;" -> {
+                // Inductive
+                // 1: copper ingot
+                // 2: redstone dust
+                // 3: copper ingot
+            }
+            case "block.minecraft.emerald_block;block.minecraft.amethyst_block;block.minecraft.emerald_block;block.minecraft.amethyst_block;" -> {
+                // Mending
+                // 1: bottle of xp
+                // 3: XP Tome (level determined by filled capacity)
+            }
+            case "block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone;block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone" -> {
+                // Unbreaking
+                // 1: iron block
+                // 3: XP Tome (level determined by filled capacity)
+            }
+            case "block.minecraft.moss_block;block.minecraft.moss_block;block.minecraft.moss_block;block.minecraft.moss_block;" -> {
+                // Luck
+                // 1: lapis
+                // 2: redstone dust
+                // 3: gold ingot
+            }
+            case "block.minecraft.white_wool;block.minecraft.white_wool;block.minecraft.white_wool;block.minecraft.white_wool;" -> {
+                // Padded
+                // 1: wool for silence, stone for silktouch
+                // 3: rabbit hide
+            }
+            case "block.minecraft.iron_block;block.minecraft.dried_kelp_block;block.minecraft.iron_block;block.minecraft.dried_kelp_block;" -> {
+                // Resistive
+                // 1: copper ingot
+                // 2: dried kelp 1-4
+                // 3: copper ingot
+            }
+            case "block.minecraft.iron_block;block.minecraft.smooth_stone;block.minecraft.iron_block;block.minecraft.smooth_stone;" -> {
+                // Plated
+                // 1: iron ingot
+                // 2: heavy weighted pressure plate 1-4
+                // 3: iron ingot
+            }
+            case "block.minecraft.iron_block;block.minecraft.white_wool;block.minecraft.iron_block;block.minecraft.white_wool;" -> {
+                // Insulated
+                // 1: magma block
+                // 2: wool 1-4
+                // 3: packed ice
+            }
+            case "block.minecraft.iron_block;block.minecraft.sponge;block.minecraft.iron_block;block.minecraft.sponge;" -> {
+                // Elastic
+                // 1: feather
+                // 2: breeze rods 1-4
+                // 3: phantom membrane
+            }
+            case "block.minecraft.iron_block;block.minecraft.magma_block;block.minecraft.iron_block;block.minecraft.magma_block;" -> {
+                // Thorns
+                // 1: cactus
+                // 2: magma block 1-4
+                // 3: berry bush
+            }
+            case "block.minecraft.iron_block;block.minecraft.slime_block;block.minecraft.iron_block;block.minecraft.slime_block;" -> {
+                // Inertial
+                // 1: phantom membrane
+                // 2: nether star (1) slime block 0-3
+                // 3: wind charge
+            }
+            case "block.minecraft.blue_ice;block.minecraft.packed_ice;block.minecraft.magma_block;block.minecraft.packed_ice;" -> {
+                // Hydrodynamic
+                // 1: gold pickaxe
+                // 2: prismarine shard/crystal 1-3
+                // 3: turtle scute
+            }
+            case "block.minecraft.sculk;block.minecraft.sculk;block.minecraft.sculk;block.minecraft.sculk;" -> {
+                // Swift Sneak
+                // 1: echo shard
+                // 2: XP Tome (level determined by filled capacity)
+                // 3: echo shard
+            }
+            default -> {
+                dropSlot(1,2,3,4,5,6,7,8,9,10,11,12);
+            }
+        }
+        this.markDirty();
+
+    }
+
+
+    public boolean isValidItem(ItemStack stack, BlockState pedestalState) {
+        World world = this.getWorld();
+
+        if (world == null) {
+            return false;
+        }
+
+        BlockState altar = world.getBlockState(this.getPos());
+
+        PedestalPlacement placement = PedestalPlacement.BACK;
+
+        if (pedestalState.get(PedestalBlock.ALTAR_DIRECTION) == altar.get(AltarBlock.FACING).rotateYCounterclockwise()) {
+            placement = PedestalPlacement.LEFT;
+        } else if (pedestalState.get(PedestalBlock.ALTAR_DIRECTION) == altar.get(AltarBlock.FACING).rotateYClockwise()) {
+            placement = PedestalPlacement.RIGHT;
+        }
+
+
+        switch (getFloorPattern().replace("waxed_","")) {
+            case "block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;" -> {
+                // Chilled
+                // 1: slowness arrow
+                // 3: ice, packed ice, blue ice (compound)
+                if (placement == PedestalPlacement.LEFT) {
+                    ItemStack arrow1 = PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.SLOWNESS);
+                    ItemStack arrow2 = PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.STRONG_SLOWNESS);
+                    ItemStack arrow3 = PotionContentsComponent.createStack(Items.TIPPED_ARROW, Potions.LONG_SLOWNESS);
+
+                    return getStack(LEFT_0).isEmpty() && (ItemStack.areItemsAndComponentsEqual(arrow1, stack) || ItemStack.areItemsAndComponentsEqual(arrow2, stack) || ItemStack.areItemsAndComponentsEqual(arrow3, stack));
+                }
+                else if (placement == PedestalPlacement.RIGHT) {
+                    if (getStack(RIGHT_0).isEmpty()) {
+                        return stack.isOf(Items.ICE);
+                    } else if (getStack(RIGHT_1).isEmpty()) {
+                        return stack.isOf(Items.PACKED_ICE);
+                    } else if (getStack(RIGHT_2).isEmpty()) {
+                        return stack.isOf(Items.BLUE_ICE);
+                    }
+                }
+
+                return false;
+            }
+            case "block.minecraft.end_stone;block.minecraft.end_stone;block.minecraft.end_stone;block.minecraft.end_stone;" -> {
+                // Celestial Binding
+                // 1: nether star
+                // 2: end stone
+                // 3: eye of ender
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return getStack(LEFT_0).isEmpty() && stack.isOf(Items.NETHER_STAR);
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(Items.END_STONE);
+                }
+                else {
+                    return getStack(RIGHT_0).isEmpty() && stack.isOf(Items.ENDER_EYE);
+                }
+            }
+            case "block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;" -> {
+                // Incindiary
                 // 1: netherrack
                 // 2: blaze_rod (optional
                 // 3: blaze powder
@@ -253,6 +578,50 @@ public class AltarBlockEntity extends BlockEntity {
         if (!item4.isEmpty()) {
             ItemScatterer.spawn(world, pos.x, pos.y+1.5, pos.z, item4);
         }
+    }
+
+    private void dropSlot(int... slots) {
+        List<Integer> list = Arrays.asList(Arrays.stream(slots).boxed().toArray(Integer[]::new));
+        World world = this.getWorld();
+        if (world == null) {
+            return;
+        }
+        BlockState state = world.getBlockState(this.getPos());
+
+        Vec3d leftPos = new Vec3d(getPos().getX()+0.5, getPos().getY()+1.5, getPos().getZ()+0.5).offset(state.get(AltarBlock.FACING).rotateYClockwise(), 3);
+        Vec3d backPos = new Vec3d(getPos().getX()+0.5, getPos().getY()+1.5, getPos().getZ()+0.5).offset(state.get(AltarBlock.FACING).getOpposite(), 3);
+        Vec3d rightPos = new Vec3d(getPos().getX()+0.5, getPos().getY()+1.5, getPos().getZ()+0.5).offset(state.get(AltarBlock.FACING).rotateYCounterclockwise(), 3);
+
+        if (list.contains(0)) {
+            ItemStack stack = getStack(0);
+            setStack(0, ItemStack.EMPTY);
+            ItemScatterer.spawn(world, getPos().getX()+0.5, getPos().getY()+1.5, getPos().getZ()+0.5, stack);
+        }
+
+        for (int i = 1; i < 5; i++) {
+            if (list.contains(i)) {
+                ItemStack stack = getStack(i);
+                setStack(i, ItemStack.EMPTY);
+                ItemScatterer.spawn(world, leftPos.x, leftPos.y, leftPos.z, stack);
+            }
+        }
+
+        for (int i = 5; i < 9; i++) {
+            if (list.contains(i)) {
+                ItemStack stack = getStack(i);
+                setStack(i, ItemStack.EMPTY);
+                ItemScatterer.spawn(world, backPos.x, backPos.y, backPos.z, stack);
+            }
+        }
+
+        for (int i = 9; i < 13; i++) {
+            if (list.contains(i)) {
+                ItemStack stack = getStack(i);
+                setStack(i, ItemStack.EMPTY);
+                ItemScatterer.spawn(world, rightPos.x, rightPos.y, rightPos.z, stack);
+            }
+        }
+
     }
 
     private void dropAllPedestalItems(World world, BlockState state) {
@@ -557,6 +926,7 @@ public class AltarBlockEntity extends BlockEntity {
                 blockEntity.rotation = 0;
             }
         } else if (blockState.get(AltarBlock.PEDESTALS) < 3) {
+            blockEntity.animation_phase = 0;
             blockEntity.rotation_tick+=5;
             blockEntity.rotation_height++;
             if (blockEntity.rotation_height >= 200) { blockEntity.rotation_height = 0; }
@@ -586,6 +956,7 @@ public class AltarBlockEntity extends BlockEntity {
             }
 
         } else if (blockState.get(AltarBlock.PEDESTALS) == 3 && blockEntity.animation_phase == 0) {
+            world.playSound(null, blockPos, ModSounds.PEDESTALS_PLACED, SoundCategory.BLOCKS, 1, 0.75f);
             blockEntity.animation_phase = 1;
             blockEntity.markDirty();
         }

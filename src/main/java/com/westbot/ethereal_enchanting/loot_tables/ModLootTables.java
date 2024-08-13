@@ -8,10 +8,16 @@ public class ModLootTables {
     public static void initialize() {
         LootTableEvents.MODIFY.register((lootTableRegistryKey, builder, source, wrapper) -> {
 
-            if (lootTableRegistryKey.getValue().getNamespace().equals("minecraft") && lootTableRegistryKey.getValue().getPath().startsWith("chests/")) {
-                builder.modifyPools(pool -> {
-                    pool.apply(new RemoveEnchantedBookLootFunction()).build();
-                }).build();
+            if (lootTableRegistryKey.getValue().getNamespace().equals("minecraft")) {
+                if (lootTableRegistryKey.getValue().getPath().startsWith("chests/")) {
+                    builder.modifyPools(pool -> {
+                        pool.apply(new RemoveEnchantedBookLootFunction()).build();
+                    }).build();
+                } else if (lootTableRegistryKey.getValue().getPath().contains("piglin_bartering")) {
+                    builder.modifyPools(pool -> {
+                        pool.apply(new RemoveSoulSpeedLootFunction()).build();
+                    }).build();
+                }
             }
         });
     }

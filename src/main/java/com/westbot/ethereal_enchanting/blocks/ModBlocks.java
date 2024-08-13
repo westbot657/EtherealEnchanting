@@ -3,6 +3,7 @@ package com.westbot.ethereal_enchanting.blocks;
 import com.westbot.ethereal_enchanting.blocks.AltarBlock;
 import com.westbot.ethereal_enchanting.blocks.PedestalBlock;
 import com.westbot.ethereal_enchanting.blocks.entity.AltarBlockEntity;
+import com.westbot.ethereal_enchanting.blocks.entity.EtherealEnchanterBlockEntity;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,11 +24,20 @@ public final class ModBlocks {
         AbstractBlock.Settings.create().luminance((BlockState state) -> 4).hardness(3f).resistance(120f).requiresTool().pistonBehavior(PistonBehavior.BLOCK)
     ), "pedestal");
 
+    public static final EtherealEnchanterBlock ETHEREAL_ENCHANTER_BLOCK = (EtherealEnchanterBlock) register(new EtherealEnchanterBlock(
+        AbstractBlock.Settings.create().luminance((BlockState state) -> 4).hardness(5f).resistance(1200f).requiresTool().pistonBehavior(PistonBehavior.BLOCK)
+    ), "ethereal_enchanter");
+
 
     public static final BlockEntityType<AltarBlockEntity> ALTAR_BLOCK_ENTITY_TYPE = Registry.register(
         Registries.BLOCK_ENTITY_TYPE,
         Identifier.of("ethereal_enchanting", "altar"),
         BlockEntityType.Builder.create(AltarBlockEntity::new, ALTAR_BLOCK).build()
+    );
+    public static final BlockEntityType<EtherealEnchanterBlockEntity> ETHEREAL_ENCHANTER_BLOCK_ENTITY_TYPE = Registry.register(
+        Registries.BLOCK_ENTITY_TYPE,
+        Identifier.of("ethereal_enchanting", "ethereal_enchanter"),
+        BlockEntityType.Builder.create(EtherealEnchanterBlockEntity::new, ETHEREAL_ENCHANTER_BLOCK).build()
     );
 
 
