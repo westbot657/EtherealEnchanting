@@ -230,7 +230,7 @@ public class PedestalBlock extends Block {
                     if (!stack.isEmpty()) {
                         player.getInventory().offerOrDrop(stack);
                         altarEntity.setPedestalStack(i, ItemStack.EMPTY, state, world);
-                        altarEntity.dropInvalidItems();
+                        altarEntity.verifyEnchant();
                         return ActionResult.SUCCESS;
                     }
 
@@ -243,17 +243,17 @@ public class PedestalBlock extends Block {
                         if (altarEntity.isValidItem(display_item, state)) {
                             held_item.decrementUnlessCreative(1, player);
                             altarEntity.setPedestalStack(i, display_item, state, world);
-                            altarEntity.dropInvalidItems();
+                            altarEntity.verifyEnchant();
                             return ActionResult.SUCCESS;
                         } else {
-                            altarEntity.dropInvalidItems();
+                            altarEntity.verifyEnchant();
                             return ActionResult.SUCCESS_NO_ITEM_USED;
                         }
                     }
                 }
             }
 
-            altarEntity.dropInvalidItems();
+            altarEntity.verifyEnchant();
             return ActionResult.CONSUME;
         } else {
 

@@ -53,9 +53,9 @@ public class AltarBlockEntityRenderer implements BlockEntityRenderer<AltarBlockE
 
         if (blockEntity.getStack(0) != ItemStack.EMPTY) {
             if (altarBlock.get(AltarBlock.FACING) == Direction.NORTH || altarBlock.get(AltarBlock.FACING) == Direction.SOUTH) {
-                renderAt(blockEntity.getStack(0), new Vec3d(0.5, 1.5, 0.5), altarBlock.get(AltarBlock.FACING).asRotation(), matrices, overlay, vertexConsumers, blockEntity.getWorld(), blockEntity);
+                renderAt(blockEntity.getStack(0), new Vec3d(0.5, 1.5, 0.5), altarBlock.get(AltarBlock.FACING).asRotation() + ((world.getTime() * 5f) % 360), matrices, overlay, vertexConsumers, blockEntity.getWorld(), blockEntity);
             } else {
-                renderAt(blockEntity.getStack(0), new Vec3d(0.5, 1.5, 0.5), altarBlock.get(AltarBlock.FACING).getOpposite().asRotation(), matrices, overlay, vertexConsumers, blockEntity.getWorld(), blockEntity);
+                renderAt(blockEntity.getStack(0), new Vec3d(0.5, 1.5, 0.5), altarBlock.get(AltarBlock.FACING).getOpposite().asRotation() + ((world.getTime() * 5f) % 360), matrices, overlay, vertexConsumers, blockEntity.getWorld(), blockEntity);
             }
         }
 
@@ -88,6 +88,43 @@ public class AltarBlockEntityRenderer implements BlockEntityRenderer<AltarBlockE
                 i++;
             }
         }
+
+        switch (blockEntity.availableEnchant) {
+            case "chilled" -> {
+
+            }
+            case "incindiary" -> {
+
+            }
+            case "celestial_binding" -> {
+
+            }
+            case "soulbound" -> {
+
+            }
+            case "slashing" -> {
+
+            }
+            case "weighted" -> {
+
+            }
+            case "conductive" -> {}
+            case "inductive" -> {}
+            case "mending" -> {}
+            case "unbreaking" -> {}
+            case "luck" -> {}
+            case "padded" -> {}
+            case "resistive" -> {}
+            case "plated" -> {}
+            case "insulated" -> {}
+            case "elastic" -> {}
+            case "thorns" -> {}
+            case "inertial" -> {}
+            case "hydrodynamic" -> {}
+            case "swift_sneak" -> {}
+            case "soul_speed" -> {}
+        }
+
 
     }
 

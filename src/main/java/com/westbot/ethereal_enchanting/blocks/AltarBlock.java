@@ -3,8 +3,6 @@ package com.westbot.ethereal_enchanting.blocks;
 import com.mojang.serialization.MapCodec;
 import com.westbot.ethereal_enchanting.ModSounds;
 import com.westbot.ethereal_enchanting.blocks.entity.AltarBlockEntity;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -151,7 +149,7 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
                 }
             }
         }
-        blockEntity.dropInvalidItems();
+        blockEntity.verifyEnchant();
         return ActionResult.CONSUME;
     }
 

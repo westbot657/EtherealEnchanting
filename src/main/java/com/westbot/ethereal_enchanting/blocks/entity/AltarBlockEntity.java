@@ -1,10 +1,12 @@
 package com.westbot.ethereal_enchanting.blocks.entity;
 
+import com.westbot.ethereal_enchanting.ModItems;
 import com.westbot.ethereal_enchanting.ModSounds;
 import com.westbot.ethereal_enchanting.Util;
 import com.westbot.ethereal_enchanting.blocks.AltarBlock;
 import com.westbot.ethereal_enchanting.blocks.ModBlocks;
 import com.westbot.ethereal_enchanting.blocks.PedestalBlock;
+import com.westbot.ethereal_enchanting.items.XPTomeItem;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.type.PotionContentsComponent;
@@ -76,6 +78,8 @@ public class AltarBlockEntity extends BlockEntity {
     private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(16, ItemStack.EMPTY);
     private final DefaultedList<ItemStack> floorBlocks = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
+    public String availableEnchant = "";
+    private int recipeCheck = 0;
 
     public static final int LEFT_0 = 1;
     public static final int LEFT_1 = 2;
@@ -186,12 +190,15 @@ public class AltarBlockEntity extends BlockEntity {
 
     }
 
-    public void dropInvalidItems() {
+    public void verifyEnchant() {
         World world = this.getWorld();
 
         if (world == null) {
             return;
         }
+
+        this.recipeCheck = 0;
+        this.availableEnchant = "";
 
         switch (getFloorPattern().replace("waxed_","")) {
             case "block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;" -> {
@@ -210,6 +217,7 @@ public class AltarBlockEntity extends BlockEntity {
                         dropSlot(LEFT_0);
                         setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
                     } else {
+                        recipeCheck++;
                         setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
                     }
                 } else {
@@ -218,24 +226,31 @@ public class AltarBlockEntity extends BlockEntity {
 
                 setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
                 if (getStack(RIGHT_0).isOf(Items.ICE)) {
+                    recipeCheck++;
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN1);
                 } else {
                     dropSlot(RIGHT_0, RIGHT_1, RIGHT_2);
                 }
 
                 if (getStack(RIGHT_1).isOf(Items.PACKED_ICE)) {
+                    recipeCheck++;
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN2);
                 } else {
                     dropSlot(RIGHT_1, RIGHT_2);
                 }
 
                 if (getStack(RIGHT_2).isOf(Items.BLUE_ICE)) {
+                    recipeCheck++;
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN3);
                 } else {
                     dropSlot(RIGHT_2);
                 }
 
                 setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+
+                if (recipeCheck == 4) {
+                    this.availableEnchant = "chilled";
+                }
 
 
 
@@ -250,6 +265,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (getStack(LEFT_0).isOf(Items.NETHER_STAR)) {
                     setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
                 } else {
                     setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
                     dropSlot(LEFT_0);
@@ -257,6 +273,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (getStack(BACK_0).isOf(Items.END_STONE)) {
                     setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                    recipeCheck++;
                 } else {
                     setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
                     dropSlot(BACK_0);
@@ -264,9 +281,14 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (getStack(RIGHT_0).isOf(Items.ENDER_EYE)) {
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
                 } else {
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
                     dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "celestial_binding";
                 }
 
 
@@ -274,25 +296,200 @@ public class AltarBlockEntity extends BlockEntity {
             case "block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;" -> {
                 // Incindiary
                 // 1: netherrack
-                // 2: blaze_rod (optional
+                // 2: blaze_rod (optional)
                 // 3: blaze powder
+
+                dropSlot(2,3,4, 6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.NETHERRACK)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+
+                if (getStack(BACK_0).isOf(Items.BLAZE_ROD)) {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.YELLOW);
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.BLAZE_POWDER)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 2) {
+                    this.availableEnchant = "incindiary";
+                }
+
             }
             case "block.minecraft.soul_soil;block.minecraft.soul_soil;block.minecraft.soul_soil;block.minecraft.soul_soil;" -> {
                 // Soulbound
                 // 1: nether star
                 // 2: soul soil
                 // 3: eye of ender
+
+                if (getStack(LEFT_0).isOf(Items.NETHER_STAR)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.SOUL_SOIL)) {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.ENDER_EYE)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "soulbound";
+                }
+
             }
             case "block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;" -> {
                 // Slashing
                 // 1: strength potion I or II
                 // 2: flint
                 // 3: gold sword, iron sword, diamond sword (replace)
+                ItemStack strength1 = PotionContentsComponent.createStack(Items.POTION, Potions.STRENGTH);
+                ItemStack strength2 = PotionContentsComponent.createStack(Items.POTION, Potions.STRONG_STRENGTH);
+                ItemStack strength3 = PotionContentsComponent.createStack(Items.POTION, Potions.LONG_STRENGTH);
+                ItemStack strength4 = PotionContentsComponent.createStack(Items.SPLASH_POTION, Potions.STRENGTH);
+                ItemStack strength5 = PotionContentsComponent.createStack(Items.SPLASH_POTION, Potions.STRONG_STRENGTH);
+                ItemStack strength6 = PotionContentsComponent.createStack(Items.SPLASH_POTION, Potions.LONG_STRENGTH);
+                ItemStack strength7 = PotionContentsComponent.createStack(Items.LINGERING_POTION, Potions.STRENGTH);
+                ItemStack strength8 = PotionContentsComponent.createStack(Items.LINGERING_POTION, Potions.STRONG_STRENGTH);
+                ItemStack strength9 = PotionContentsComponent.createStack(Items.LINGERING_POTION, Potions.LONG_STRENGTH);
+
+                ItemStack slot1 = getStack(LEFT_0);
+
+                if (
+                    ItemStack.areItemsAndComponentsEqual(slot1, strength2) ||
+                        ItemStack.areItemsAndComponentsEqual(slot1, strength3) ||
+
+                        ItemStack.areItemsAndComponentsEqual(slot1, strength5) ||
+                        ItemStack.areItemsAndComponentsEqual(slot1, strength6) ||
+
+                        ItemStack.areItemsAndComponentsEqual(slot1, strength8) ||
+                        ItemStack.areItemsAndComponentsEqual(slot1, strength9)
+                ) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else if (
+                    ItemStack.areItemsAndComponentsEqual(slot1, strength1) ||
+                        ItemStack.areItemsAndComponentsEqual(slot1, strength4) ||
+                        ItemStack.areItemsAndComponentsEqual(slot1, strength7)
+                ) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE2);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.FLINT)) {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.GOLDEN_SWORD)){
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE1);
+                    recipeCheck++;
+                } else if (getStack(RIGHT_0).isOf(Items.IRON_SWORD)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE2);
+                    recipeCheck++;
+                } else if (getStack(RIGHT_0).isOf(Items.DIAMOND_SWORD)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "slashing";
+                }
+
+
             }
             case "block.minecraft.iron_block;block.minecraft.iron_block;block.minecraft.iron_block;block.minecraft.iron_block;" -> {
                 // Weighted
                 // 1/3: iron block
                 // 2: anvil (increase damage stage instead of consume)
+
+                dropSlot(6,7,8);
+
+                if (getStack(BACK_0).isOf(Items.ANVIL) || getStack(BACK_0).isOf(Items.DAMAGED_ANVIL) || getStack(BACK_0).isOf(Items.CHIPPED_ANVIL)) {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+
+                if (getStack(LEFT_0).isOf(Items.IRON_BLOCK)) {
+                    if (getStack(RIGHT_0).isOf(Items.IRON_BLOCK)) { // 1 - 1
+                        setPedestalState(PedestalPlacement.LEFT, PedestalState.RED1);
+                        setPedestalState(PedestalPlacement.RIGHT, PedestalState.BLUE1);
+                        recipeCheck++;
+                        dropSlot(2,3,4, 10,11,12);
+                    } else if (getStack(LEFT_1).isOf(Items.IRON_BLOCK)) { // 2 - 0
+                        setPedestalState(PedestalPlacement.LEFT, PedestalState.RED3);
+                        setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                        recipeCheck++;
+                        dropSlot(3,4, 9,10,11,12);
+                    } else { // 1 - 0
+                        setPedestalState(PedestalPlacement.LEFT, PedestalState.RED2);
+                        setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                        recipeCheck++;
+                        dropSlot(2,3,4, 9,10,11,12);
+                    }
+                } else if (getStack(RIGHT_0).isOf(Items.IRON_BLOCK)) {
+                    if (getStack(RIGHT_1).isOf(Items.IRON_BLOCK)) { // 0 - 2
+                        setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                        setPedestalState(PedestalPlacement.RIGHT, PedestalState.BLUE3);
+                        recipeCheck++;
+                        dropSlot(1,2,3,4, 11,12);
+                    } else { // 0 - 1
+                        setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                        setPedestalState(PedestalPlacement.RIGHT, PedestalState.BLUE2);
+                        recipeCheck++;
+                        dropSlot(1,2,3,4, 10,11,12);
+                    }
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(1,2,3,4, 9,10,11,12);
+                }
+
+                if (recipeCheck == 2) {
+                    this.availableEnchant = "weighted";
+                }
+
             }
             case "block.minecraft.copper_block;block.minecraft.copper_block;block.minecraft.copper_block;block.minecraft.copper_block;" -> {
                 // Conductive
@@ -375,8 +572,17 @@ public class AltarBlockEntity extends BlockEntity {
                 // 2: XP Tome (level determined by filled capacity)
                 // 3: echo shard
             }
+            case "block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;" -> {
+                // Soul speed
+                // 1: wither skull
+                // 2: ??? modded soul item ???
+                // 3: soul sand
+            }
             default -> {
                 dropSlot(1,2,3,4,5,6,7,8,9,10,11,12);
+                setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
             }
         }
         this.markDirty();
@@ -445,42 +651,151 @@ public class AltarBlockEntity extends BlockEntity {
             case "block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;" -> {
                 // Incindiary
                 // 1: netherrack
-                // 2: blaze_rod (optional
+                // 2: blaze_rod (optional)
                 // 3: blaze powder
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return getStack(LEFT_0).isEmpty() && stack.isOf(Items.NETHERRACK);
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(Items.BLAZE_ROD);
+                }
+                else {
+                    return getStack(RIGHT_0).isEmpty() && stack.isOf(Items.BLAZE_POWDER);
+                }
+
             }
             case "block.minecraft.soul_soil;block.minecraft.soul_soil;block.minecraft.soul_soil;block.minecraft.soul_soil;" -> {
                 // Soulbound
                 // 1: nether star
                 // 2: soul soil
                 // 3: eye of ender
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return getStack(LEFT_0).isEmpty() && stack.isOf(Items.NETHER_STAR);
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(Items.SOUL_SOIL);
+                }
+                else {
+                    return getStack(RIGHT_0).isEmpty() && stack.isOf(Items.ENDER_EYE);
+                }
+
             }
             case "block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;block.minecraft.bamboo_mosaic;" -> {
                 // Slashing
                 // 1: strength potion I or II
                 // 2: flint
                 // 3: gold sword, iron sword, diamond sword (replace)
+                ItemStack strength1 = PotionContentsComponent.createStack(Items.POTION, Potions.STRENGTH);
+                ItemStack strength2 = PotionContentsComponent.createStack(Items.POTION, Potions.STRONG_STRENGTH);
+                ItemStack strength3 = PotionContentsComponent.createStack(Items.POTION, Potions.LONG_STRENGTH);
+                ItemStack strength4 = PotionContentsComponent.createStack(Items.SPLASH_POTION, Potions.STRENGTH);
+                ItemStack strength5 = PotionContentsComponent.createStack(Items.SPLASH_POTION, Potions.STRONG_STRENGTH);
+                ItemStack strength6 = PotionContentsComponent.createStack(Items.SPLASH_POTION, Potions.LONG_STRENGTH);
+                ItemStack strength7 = PotionContentsComponent.createStack(Items.LINGERING_POTION, Potions.STRENGTH);
+                ItemStack strength8 = PotionContentsComponent.createStack(Items.LINGERING_POTION, Potions.STRONG_STRENGTH);
+                ItemStack strength9 = PotionContentsComponent.createStack(Items.LINGERING_POTION, Potions.LONG_STRENGTH);
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty()) && (
+                            ItemStack.areItemsAndComponentsEqual(strength1, stack) ||
+                            ItemStack.areItemsAndComponentsEqual(strength2, stack) ||
+                            ItemStack.areItemsAndComponentsEqual(strength3, stack) ||
+                            ItemStack.areItemsAndComponentsEqual(strength4, stack) ||
+                            ItemStack.areItemsAndComponentsEqual(strength5, stack) ||
+                            ItemStack.areItemsAndComponentsEqual(strength6, stack) ||
+                            ItemStack.areItemsAndComponentsEqual(strength7, stack) ||
+                            ItemStack.areItemsAndComponentsEqual(strength8, stack) ||
+                            ItemStack.areItemsAndComponentsEqual(strength9, stack)
+                        );
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(Items.FLINT);
+                }
+                else {
+                    return getStack(RIGHT_0).isEmpty() && (
+                            stack.isOf(Items.GOLDEN_SWORD) || stack.isOf(Items.IRON_SWORD) || stack.isOf(Items.DIAMOND_SWORD)
+                        );
+                }
+
             }
             case "block.minecraft.iron_block;block.minecraft.iron_block;block.minecraft.iron_block;block.minecraft.iron_block;" -> {
                 // Weighted
                 // 1/3: iron block
                 // 2: anvil (increase damage stage instead of consume)
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return stack.isOf(Items.IRON_BLOCK) && (
+                            (getStack(LEFT_0).isEmpty() && getStack(RIGHT_1).isEmpty()) ||
+                            (getStack(LEFT_1).isEmpty() && getStack(RIGHT_0).isEmpty())
+                        );
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && (
+                        stack.isOf(Items.ANVIL) ||
+                        stack.isOf(Items.CHIPPED_ANVIL) ||
+                        stack.isOf(Items.DAMAGED_ANVIL)
+                    );
+                }
+                else {
+                    return stack.isOf(Items.IRON_BLOCK) && (
+                            (getStack(RIGHT_0).isEmpty() && getStack(LEFT_1).isEmpty()) ||
+                            (getStack(RIGHT_1).isEmpty() && getStack(LEFT_0).isEmpty())
+                    );
+                }
+
             }
             case "block.minecraft.copper_block;block.minecraft.copper_block;block.minecraft.copper_block;block.minecraft.copper_block;" -> {
                 // Conductive
                 // 1: copper ingot
                 // 2: lightning rod
                 // 3: copper ingot
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.COPPER_INGOT));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(Items.LIGHTNING_ROD);
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.COPPER_INGOT));
+                }
+
             }
             case "block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;" -> {
                 // Inductive
                 // 1: copper ingot
                 // 2: redstone dust
                 // 3: copper ingot
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.COPPER_INGOT));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(Items.REDSTONE);
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.COPPER_INGOT));
+                }
+
             }
             case "block.minecraft.emerald_block;block.minecraft.amethyst_block;block.minecraft.emerald_block;block.minecraft.amethyst_block;" -> {
                 // Mending
                 // 1: bottle of xp
                 // 3: XP Tome (level determined by filled capacity)
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.EXPERIENCE_BOTTLE));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return false;
+                }
+                else {
+                    // 10, 21, 32
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(ModItems.XP_TOME) && XPTomeItem.getXP(stack) > Util.XPLevel.LEVEL10.getPoints());
+                }
+
             }
             case "block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone;block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone" -> {
                 // Unbreaking
@@ -545,6 +860,12 @@ public class AltarBlockEntity extends BlockEntity {
                 // 1: echo shard
                 // 2: XP Tome (level determined by filled capacity)
                 // 3: echo shard
+            }
+            case "block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;" -> {
+                // Soul speed
+                // 1: wither skull
+                // 2: ??? modded soul item ???
+                // 3: soul sand
             }
             default -> {
                 return false;
@@ -803,6 +1124,8 @@ public class AltarBlockEntity extends BlockEntity {
         nbt.putInt("rotation", this.rotation);
         nbt.putBoolean("place_animation", this.place_animation);
         nbt.putInt("animation_phase", animation_phase);
+        nbt.putString("availableEnchant", availableEnchant);
+        nbt.putInt("recipeCheck", recipeCheck);
         Inventories.writeNbt(nbt, inventory, wrapper);
         super.writeNbt(nbt, wrapper);
 
@@ -815,6 +1138,8 @@ public class AltarBlockEntity extends BlockEntity {
         this.rotation = nbt.getInt("rotation");
         this.place_animation = nbt.getBoolean("place_animation");
         this.animation_phase = nbt.getInt("animation_phase");
+        this.availableEnchant = nbt.getString("availableEnchant");
+        this.recipeCheck = nbt.getInt("recipeCheck");
         Inventories.readNbt(nbt, inventory, wrapper);
 
     }

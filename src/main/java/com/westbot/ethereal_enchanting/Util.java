@@ -8,15 +8,62 @@ import org.jetbrains.annotations.Nullable;
 
 public class Util {
 
+    public enum XPLevel {
+        LEVEL1(1, 7),
+        LEVEL2(2, 16),
+        LEVEL3(3, 27),
+        LEVEL4(4, 40),
+        LEVEL5(5, 55),
+        LEVEL6(6, 72),
+        LEVEL7(7, 91),
+        LEVEL8(8, 112),
+        LEVEL9(9, 135),
+        LEVEL10(10, 160),
+        LEVEL11(11, 187),
+        LEVEL12(12, 216),
+        LEVEL13(13, 247),
+        LEVEL14(14, 280),
+        LEVEL15(15, 315),
+        LEVEL16(16, 352),
+        LEVEL17(17, 394),
+        LEVEL18(18, 441),
+        LEVEL19(19, 493),
+        LEVEL20(20, 550),
+        LEVEL21(21, 612),
+        LEVEL22(22, 679),
+        LEVEL23(23, 751),
+        LEVEL24(24, 828),
+        LEVEL25(25, 910),
+        LEVEL26(26, 997),
+        LEVEL27(27, 1083),
+        LEVEL28(28, 1186),
+        LEVEL29(29, 1288),
+        LEVEL30(30, 1395),
+        LEVEL31(31, 1507),
+        LEVEL32(32, 1628);
+
+        private final int level;
+        private final int points;
+
+        XPLevel(int level, int points) {
+            this.level = level;
+            this.points = points;
+        }
+
+        public int getPoints() {
+            return points;
+        }
+
+        public int getLevel() {
+            return level;
+        }
+
+    }
+
+
     public static Vec3d[] drawCircle(Vec3d center, Vec3d center_axis, double radius, int numPoints, double angleOffset) {
         Vec3d[] points = new Vec3d[numPoints];
-//        double angleIncrement = 2 * Math.PI / numPoints;
-//        for (int i = 0; i < numPoints; ++i) {
-//            double angle = i * angleIncrement;
-//            double x = center.getX() + Math.cos(angle) * radius;
-//            double y = center.getY() + Math.sin(angle) * radius;
-//            points[i] = new Vec3d(x, y, center.getZ());
-//        }
+
         Vec3d normalized_axis = center_axis.normalize();
 
 
