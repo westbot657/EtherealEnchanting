@@ -1,6 +1,7 @@
 package com.westbot.ethereal_enchanting;
 
 import com.westbot.ethereal_enchanting.items.EnchantedRuneItem;
+import com.westbot.ethereal_enchanting.items.LostSoulItem;
 import com.westbot.ethereal_enchanting.items.WrittenRuneItem;
 import com.westbot.ethereal_enchanting.items.XPTomeItem;
 import net.minecraft.item.Item;
@@ -14,9 +15,8 @@ public class ModItems {
 
     public static final Item XP_TOME = register(new XPTomeItem(), "xp_tome");
     public static final Item WRITTEN_RUNE = register(new WrittenRuneItem(), "written_rune");
-
     public static final Item ENCHANTED_RUNE = register(new EnchantedRuneItem(), "enchanted_rune");
-
+    public static final Item LOST_SOUL = register(new LostSoulItem(), "lost_soul");
 
     public static Item register(Item item, String id) {
 

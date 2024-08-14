@@ -30,6 +30,7 @@ public class ModItemGroup {
             group.add(ModItems.XP_TOME);
             group.add(ModItems.ENCHANTED_RUNE);
             group.add(ModItems.WRITTEN_RUNE);
+            group.add(ModItems.LOST_SOUL);
         });
 
 

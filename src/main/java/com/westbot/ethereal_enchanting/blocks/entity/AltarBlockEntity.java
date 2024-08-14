@@ -575,7 +575,7 @@ public class AltarBlockEntity extends BlockEntity {
             case "block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;" -> {
                 // Soul speed
                 // 1: wither skull
-                // 2: ??? modded soul item ???
+                // 2: lost soul
                 // 3: soul sand
             }
             default -> {
@@ -793,86 +793,212 @@ public class AltarBlockEntity extends BlockEntity {
                 }
                 else {
                     // 10, 21, 32
-                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(ModItems.XP_TOME) && XPTomeItem.getXP(stack) > Util.XPLevel.LEVEL10.getPoints());
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(ModItems.XP_TOME) && XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL10.getPoints());
                 }
 
             }
-            case "block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone;block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone" -> {
+            case "block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone;block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone;" -> {
                 // Unbreaking
                 // 1: iron block
                 // 3: XP Tome (level determined by filled capacity)
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.IRON_BLOCK));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return false;
+                }
+                else {
+                    // 10, 21, 32
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(ModItems.XP_TOME) && XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL10.getPoints());
+                }
             }
             case "block.minecraft.moss_block;block.minecraft.moss_block;block.minecraft.moss_block;block.minecraft.moss_block;" -> {
                 // Luck
                 // 1: lapis
                 // 2: redstone dust
                 // 3: gold ingot
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.LAPIS_LAZULI));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(Items.REDSTONE) && getStack(LEFT_0).isOf(Items.LAPIS_LAZULI);
+                }
+                else {
+                    return getStack(RIGHT_0).isEmpty() && stack.isOf(Items.GOLD_INGOT) && getStack(LEFT_0).isOf(Items.LAPIS_LAZULI) && getStack(BACK_0).isOf(Items.REDSTONE);
+                }
+
             }
             case "block.minecraft.white_wool;block.minecraft.white_wool;block.minecraft.white_wool;block.minecraft.white_wool;" -> {
                 // Padded
                 // 1: wool for silence, stone for silktouch
                 // 3: rabbit hide
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return getStack(LEFT_0).isEmpty() && (stack.isOf(Items.WHITE_WOOL) || stack.isOf(Items.STONE));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return false;
+                }
+                else {
+                    return getStack(RIGHT_0).isEmpty() && stack.isOf(Items.RABBIT_HIDE);
+                }
             }
             case "block.minecraft.iron_block;block.minecraft.dried_kelp_block;block.minecraft.iron_block;block.minecraft.dried_kelp_block;" -> {
                 // Resistive
                 // 1: copper ingot
                 // 2: dried kelp 1-4
                 // 3: copper ingot
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.COPPER_INGOT));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_3).isEmpty() && stack.isOf(Items.DRIED_KELP);
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.COPPER_INGOT));
+                }
+
             }
             case "block.minecraft.iron_block;block.minecraft.smooth_stone;block.minecraft.iron_block;block.minecraft.smooth_stone;" -> {
                 // Plated
                 // 1: iron ingot
                 // 2: heavy weighted pressure plate 1-4
                 // 3: iron ingot
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.IRON_INGOT));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_3).isEmpty() && stack.isOf(Items.HEAVY_WEIGHTED_PRESSURE_PLATE);
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.IRON_INGOT));
+                }
+
             }
             case "block.minecraft.iron_block;block.minecraft.white_wool;block.minecraft.iron_block;block.minecraft.white_wool;" -> {
                 // Insulated
                 // 1: magma block
                 // 2: wool 1-4
                 // 3: packed ice
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.MAGMA_BLOCK));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_3).isEmpty() && stack.isOf(Items.WHITE_WOOL);
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.PACKED_ICE));
+                }
+
             }
             case "block.minecraft.iron_block;block.minecraft.sponge;block.minecraft.iron_block;block.minecraft.sponge;" -> {
                 // Elastic
                 // 1: feather
                 // 2: breeze rods 1-4
                 // 3: phantom membrane
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.FEATHER));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_3).isEmpty() && stack.isOf(Items.BREEZE_ROD);
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.PHANTOM_MEMBRANE));
+                }
+
             }
             case "block.minecraft.iron_block;block.minecraft.magma_block;block.minecraft.iron_block;block.minecraft.magma_block;" -> {
                 // Thorns
                 // 1: cactus
                 // 2: magma block 1-4
                 // 3: berry bush
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.CACTUS));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_3).isEmpty() && stack.isOf(Items.MAGMA_BLOCK);
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.SWEET_BERRIES));
+                }
             }
             case "block.minecraft.iron_block;block.minecraft.slime_block;block.minecraft.iron_block;block.minecraft.slime_block;" -> {
                 // Inertial
                 // 1: phantom membrane
                 // 2: nether star (1) slime block 0-3
                 // 3: wind charge
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.PHANTOM_MEMBRANE));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return (
+                        (getStack(BACK_0).isEmpty() && stack.isOf(Items.NETHER_STAR)) ||
+                        (getStack(BACK_3).isEmpty() && stack.isOf(Items.SLIME_BLOCK))
+                        );
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.WIND_CHARGE));
+                }
             }
             case "block.minecraft.blue_ice;block.minecraft.packed_ice;block.minecraft.magma_block;block.minecraft.packed_ice;" -> {
                 // Hydrodynamic
                 // 1: gold pickaxe
                 // 2: prismarine shard/crystal 1-3
                 // 3: turtle scute
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.GOLDEN_PICKAXE));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_2).isEmpty() && (stack.isOf(Items.PRISMARINE_SHARD) || stack.isOf(Items.PRISMARINE_CRYSTALS));
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.TURTLE_SCUTE));
+                }
             }
             case "block.minecraft.sculk;block.minecraft.sculk;block.minecraft.sculk;block.minecraft.sculk;" -> {
                 // Swift Sneak
                 // 1: echo shard
                 // 2: XP Tome (level determined by filled capacity)
                 // 3: echo shard
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.ECHO_SHARD));
+                }
+                else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(ModItems.XP_TOME) && XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL10.getPoints();
+                }
+                else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.ECHO_SHARD));
+                }
             }
             case "block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;" -> {
                 // Soul speed
                 // 1: wither skull
-                // 2: ??? modded soul item ???
+                // 2: lost soul
                 // 3: soul sand
+
+                if (placement == PedestalPlacement.LEFT) {
+                    return (getStack(LEFT_0).isEmpty() && stack.isOf(Items.WITHER_SKELETON_SKULL));
+                } else if (placement == PedestalPlacement.BACK) {
+                    return getStack(BACK_0).isEmpty() && stack.isOf(ModItems.LOST_SOUL);
+                } else {
+                    return (getStack(RIGHT_0).isEmpty() && stack.isOf(Items.SOUL_SAND));
+                }
+
             }
             default -> {
                 return false;
             }
         }
-
-        return false;
     }
 
 
