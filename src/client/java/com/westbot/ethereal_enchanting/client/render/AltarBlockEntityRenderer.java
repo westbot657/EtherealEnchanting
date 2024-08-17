@@ -14,6 +14,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
@@ -88,43 +89,6 @@ public class AltarBlockEntityRenderer implements BlockEntityRenderer<AltarBlockE
                 i++;
             }
         }
-
-        switch (blockEntity.availableEnchant) {
-            case "chilled" -> {
-
-            }
-            case "incindiary" -> {
-
-            }
-            case "celestial_binding" -> {
-
-            }
-            case "soulbound" -> {
-
-            }
-            case "slashing" -> {
-
-            }
-            case "weighted" -> {
-
-            }
-            case "conductive" -> {}
-            case "inductive" -> {}
-            case "mending" -> {}
-            case "unbreaking" -> {}
-            case "luck" -> {}
-            case "padded" -> {}
-            case "resistive" -> {}
-            case "plated" -> {}
-            case "insulated" -> {}
-            case "elastic" -> {}
-            case "thorns" -> {}
-            case "inertial" -> {}
-            case "hydrodynamic" -> {}
-            case "swift_sneak" -> {}
-            case "soul_speed" -> {}
-        }
-
 
     }
 

@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -230,6 +231,7 @@ public class PedestalBlock extends Block {
                     if (!stack.isEmpty()) {
                         player.getInventory().offerOrDrop(stack);
                         altarEntity.setPedestalStack(i, ItemStack.EMPTY, state, world);
+                        world.playSound(player, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.1F, world.getRandom().nextFloat() * 1.8F + 1.6F);
                         altarEntity.verifyEnchant();
                         return ActionResult.SUCCESS;
                     }
@@ -244,6 +246,7 @@ public class PedestalBlock extends Block {
                             held_item.decrementUnlessCreative(1, player);
                             altarEntity.setPedestalStack(i, display_item, state, world);
                             altarEntity.verifyEnchant();
+                            world.playSound(player, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.1F, world.getRandom().nextFloat() * 1.8F + 1.6F);
                             return ActionResult.SUCCESS;
                         } else {
                             altarEntity.verifyEnchant();

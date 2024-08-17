@@ -28,6 +28,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
@@ -80,6 +81,7 @@ public class AltarBlockEntity extends BlockEntity {
 
     public String availableEnchant = "";
     private int recipeCheck = 0;
+    private final Random random;
 
     public static final int LEFT_0 = 1;
     public static final int LEFT_1 = 2;
@@ -109,7 +111,7 @@ public class AltarBlockEntity extends BlockEntity {
 
     public AltarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.ALTAR_BLOCK_ENTITY_TYPE, pos, state);
-
+        random = Random.create();
     }
 
     public ItemStack getStack(int slot) {
@@ -173,16 +175,19 @@ public class AltarBlockEntity extends BlockEntity {
             case LEFT -> {
                 BlockPos pos = this.getPos().offset(altar.get(AltarBlock.FACING).rotateYClockwise(), 3);
                 BlockState pedestalState = world.getBlockState(pos);
+                if (!pedestalState.isOf(ModBlocks.PEDESTAL_BLOCK)) return;
                 world.setBlockState(pos, pedestalState.with(PedestalBlock.STATE, state.getState()), 3);
             }
             case BACK -> {
                 BlockPos pos = this.getPos().offset(altar.get(AltarBlock.FACING).getOpposite(), 3);
                 BlockState pedestalState = world.getBlockState(pos);
+                if (!pedestalState.isOf(ModBlocks.PEDESTAL_BLOCK)) return;
                 world.setBlockState(pos, pedestalState.with(PedestalBlock.STATE, state.getState()), 3);
             }
             case RIGHT -> {
                 BlockPos pos = this.getPos().offset(altar.get(AltarBlock.FACING).rotateYCounterclockwise(), 3);
                 BlockState pedestalState = world.getBlockState(pos);
+                if (!pedestalState.isOf(ModBlocks.PEDESTAL_BLOCK)) return;
                 world.setBlockState(pos, pedestalState.with(PedestalBlock.STATE, state.getState()), 3);
             }
         }
@@ -233,14 +238,12 @@ public class AltarBlockEntity extends BlockEntity {
                 }
 
                 if (getStack(RIGHT_1).isOf(Items.PACKED_ICE)) {
-                    recipeCheck++;
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN2);
                 } else {
                     dropSlot(RIGHT_1, RIGHT_2);
                 }
 
                 if (getStack(RIGHT_2).isOf(Items.BLUE_ICE)) {
-                    recipeCheck++;
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN3);
                 } else {
                     dropSlot(RIGHT_2);
@@ -248,7 +251,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
 
-                if (recipeCheck == 4) {
+                if (recipeCheck == 2) {
                     this.availableEnchant = "chilled";
                 }
 
@@ -333,7 +336,7 @@ public class AltarBlockEntity extends BlockEntity {
             case "block.minecraft.soul_soil;block.minecraft.soul_soil;block.minecraft.soul_soil;block.minecraft.soul_soil;" -> {
                 // Soulbound
                 // 1: nether star
-                // 2: soul soil
+                // 2: lost soul
                 // 3: eye of ender
 
                 if (getStack(LEFT_0).isOf(Items.NETHER_STAR)) {
@@ -344,7 +347,7 @@ public class AltarBlockEntity extends BlockEntity {
                     dropSlot(LEFT_0);
                 }
 
-                if (getStack(BACK_0).isOf(Items.SOUL_SOIL)) {
+                if (getStack(BACK_0).isOf(ModItems.LOST_SOUL)) {
                     setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
                     recipeCheck++;
                 } else {
@@ -675,7 +678,7 @@ public class AltarBlockEntity extends BlockEntity {
                     return getStack(LEFT_0).isEmpty() && stack.isOf(Items.NETHER_STAR);
                 }
                 else if (placement == PedestalPlacement.BACK) {
-                    return getStack(BACK_0).isEmpty() && stack.isOf(Items.SOUL_SOIL);
+                    return getStack(BACK_0).isEmpty() && stack.isOf(ModItems.LOST_SOUL);
                 }
                 else {
                     return getStack(RIGHT_0).isEmpty() && stack.isOf(Items.ENDER_EYE);
@@ -1300,21 +1303,21 @@ public class AltarBlockEntity extends BlockEntity {
     }
 
 
-    private void dualHelixAnimation(World world, BlockPos pos, int red, int green, int blue) {
+    private void dualHelixAnimation(World world, BlockPos pos, int red, int green) {
 
         double y = pos.getY() + (Math.abs(this.rotation_height-100)/100.0);
 
         for (Vec3d point : Util.drawCircle(new Vec3d(pos.getX() + 0.5, y, pos.getZ() + 0.5), new Vec3d(0, 1, 0), 0.6, 2, this.rotation_tick)) {
-            particle(point, world, new DustParticleEffect(new Vector3f(red, green, blue), 0.6f));
+            particle(point, world, new DustParticleEffect(new Vector3f(red, green, 0), 0.6f));
         }
         for (Vec3d point : Util.drawCircle(new Vec3d(pos.getX() + 0.5, y, pos.getZ() + 0.5), new Vec3d(0, 1, 0), 0.6, 2, -this.rotation_tick)) {
-            particle(point, world, new DustParticleEffect(new Vector3f(red, green, blue), 0.6f));
+            particle(point, world, new DustParticleEffect(new Vector3f(red, green, 0), 0.6f));
         }
 
     }
 
     public static void tick(World world, BlockPos blockPos, BlockState blockState, AltarBlockEntity blockEntity) {
-
+        blockEntity.verifyEnchant();
         if (blockState.get(AltarBlock.PLACE_ANIMATION)) {
             if (blockEntity.animation_stage == 0) {
                 if (blockEntity.ticks == 0) {
@@ -1378,38 +1381,116 @@ public class AltarBlockEntity extends BlockEntity {
             }
         } else if (blockState.get(AltarBlock.PEDESTALS) < 3) {
             blockEntity.animation_phase = 0;
-            blockEntity.rotation_tick+=5;
+            blockEntity.availableEnchant = "";
+            blockEntity.rotation_tick += 5;
             blockEntity.rotation_height++;
             if (blockEntity.rotation_height >= 200) { blockEntity.rotation_height = 0; }
             if (blockEntity.rotation_tick >= 180) { blockEntity.rotation_tick = 0; }
             if (!blockState.get(AltarBlock.LEFT_PEDESTAL)) {
                 BlockPos pos = blockPos.offset(blockState.get(AltarBlock.FACING).rotateYClockwise(), 3);
-                blockEntity.dualHelixAnimation(world, pos, 255, 0, 0);
+                blockEntity.dualHelixAnimation(world, pos, 255, 0);
             } else {
                 BlockPos pos = blockPos.offset(blockState.get(AltarBlock.FACING).rotateYClockwise(), 3);
-                blockEntity.dualHelixAnimation(world, pos, 0, 255, 0);
+                blockEntity.dualHelixAnimation(world, pos, 0, 255);
             }
 
             if (!blockState.get(AltarBlock.RIGHT_PEDESTAL)) {
                 BlockPos pos = blockPos.offset(blockState.get(AltarBlock.FACING).rotateYCounterclockwise(), 3);
-                blockEntity.dualHelixAnimation(world, pos, 255, 0, 0);
+                blockEntity.dualHelixAnimation(world, pos, 255, 0);
             } else {
                 BlockPos pos = blockPos.offset(blockState.get(AltarBlock.FACING).rotateYCounterclockwise(), 3);
-                blockEntity.dualHelixAnimation(world, pos, 0, 255, 0);
+                blockEntity.dualHelixAnimation(world, pos, 0, 255);
             }
 
             if (!blockState.get(AltarBlock.BACK_PEDESTAL)) {
                 BlockPos pos = blockPos.offset(blockState.get(AltarBlock.FACING).getOpposite(), 3);
-                blockEntity.dualHelixAnimation(world, pos, 255, 0, 0);
+                blockEntity.dualHelixAnimation(world, pos, 255, 0);
             } else {
                 BlockPos pos = blockPos.offset(blockState.get(AltarBlock.FACING).getOpposite(), 3);
-                blockEntity.dualHelixAnimation(world, pos, 0, 255, 0);
+                blockEntity.dualHelixAnimation(world, pos, 0, 255);
             }
 
         } else if (blockState.get(AltarBlock.PEDESTALS) == 3 && blockEntity.animation_phase == 0) {
             world.playSound(null, blockPos, ModSounds.PEDESTALS_PLACED, SoundCategory.BLOCKS, 1, 0.75f);
             blockEntity.animation_phase = 1;
+            blockEntity.ticks = 0;
             blockEntity.markDirty();
+        } else if (blockEntity.animation_phase == 1) {
+
+            switch (blockEntity.availableEnchant) {
+                case "chilled" -> {
+                    blockEntity.ticks++;
+                    if (blockEntity.ticks >= 360) {
+                        blockEntity.ticks = 0;
+                    }
+                    if (blockEntity.ticks % 10 != 0) break;
+                    for (Vec3d point : Util.drawCircle(new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 1.5, blockPos.getZ() + 0.5), new Vec3d(0, 1, 0), 3, 8, blockEntity.ticks)) {
+                        if (blockEntity.random.nextBetween(0, 8) <= 1) continue;
+                        blockEntity.particle(point, world, ParticleTypes.SNOWFLAKE);
+                    }
+                }
+                case "incindiary" -> {
+                    blockEntity.ticks++;
+                    if (blockEntity.ticks >= 360) {
+                        blockEntity.ticks = 0;
+                    }
+                    if (blockEntity.ticks % 10 != 0) break;
+                    for (Vec3d point : Util.drawCircle(new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 1.5, blockPos.getZ() + 0.5), new Vec3d(0, 1, 0), 3, 8, blockEntity.ticks)) {
+                        if (blockEntity.random.nextBetween(0, 8) <= 1) continue;
+                        blockEntity.particle(point, world, ParticleTypes.FLAME);
+                    }
+                }
+                case "celestial_binding" -> {
+                    blockEntity.ticks++;
+                    if (blockEntity.ticks >= 360) {
+                        blockEntity.ticks = 0;
+                    }
+                    if (blockEntity.ticks % 10 != 0) break;
+                    for (Vec3d point : Util.drawCircle(new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 1.5, blockPos.getZ() + 0.5), new Vec3d(0, 1, 0), 3, 8, blockEntity.ticks)) {
+                        if (blockEntity.random.nextBetween(0, 8) <= 1) continue;
+                        blockEntity.particle(point, world, ParticleTypes.END_ROD);
+                    }
+                }
+                case "soulbound" -> {
+                    blockEntity.ticks++;
+                    if (blockEntity.ticks >= 360) {
+                        blockEntity.ticks = 0;
+                    }
+                    if (blockEntity.ticks % 10 != 0) break;
+                    Vec3d backPos = new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 1.5, blockPos.getZ() + 0.5).offset(blockState.get(AltarBlock.FACING).getOpposite(), 3);
+                    for (Vec3d point : Util.drawCircle(new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 1.5, blockPos.getZ() + 0.5), new Vec3d(0, 1, 0), 3, 8, blockEntity.ticks)) {
+                        if (blockEntity.random.nextBetween(0, 8) <= 1) continue;
+                        if (backPos.distanceTo(point) < 1) continue;
+
+                        blockEntity.particle(point, world, ParticleTypes.SOUL);
+                    }
+                    for (Vec3d point : Util.drawCircle(backPos, new Vec3d(0, 1, 0), 1, 8, blockEntity.ticks*2)) {
+                        if (blockEntity.random.nextBetween(0, 6) <= 1) continue;
+                        blockEntity.particle(point, world, ParticleTypes.SOUL);
+                    }
+                }
+                case "slashing" -> {
+
+                }
+                case "weighted" -> {
+
+                }
+                case "conductive" -> {}
+                case "inductive" -> {}
+                case "mending" -> {}
+                case "unbreaking" -> {}
+                case "luck" -> {}
+                case "padded" -> {}
+                case "resistive" -> {}
+                case "plated" -> {}
+                case "insulated" -> {}
+                case "elastic" -> {}
+                case "thorns" -> {}
+                case "inertial" -> {}
+                case "hydrodynamic" -> {}
+                case "swift_sneak" -> {}
+                case "soul_speed" -> {}
+            }
         }
 
 

@@ -137,6 +137,7 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
                     ItemStack stack = player.getInventory().getMainHandStack().copyWithCount(1);
                     player.getInventory().getMainHandStack().decrementUnlessCreative(1, player);
                     blockEntity.setStack(0, stack);
+                    world.playSound(player, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.5F, world.getRandom().nextFloat() * 1.8F + 1.6F);
                 }
 
             } else {
@@ -146,6 +147,7 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
                 if (!world.isClient) {
                     player.getInventory().offerOrDrop(stack);
                     blockEntity.markDirty();
+                    world.playSound(player, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.5F, world.getRandom().nextFloat() * 1.8F + 1.6F);
                 }
             }
         }
