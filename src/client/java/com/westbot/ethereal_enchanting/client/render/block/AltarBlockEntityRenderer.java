@@ -1,4 +1,4 @@
-package com.westbot.ethereal_enchanting.client.render;
+package com.westbot.ethereal_enchanting.client.render.block;
 
 import com.westbot.ethereal_enchanting.Util;
 import com.westbot.ethereal_enchanting.blocks.AltarBlock;
@@ -14,7 +14,6 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;

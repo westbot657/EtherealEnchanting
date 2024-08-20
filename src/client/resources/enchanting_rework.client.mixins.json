@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.westbot.ethereal_enchanting.mixin.client",
+  "package": "com.westbot.ethereal_enchanting.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
   ],

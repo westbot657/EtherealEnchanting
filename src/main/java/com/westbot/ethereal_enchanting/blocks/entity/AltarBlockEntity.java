@@ -6,10 +6,16 @@ import com.westbot.ethereal_enchanting.Util;
 import com.westbot.ethereal_enchanting.blocks.AltarBlock;
 import com.westbot.ethereal_enchanting.blocks.ModBlocks;
 import com.westbot.ethereal_enchanting.blocks.PedestalBlock;
+import com.westbot.ethereal_enchanting.entity.LivingEntityExtension;
 import com.westbot.ethereal_enchanting.items.XPTomeItem;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.loader.impl.util.log.Log;
+import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.type.PotionContentsComponent;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -21,13 +27,15 @@ import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.Potions;
+import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.TypeFilter;
 import net.minecraft.util.collection.DefaultedList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -35,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -108,10 +117,15 @@ public class AltarBlockEntity extends BlockEntity {
     private int animation_phase = 0;
 
     private int ticks = -1;
+    private Box entityBox;
 
     public AltarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.ALTAR_BLOCK_ENTITY_TYPE, pos, state);
         random = Random.create();
+        entityBox = new Box(
+            getPos().toBottomCenterPos().add(new Vec3d(-5, -5, -5)),
+            getPos().toBottomCenterPos().add(new Vec3d(5, 5, 5))
+        );
     }
 
     public ItemStack getStack(int slot) {
@@ -1416,6 +1430,26 @@ public class AltarBlockEntity extends BlockEntity {
             blockEntity.ticks = 0;
             blockEntity.markDirty();
         } else if (blockEntity.animation_phase == 1) {
+            boolean deathActivation = false;
+            Entity deathActivator = null;
+
+            if (!world.isClient) {
+                for (
+                    LivingEntity entity :
+                    world.getEntitiesByType(
+                        TypeFilter.instanceOf(LivingEntity.class),
+                        blockEntity.entityBox,
+                        (e) -> true)) {
+
+                    if (((LivingEntityExtension) entity).enchantingRework$usedTotem()) {
+                        ((LivingEntityExtension) entity).enchantingRework$setUsedTotem(false);
+                        deathActivation = true;
+                        deathActivator = entity;
+                        break;
+                    }
+
+                }
+            }
 
             switch (blockEntity.availableEnchant) {
                 case "chilled" -> {

@@ -1,19 +1,19 @@
 package com.westbot.ethereal_enchanting.mixin;
 
 
+import com.westbot.ethereal_enchanting.data_components.EtherealEnchantComponent;
+import com.westbot.ethereal_enchanting.data_components.ModComponents;
 import com.westbot.ethereal_enchanting.items.EtherealItemEntityMix;
+import net.fabricmc.loader.impl.util.log.Log;
+import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.Ownable;
-import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
-import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.server.network.EntityTrackerEntry;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
@@ -28,6 +28,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import java.util.List;
+
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity implements Ownable, EtherealItemEntityMix {
 
@@ -36,6 +38,9 @@ public abstract class ItemEntityMixin extends Entity implements Ownable, Etherea
     @Shadow public abstract void setPickupDelay(int pickupDelay);
 
     @Shadow @Final private static TrackedData<ItemStack> STACK;
+
+    @Shadow public abstract ItemStack getStack();
+
     @Unique
     boolean is_soulbound = false;
     @Unique
@@ -43,6 +48,12 @@ public abstract class ItemEntityMixin extends Entity implements Ownable, Etherea
 
     public ItemEntityMixin(EntityType<?> type, World world) {
         super(type, world);
+    }
+
+    @Inject(method = "<init>(Lnet/minecraft/entity/ItemEntity;)V", at = @At("TAIL"))
+    private void onInit(ItemEntity itemEntity, CallbackInfo ci) {
+        this.enchantingRework$setCelestialBound(((EtherealItemEntityMix)itemEntity).enchantingRework$isCelestialBound());
+        this.enchantingRework$setSoulbound(((EtherealItemEntityMix)itemEntity).enchantingRework$isSoulbound());
     }
 
     @Unique
@@ -106,19 +117,27 @@ public abstract class ItemEntityMixin extends Entity implements Ownable, Etherea
 
     public void tickInVoid() {
 
-        if (this.enchantingRework$isCelestialBound()) {
-            if (getWorld().isClient) return;
-            this.teleportTo(new TeleportTarget((ServerWorld) this.getWorld(), this.getPos().withAxis(Direction.Axis.Y, this.getWorld().getBottomY()+5.5), new Vec3d(0, 0, 0), this.getYaw(), this.getPitch(), TeleportTarget.NO_OP));
 
+        List<EtherealEnchantComponent> enchants = this.getStack().get(ModComponents.ETHEREAL_ENCHANTS);
 
-
+        if (enchants == null) {
+            this.discard();
             return;
-        } else if (this.enchantingRework$isSoulbound()) {
-            Entity owner = this.getOwner();
-            if (owner != null) {
-                this.teleportTo(new TeleportTarget((ServerWorld) owner.getWorld(), owner.getPos(), new Vec3d(0, 0, 0), owner.getYaw(), owner.getPitch(), TeleportTarget.NO_OP));
-                this.setPickupDelay(0);
+        }
+
+        for (EtherealEnchantComponent enchant : enchants) {
+            if (enchant.enchant().equals("celestial_binding")) {
+                if (this.getWorld().isClient) return;
+                this.teleportTo(new TeleportTarget((ServerWorld) this.getWorld(), this.getPos().withAxis(Direction.Axis.Y, this.getWorld().getBottomY()+5.5), new Vec3d(0, 0, 0), this.getYaw(), this.getPitch(), TeleportTarget.NO_OP));
                 return;
+            } else if (enchant.enchant().equals("soulbound") ) {
+                if (this.getWorld().isClient) return;
+                Entity owner = this.getOwner();
+                if (owner != null) {
+                    this.teleportTo(new TeleportTarget((ServerWorld) owner.getWorld(), owner.getPos(), new Vec3d(0, 0, 0), owner.getYaw(), owner.getPitch(), TeleportTarget.NO_OP));
+                    this.setPickupDelay(0);
+                    return;
+                }
             }
         }
 

@@ -22,6 +22,12 @@
   "sound.ethereal_enchanting.altar_powers_down": "Altar Energy Collapses",
   "sound.ethereal_enchanting.pedestals_placed": "Altar Resonates",
 
-  "itemGroup.ethereal_enchanting.group1": "Ethereal Enchanting"
+  "itemGroup.ethereal_enchanting.group1": "Ethereal Enchanting",
+
+
+  "tooltip.ethereal_enchanting.enchant.celestial_binding": "Celestial Binding",
+  "tooltip.ethereal_enchanting.enchant.soulbound": "Soulbound",
+  "tooltip.ethereal_enchanting.enchant.mending": "Mending %1$s",
+  "tooltip.ethereal_enchanting.enchant.unbreaking": "Unbreaking %1$s"
 
 }

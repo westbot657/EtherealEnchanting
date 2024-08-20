@@ -1,4 +1,4 @@
-package com.westbot.ethereal_enchanting.client.render;
+package com.westbot.ethereal_enchanting.client.render.block;
 
 import com.westbot.ethereal_enchanting.blocks.entity.AltarBlockEntity;
 import net.fabricmc.api.EnvType;

@@ -1,84 +1,59 @@
 package com.westbot.ethereal_enchanting.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
+import com.llamalad7.mixinextras.sugar.ref.LocalBooleanRef;
 import com.westbot.ethereal_enchanting.data_components.EtherealEnchantComponent;
 import com.westbot.ethereal_enchanting.data_components.ModComponents;
+import com.westbot.ethereal_enchanting.entity.CelestialTrailEntity;
+import com.westbot.ethereal_enchanting.entity.ModEntities;
+import com.westbot.ethereal_enchanting.entity.LivingEntityExtension;
 import com.westbot.ethereal_enchanting.items.EtherealItemEntityMix;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
 @Mixin(PlayerEntity.class)
-public abstract class PlayerEntityMixin extends LivingEntity {
+public abstract class PlayerEntityMixin extends LivingEntity implements LivingEntityExtension {
 
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world) {
         super(entityType, world);
     }
 
-    @Inject(method = "dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;", at = @At(value = "HEAD"), cancellable = true)
-    private void dropItem(ItemStack stack, boolean throwRandomly, boolean retainOwnership, CallbackInfoReturnable<ItemEntity> cir) {
-        if (stack.isEmpty()) {
-            cir.setReturnValue(null);
-            cir.cancel();
-        } else {
-            if (this.getWorld().isClient) {
-                this.swingHand(Hand.MAIN_HAND);
-            }
+    @WrapOperation(method="dropItem(Lnet/minecraft/item/ItemStack;ZZ)Lnet/minecraft/entity/ItemEntity;", at=@At(value="INVOKE", target="Lnet/minecraft/entity/ItemEntity;setPickupDelay(I)V"))
+    private void dropItemWrap(ItemEntity itemEntity, int pickupDelay, Operation<Void> original, @Local(argsOnly = true, ordinal = 1) LocalBooleanRef retainOwnership) {
+        original.call(itemEntity, pickupDelay);
 
-            double d = this.getEyeY() - 0.3F;
-            ItemEntity itemEntity = new ItemEntity(this.getWorld(), this.getX(), d, this.getZ(), stack);
-            itemEntity.setPickupDelay(40);
+        List<EtherealEnchantComponent> enchants = itemEntity.getStack().get(ModComponents.ETHEREAL_ENCHANTS);
 
-            List<EtherealEnchantComponent> enchants = stack.get(ModComponents.ETHEREAL_ENCHANTS);
-            if (enchants != null) {
-                for (EtherealEnchantComponent enchant : enchants) {
-                    if (enchant.enchant().equals("celestial_binding")) {
-                        itemEntity.setNeverDespawn();
-                        itemEntity.setNoGravity(true);
-                        itemEntity.setInvulnerable(true);
-                        retainOwnership = true;
-                        ((EtherealItemEntityMix) itemEntity).enchantingRework$setCelestialBound(true);
-                    } else if (enchant.enchant().equals("soulbound")) {
-                        itemEntity.setNeverDespawn();
-                        retainOwnership = true;
-                        ((EtherealItemEntityMix) itemEntity).enchantingRework$setSoulbound(true);
-                    }
+        if (enchants != null) {
+            for (EtherealEnchantComponent enchant : enchants) {
+                if (enchant.enchant().equals("celestial_binding")) {
+                    itemEntity.setNeverDespawn();
+                    itemEntity.setNoGravity(true);
+                    itemEntity.setInvulnerable(true);
+                    retainOwnership.set(true);
+                    CelestialTrailEntity trail = new CelestialTrailEntity(ModEntities.CELESTIAL_TRAIL_TYPE, getWorld());
+                    trail.trackEntity(itemEntity);
+                    trail.setPos(itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
+                    getWorld().spawnEntity(trail);
+                    ((EtherealItemEntityMix) itemEntity).enchantingRework$setCelestialBound(true);
+
+                } else if (enchant.enchant().equals("soulbound")) {
+                    itemEntity.setNeverDespawn();
+                    retainOwnership.set(true);
+                    ((EtherealItemEntityMix) itemEntity).enchantingRework$setSoulbound(true);
                 }
             }
 
-            if (retainOwnership) {
-                itemEntity.setThrower(this);
-            }
-
-            if (throwRandomly) {
-                float f = this.random.nextFloat() * 0.5F;
-                float g = this.random.nextFloat() * (float) (Math.PI * 2);
-                itemEntity.setVelocity((-MathHelper.sin(g) * f), 0.2F, (MathHelper.cos(g) * f));
-            } else {
-                float g = MathHelper.sin(this.getPitch() * (float) (Math.PI / 180.0));
-                float h = MathHelper.cos(this.getPitch() * (float) (Math.PI / 180.0));
-                float i = MathHelper.sin(this.getYaw() * (float) (Math.PI / 180.0));
-                float j = MathHelper.cos(this.getYaw() * (float) (Math.PI / 180.0));
-                float k = this.random.nextFloat() * (float) (Math.PI * 2);
-                float l = 0.02F * this.random.nextFloat();
-                itemEntity.setVelocity(
-                    (double)(-i * h * 0.3F) + Math.cos(k) * (double)l,
-                    (-g * 0.3F + 0.1F + (this.random.nextFloat() - this.random.nextFloat()) * 0.1F),
-                    (double)(j * h * 0.3F) + Math.sin(k) * (double)l
-                );
-            }
-            cir.setReturnValue(itemEntity);
-            cir.cancel();
         }
     }
 
