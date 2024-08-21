@@ -11,7 +11,6 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.joml.Quaternionf;
@@ -43,17 +42,22 @@ public class CelestialTrailEntity extends Entity {
 
     public final List<Vec3d> corners;
     private UUID itemEntityUuid;
-    private boolean inactive;
+    public boolean inactive;
     private Vec3d expectedItemPosition;
+    private int lifetime;
+    public boolean synced;
+    public int syncDelay;
 
     public List<LineSegment> cachedLineSegments;
 
     public CelestialTrailEntity(EntityType<? extends CelestialTrailEntity> entityType, World world) {
         super(entityType, world);
         corners = new ArrayList<>();
-        inactive = false;
+        inactive = world.isClient;
         cachedLineSegments = new ArrayList<>();
         expectedItemPosition = this.getPos();
+        synced = false;
+        syncDelay = 5;
     }
 
     public void trackEntity(Entity entity) {
@@ -113,6 +117,11 @@ public class CelestialTrailEntity extends Entity {
                 corners.add(new Vec3d(((NbtCompound) compound).getDouble("x"), ((NbtCompound) compound).getDouble("y"), ((NbtCompound) compound).getDouble("z")));
             }
         }
+
+        itemEntityUuid = nbt.getUuid("itemEntityUuid");
+        NbtCompound compound = nbt.getCompound("expectedItemPosition");
+        expectedItemPosition = new Vec3d(compound.getDouble("x"), compound.getDouble("y"), compound.getDouble("z"));
+        inactive = nbt.getBoolean("inactive");
         getLineSegments();
     }
 
@@ -129,22 +138,42 @@ public class CelestialTrailEntity extends Entity {
         }
 
         nbt.put("corners", list);
+        nbt.putUuid("itemEntityUuid", itemEntityUuid);
+        NbtCompound compound = new NbtCompound();
+        compound.putDouble("x", expectedItemPosition.x);
+        compound.putDouble("y", expectedItemPosition.y);
+        compound.putDouble("z", expectedItemPosition.z);
+        nbt.put("expectedItemPosition", compound);
+        nbt.putBoolean("inactive", inactive);
     }
 
     @Override
     public void tick() {
 
         if (getWorld().isClient) {
+            if (corners.isEmpty()) {
+                if (syncDelay > 0) {
+                    syncDelay--;
+                } else {
+                    synced = false;
+                }
+            }
 
         } else {
+            if (lifetime < 20) {
+                lifetime++;
+            }
+
             Entity tracking = ((ServerWorld) getWorld()).getEntity(itemEntityUuid);
-            if ((tracking == null && getWorld().isChunkLoaded((int) (expectedItemPosition.x/16), (int) (expectedItemPosition.z/16))) || getPos().distanceTo(expectedItemPosition) > 128) {
+            if ((tracking == null && getWorld().isChunkLoaded((int) (expectedItemPosition.x/16), (int) (expectedItemPosition.z/16)) && lifetime == 20) || getPos().distanceTo(expectedItemPosition) > 128) {
                 discard();
                 return;
             }
             if (tracking == null) {
                 return;
             }
+
+
 
             if (inactive) return;
 

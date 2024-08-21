@@ -1,10 +1,9 @@
 package com.westbot.ethereal_enchanting.client.render.entity;
 
+import com.westbot.ethereal_enchanting.client.networking.TrailSyncBatcher;
 import com.westbot.ethereal_enchanting.entity.CelestialTrailEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -17,7 +16,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.joml.Vector3f;
 
-import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class CelestialTrailEntityRenderer extends EntityRenderer<CelestialTrailEntity> {
@@ -54,8 +52,9 @@ public class CelestialTrailEntityRenderer extends EntityRenderer<CelestialTrailE
     @Override
     public void render(CelestialTrailEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
 
-//        List<CelestialTrailEntity.LineSegment> segments = entity.getLines();
-
+        if (!entity.synced) {
+            TrailSyncBatcher.requestSync(entity);
+        }
 
         for (CelestialTrailEntity.LineSegment segment : entity.cachedLineSegments) {
 

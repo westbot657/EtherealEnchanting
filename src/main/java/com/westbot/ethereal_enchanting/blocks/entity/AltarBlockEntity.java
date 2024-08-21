@@ -1431,6 +1431,7 @@ public class AltarBlockEntity extends BlockEntity {
             blockEntity.markDirty();
         } else if (blockEntity.animation_phase == 1) {
             boolean deathActivation = false;
+            boolean usedTotem = false;
             Entity deathActivator = null;
 
             if (!world.isClient) {
@@ -1444,6 +1445,7 @@ public class AltarBlockEntity extends BlockEntity {
                     if (((LivingEntityExtension) entity).enchantingRework$usedTotem()) {
                         ((LivingEntityExtension) entity).enchantingRework$setUsedTotem(false);
                         deathActivation = true;
+                        usedTotem = true;
                         deathActivator = entity;
                         break;
                     }
