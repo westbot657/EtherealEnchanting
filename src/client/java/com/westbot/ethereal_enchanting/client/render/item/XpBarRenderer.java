@@ -1,11 +1,7 @@
 package com.westbot.ethereal_enchanting.client.render.item;
 
 import com.westbot.ethereal_enchanting.ModItems;
-import com.westbot.ethereal_enchanting.Util;
 import com.westbot.ethereal_enchanting.data_components.ModComponents;
-import com.westbot.ethereal_enchanting.items.XPTomeItem;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;

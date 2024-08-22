@@ -19,11 +19,12 @@ public class ModNetworking {
     public static final Identifier BATCH_SYNC_TRAIL = Identifier.of("ethereal_enchanting", "batch_sync_trail");
     public static final Identifier BATCH_SYNC_TRAIL_REQUEST = Identifier.of("ethereal_enchanting", "batch_sync_trail_request");
 
+    public static final Identifier CLEAR_INGREDIENTS = Identifier.of("ethereal_enchanting", "clear_ingredients");
 
     public static void initialize() {
         PayloadTypeRegistry.playS2C().register(SyncTrailPayload.ID, SyncTrailPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BatchSyncTrailPayload.ID, BatchSyncTrailPayload.CODEC);
-
+        PayloadTypeRegistry.playS2C().register(ClearAltarIngredientsPayload.ID, ClearAltarIngredientsPayload.CODEC);
 
         PayloadTypeRegistry.playC2S().register(BatchSyncTrailRequestPayload.ID, BatchSyncTrailRequestPayload.CODEC);
 

@@ -1,11 +1,16 @@
 package com.westbot.ethereal_enchanting.client.networking;
 
+import com.westbot.ethereal_enchanting.blocks.entity.AltarBlockEntity;
 import com.westbot.ethereal_enchanting.entity.CelestialTrailEntity;
 import com.westbot.ethereal_enchanting.networking.BatchSyncTrailPayload;
+import com.westbot.ethereal_enchanting.networking.ClearAltarIngredientsPayload;
 import com.westbot.ethereal_enchanting.networking.SyncTrailPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.UUID;
 
@@ -40,6 +45,24 @@ public class ModNetworkingClient {
                         return;
                     }
                 }
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(ClearAltarIngredientsPayload.ID, (payload, context) -> {
+            context.client().execute(() -> {
+                ClientWorld world = context.client().world;
+                if (world == null) return;
+                BlockPos blockPos = new BlockPos(
+                        payload.blockPos().getInt("x"),
+                        payload.blockPos().getInt("y"),
+                        payload.blockPos().getInt("z")
+                        );
+
+                AltarBlockEntity altar = (AltarBlockEntity) world.getBlockEntity(blockPos);
+                if (altar == null) return;
+
+                altar.clearIngredients();
+
             });
         });
 

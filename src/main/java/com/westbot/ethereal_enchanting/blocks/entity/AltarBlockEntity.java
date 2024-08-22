@@ -1,5 +1,6 @@
 package com.westbot.ethereal_enchanting.blocks.entity;
 
+import com.westbot.ethereal_enchanting.EtherealEnchanting;
 import com.westbot.ethereal_enchanting.ModItems;
 import com.westbot.ethereal_enchanting.ModSounds;
 import com.westbot.ethereal_enchanting.Util;
@@ -10,13 +11,16 @@ import com.westbot.ethereal_enchanting.data_components.EtherealEnchantComponent;
 import com.westbot.ethereal_enchanting.data_components.ModComponents;
 import com.westbot.ethereal_enchanting.entity.LivingEntityExtension;
 import com.westbot.ethereal_enchanting.items.XPTomeItem;
+import com.westbot.ethereal_enchanting.networking.ClearAltarIngredientsPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
@@ -32,9 +36,12 @@ import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.Potions;
 import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.registry.tag.EntityTypeTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.TypeFilter;
 import net.minecraft.util.collection.DefaultedList;
@@ -42,6 +49,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -89,6 +97,7 @@ public class AltarBlockEntity extends BlockEntity {
     private final DefaultedList<ItemStack> floorBlocks = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
     public String availableEnchant = "";
+    public int availableLevel = 0;
     private int recipeCheck = 0;
     private final Random random;
 
@@ -243,6 +252,7 @@ public class AltarBlockEntity extends BlockEntity {
 
         this.recipeCheck = 0;
         this.availableEnchant = "";
+        int lvl = 0;
 
         switch (getFloorPattern().replace("waxed_","")) {
             case "block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;" -> {
@@ -272,18 +282,21 @@ public class AltarBlockEntity extends BlockEntity {
                 if (getStack(RIGHT_0).isOf(Items.ICE)) {
                     recipeCheck++;
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN1);
+                    lvl = 1;
                 } else {
                     dropSlot(RIGHT_0, RIGHT_1, RIGHT_2);
                 }
 
                 if (getStack(RIGHT_1).isOf(Items.PACKED_ICE)) {
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN2);
+                    lvl = 2;
                 } else {
                     dropSlot(RIGHT_1, RIGHT_2);
                 }
 
                 if (getStack(RIGHT_2).isOf(Items.BLUE_ICE)) {
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.GREEN3);
+                    lvl = 3;
                 } else {
                     dropSlot(RIGHT_2);
                 }
@@ -292,6 +305,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (recipeCheck == 2) {
                     this.availableEnchant = "chilled";
+                    this.availableLevel = lvl;
                 }
 
 
@@ -331,6 +345,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (recipeCheck == 3) {
                     this.availableEnchant = "celestial_binding";
+                    this.availableLevel = 1;
                 }
 
 
@@ -354,9 +369,11 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (getStack(BACK_0).isOf(Items.BLAZE_ROD)) {
                     setPedestalState(PedestalPlacement.BACK, PedestalState.YELLOW);
+                    lvl = 2;
                 } else {
                     setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
                     dropSlot(BACK_0);
+                    lvl = 1;
                 }
 
                 if (getStack(RIGHT_0).isOf(Items.BLAZE_POWDER)) {
@@ -369,6 +386,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (recipeCheck == 2) {
                     this.availableEnchant = "incendiary";
+                    this.availableLevel = lvl;
                 }
 
             }
@@ -404,6 +422,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (recipeCheck == 3) {
                     this.availableEnchant = "soulbound";
+                    this.availableLevel = 1;
                 }
 
             }
@@ -435,6 +454,7 @@ public class AltarBlockEntity extends BlockEntity {
                         ItemStack.areItemsAndComponentsEqual(slot1, strength9)
                 ) {
                     recipeCheck++;
+                    lvl = 1;
                     setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
                 } else if (
                     ItemStack.areItemsAndComponentsEqual(slot1, strength1) ||
@@ -459,12 +479,15 @@ public class AltarBlockEntity extends BlockEntity {
                 if (getStack(RIGHT_0).isOf(Items.GOLDEN_SWORD)){
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE1);
                     recipeCheck++;
+                    lvl += 1;
                 } else if (getStack(RIGHT_0).isOf(Items.IRON_SWORD)) {
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE2);
                     recipeCheck++;
+                    lvl += 3;
                 } else if (getStack(RIGHT_0).isOf(Items.DIAMOND_SWORD)) {
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
                     recipeCheck++;
+                    lvl += 5;
                 } else {
                     setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
                     dropSlot(RIGHT_0);
@@ -473,6 +496,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (recipeCheck == 3) {
                     this.availableEnchant = "slashing";
+                    this.availableLevel = lvl;
                 }
 
 
@@ -498,16 +522,19 @@ public class AltarBlockEntity extends BlockEntity {
                         setPedestalState(PedestalPlacement.LEFT, PedestalState.RED1);
                         setPedestalState(PedestalPlacement.RIGHT, PedestalState.BLUE1);
                         recipeCheck++;
+                        lvl = -3;
                         dropSlot(2,3,4, 10,11,12);
                     } else if (getStack(LEFT_1).isOf(Items.IRON_BLOCK)) { // 2 - 0
                         setPedestalState(PedestalPlacement.LEFT, PedestalState.RED3);
                         setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
                         recipeCheck++;
+                        lvl = -5;
                         dropSlot(3,4, 9,10,11,12);
                     } else { // 1 - 0
                         setPedestalState(PedestalPlacement.LEFT, PedestalState.RED2);
                         setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
                         recipeCheck++;
+                        lvl = -4;
                         dropSlot(2,3,4, 9,10,11,12);
                     }
                 } else if (getStack(RIGHT_0).isOf(Items.IRON_BLOCK)) {
@@ -515,11 +542,13 @@ public class AltarBlockEntity extends BlockEntity {
                         setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
                         setPedestalState(PedestalPlacement.RIGHT, PedestalState.BLUE3);
                         recipeCheck++;
+                        lvl = -1;
                         dropSlot(1,2,3,4, 11,12);
                     } else { // 0 - 1
                         setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
                         setPedestalState(PedestalPlacement.RIGHT, PedestalState.BLUE2);
                         recipeCheck++;
+                        lvl = -2;
                         dropSlot(1,2,3,4, 10,11,12);
                     }
                 } else {
@@ -530,6 +559,7 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (recipeCheck == 2) {
                     this.availableEnchant = "weighted";
+                    this.availableLevel = lvl;
                 }
 
             }
@@ -627,6 +657,13 @@ public class AltarBlockEntity extends BlockEntity {
                 setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
             }
         }
+
+        if (!getStack(0).isEmpty()) {
+            if (!isItemEnchantable(getStack(0), availableEnchant, availableLevel)) {
+                dropSlot(0);
+            }
+        }
+
         this.markDirty();
 
     }
@@ -664,6 +701,84 @@ public class AltarBlockEntity extends BlockEntity {
         Items.ZOMBIE_HEAD
     );
 
+    private static final List<String> GLOBAL_SUPPORT = List.of(
+            "mending", "unbreaking", "celestial_binding",
+            "soulbound", "cruel_and_unusual", "hydrodynamic"
+    );
+    private static final List<String> SWORD_SUPPORT = List.of(
+            "chilled", "incendiary", "slashing",
+            "weighted", "conductive", "inductive",
+            "luck"
+    );
+    private static final List<String> AXE_SUPPORT = List.of(
+            "weighted", "conductive", "inductive",
+            "padded"
+    );
+    private static final List<String> PICKAXE_SUPPORT = List.of(
+            "weighted", "padded",
+            "luck", "incendiary"
+    );
+    private static final List<String> SHOVEL_SUPPORT = List.of(
+            "weighted", "padded", "luck"
+    );
+    private static final List<String> HOE_SUPPORT = List.of(
+            "weighted", "padded", "luck"
+    );
+    private static final List<String> ARMOR_SUPPORT = List.of(
+            "resistive", "plated", "insulated",
+            "elastic", "thorns", "inertial"
+    );
+    private static final List<String> HELMET_SUPPORT = List.of(
+
+    );
+    private static final List<String> CHESTPLATE_SUPPORT = List.of(
+            "chilled", "incendiary"
+    );
+    private static final List<String> LEGGINGS_SUPPORT = List.of(
+            "swift_sneak", "chilled", "incendiary"
+    );
+    private static final List<String> BOOTS_SUPPORT = List.of(
+            "soul_speed"
+    );
+
+
+    public boolean itemSupportsEnchant(ItemStack stack, String enchant) {
+        if (GLOBAL_SUPPORT.contains(enchant)) {
+            return true;
+        }
+        else if (stack.isIn(ItemTags.SWORDS)) {
+            return SWORD_SUPPORT.contains(enchant);
+        }
+        else if (stack.isIn(ItemTags.AXES)) {
+            return AXE_SUPPORT.contains(enchant);
+        }
+        else if (stack.isIn(ItemTags.PICKAXES)) {
+            return PICKAXE_SUPPORT.contains(enchant);
+        }
+        else if (stack.isIn(ItemTags.HOES)) {
+            return HOE_SUPPORT.contains(enchant);
+        }
+
+        else if (stack.isIn(ItemTags.HEAD_ARMOR)) {
+            return ARMOR_SUPPORT.contains(enchant) || HELMET_SUPPORT.contains(enchant);
+        }
+        else if (stack.isIn(ItemTags.CHEST_ARMOR)) {
+            return ARMOR_SUPPORT.contains(enchant) || CHESTPLATE_SUPPORT.contains(enchant);
+        }
+        else if (stack.isIn(ItemTags.LEG_ARMOR)) {
+            return ARMOR_SUPPORT.contains(enchant) || LEGGINGS_SUPPORT.contains(enchant);
+        }
+        else if (stack.isIn(ItemTags.FOOT_ARMOR)) {
+            return ARMOR_SUPPORT.contains(enchant) || BOOTS_SUPPORT.contains(enchant);
+        }
+
+        return false;
+    }
+
+    public boolean isItemEnchantable(ItemStack stack) {
+        return isItemEnchantable(stack, availableEnchant, availableLevel);
+    }
+
     public boolean isItemEnchantable(ItemStack stack, @Nullable String enchant, int level) {
         if (stack.isEnchantable() || enchantable_items.contains(stack.getItem())) {
             if (enchant == null) return true;
@@ -672,10 +787,11 @@ public class AltarBlockEntity extends BlockEntity {
                 List<EtherealEnchantComponent> enchants = stack.get(ModComponents.ETHEREAL_ENCHANTS);
                 if (enchants == null) return true;
                 for (EtherealEnchantComponent e : enchants) {
-                    if (Objects.equals(e.enchant(), enchant) && e.level() < level) {
-                        return true;
+                    if (Objects.equals(e.enchant(), enchant)) {
+                        return (e.level() > 0 && e.level() < level) || level < 0;
                     }
                 }
+                return itemSupportsEnchant(stack, enchant);
             }
         }
 
@@ -1404,6 +1520,79 @@ public class AltarBlockEntity extends BlockEntity {
 
     }
 
+    public void clearIngredients() {
+
+        for (int i = 1; i<13; i++) {
+            if (getStack(i).isOf(ModItems.XP_TOME)) {
+                setStack(i, new ItemStack(ModItems.XP_TOME));
+                dropSlot(i);
+            }
+        }
+
+        for (int i = 1; i<13; i++) {
+            setStack(i, ItemStack.EMPTY);
+        }
+
+        if (!Objects.requireNonNull(getWorld()).isClient) {
+            NbtCompound pos = new NbtCompound();
+            pos.putInt("x", this.getPos().getX());
+            pos.putInt("y", this.getPos().getY());
+            pos.putInt("z", this.getPos().getZ());
+            for (ServerPlayerEntity player : PlayerLookup.tracking(this)) {
+                ServerPlayNetworking.send(player, new ClearAltarIngredientsPayload(pos));
+            }
+        }
+
+        markDirty();
+
+    }
+
+    public void applyEnchant() {
+        applyEnchant(availableEnchant, availableLevel);
+    }
+
+    public void applyEnchant(@NotNull String enchant, int level) {
+        ItemStack stack = getStack(0);
+
+        List<EtherealEnchantComponent> enchants = stack.get(ModComponents.ETHEREAL_ENCHANTS);
+        if (enchants == null) {
+            enchants = new ArrayList<>();
+        } else {
+            enchants = new ArrayList<>(enchants);
+        }
+
+        for (EtherealEnchantComponent e : enchants.stream().toList()) {
+            if (e.enchant().equals(enchant)) {
+                enchants.remove(e);
+                break;
+            }
+        }
+
+        // clear/use recipe ingredients
+        if (enchant.equals("weighted")) {
+            ItemStack anvil = getStack(BACK_0);
+            if (anvil.isOf(Items.ANVIL)) {
+                setStack(BACK_0, new ItemStack(Items.CHIPPED_ANVIL));
+                dropSlot(BACK_0);
+                Objects.requireNonNull(getWorld()).playSound(null, this.getPos(), SoundEvents.BLOCK_ANVIL_USE, SoundCategory.BLOCKS);
+            } else if (anvil.isOf(Items.CHIPPED_ANVIL)) {
+                setStack(BACK_0, new ItemStack(Items.DAMAGED_ANVIL));
+                dropSlot(BACK_0);
+                Objects.requireNonNull(getWorld()).playSound(null, this.getPos(), SoundEvents.BLOCK_ANVIL_USE, SoundCategory.BLOCKS);
+            } else {
+                setStack(BACK_0, ItemStack.EMPTY);
+                Objects.requireNonNull(getWorld()).playSound(null, this.getPos(), SoundEvents.BLOCK_ANVIL_BREAK, SoundCategory.BLOCKS);
+            }
+        }
+        clearIngredients();
+
+
+        enchants.add(new EtherealEnchantComponent(enchant, level));
+        stack.set(ModComponents.ETHEREAL_ENCHANTS, enchants);
+
+    }
+
+    private static final Random RANDOM = Random.create();
 
     public static void tick(World world, BlockPos blockPos, BlockState blockState, AltarBlockEntity blockEntity) {
         blockEntity.verifyEnchant();
@@ -1510,13 +1699,13 @@ public class AltarBlockEntity extends BlockEntity {
             Entity deathActivator = null;
 
             if (!world.isClient) {
-                for (
-                    LivingEntity entity :
-                    world.getEntitiesByType(
-                        TypeFilter.instanceOf(LivingEntity.class),
-                        blockEntity.entityBox,
-                        (e) -> true)) {
-
+                for (LivingEntity entity :
+                        world.getEntitiesByType(
+                                TypeFilter.instanceOf(LivingEntity.class),
+                                blockEntity.entityBox,
+                                (e) -> true
+                        )
+                ) {
                     if (((LivingEntityExtension) entity).enchantingRework$usedTotem()) {
                         ((LivingEntityExtension) entity).enchantingRework$setUsedTotem(false);
                         deathActivation = true;
@@ -1559,6 +1748,9 @@ public class AltarBlockEntity extends BlockEntity {
                     if (blockEntity.ticks >= 360) {
                         blockEntity.ticks = 0;
                     }
+                    if (deathActivation) {
+                        blockEntity.applyEnchant();
+                    }
                     if (blockEntity.ticks % 10 != 0) break;
                     for (Vec3d point : Util.drawCircle(new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 1.5, blockPos.getZ() + 0.5), new Vec3d(0, 1, 0), 3, 8, blockEntity.ticks)) {
                         if (blockEntity.random.nextBetween(0, 8) <= 1) continue;
@@ -1570,6 +1762,12 @@ public class AltarBlockEntity extends BlockEntity {
                     if (blockEntity.ticks >= 360) {
                         blockEntity.ticks = 0;
                     }
+
+                    if (deathActivation) {
+                        EtherealEnchanting.LOGGER.info("Applying soulbound enchant!");
+                        blockEntity.applyEnchant();
+                    }
+
                     if (blockEntity.ticks % 10 != 0) break;
                     Vec3d backPos = new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 1.5, blockPos.getZ() + 0.5).offset(blockState.get(AltarBlock.FACING).getOpposite(), 3);
                     for (Vec3d point : Util.drawCircle(new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 1.5, blockPos.getZ() + 0.5), new Vec3d(0, 1, 0), 3, 8, blockEntity.ticks)) {
@@ -1578,7 +1776,8 @@ public class AltarBlockEntity extends BlockEntity {
 
                         blockEntity.particle(point, world, ParticleTypes.SOUL);
                     }
-                    for (Vec3d point : Util.drawCircle(backPos, new Vec3d(0, 1, 0), 1, 8, blockEntity.ticks*2)) {
+
+                    for (Vec3d point : Util.drawCircle(backPos, new Vec3d(0, 1, 0), 1, 8, blockEntity.ticks * 2)) {
                         if (blockEntity.random.nextBetween(0, 6) <= 1) continue;
                         blockEntity.particle(point, world, ParticleTypes.SOUL);
                     }
@@ -1589,22 +1788,46 @@ public class AltarBlockEntity extends BlockEntity {
                 case "weighted" -> {
 
                 }
-                case "conductive" -> {}
-                case "inductive" -> {}
-                case "mending" -> {}
-                case "unbreaking" -> {}
-                case "luck" -> {}
-                case "padded" -> {}
-                case "resistive" -> {}
-                case "plated" -> {}
-                case "insulated" -> {}
-                case "elastic" -> {}
-                case "thorns" -> {}
-                case "inertial" -> {}
-                case "hydrodynamic" -> {}
-                case "swift_sneak" -> {}
-                case "soul_speed" -> {}
+                case "conductive" -> {
+                }
+                case "inductive" -> {
+                }
+                case "mending" -> {
+                }
+                case "unbreaking" -> {
+                }
+                case "luck" -> {
+                }
+                case "padded" -> {
+                }
+                case "resistive" -> {
+                }
+                case "plated" -> {
+                }
+                case "insulated" -> {
+                }
+                case "elastic" -> {
+                }
+                case "thorns" -> {
+                }
+                case "inertial" -> {
+                }
+                case "hydrodynamic" -> {
+                }
+                case "swift_sneak" -> {
+                }
+                case "soul_speed" -> {
+                }
             }
+
+            if (deathActivation && deathActivator.getType().equals(EntityType.FOX)) {
+                if (usedTotem) {
+                    blockEntity.applyEnchant("cruel_and_unusual", -6);
+                } else {
+                    blockEntity.applyEnchant("cruel_and_unusual", RANDOM.nextBetween(1, 5));
+                }
+            }
+
         }
 
 

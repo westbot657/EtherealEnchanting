@@ -1,5 +1,6 @@
 package com.westbot.ethereal_enchanting.mixin;
 
+import com.llamalad7.mixinextras.sugar.Local;
 import net.fabricmc.loader.impl.util.log.Log;
 import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.entity.EntityType;
@@ -41,8 +42,8 @@ public abstract class MerchantMixin extends PassiveEntity implements InventoryOw
 
     }
 
-    @Inject(method="fillRecipesFromPool", at=@At(value="INVOKE_ASSIGN", target="Lcom/google/common/collect/Lists;newArrayList([Ljava/lang/Object;)Ljava/util/ArrayList;", shift=At.Shift.AFTER), cancellable=true, locals=LocalCapture.CAPTURE_FAILHARD)
-    protected void fillRecipesFromPool(TradeOfferList recipeList, TradeOffers.Factory[] pool, int count, CallbackInfo ci, ArrayList<TradeOffers.Factory> arrayList) {
+    @Inject(method = "fillRecipesFromPool", at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/ArrayList;isEmpty()Z"), cancellable = true)
+    protected void fillRecipesFromPool(TradeOfferList recipeList, TradeOffers.Factory[] pool, int count, CallbackInfo ci, @Local ArrayList<TradeOffers.Factory> arrayList) {
         int i = 0;
         while(i < count && !arrayList.isEmpty()) {
             TradeOffer tradeOffer = (arrayList.remove(this.random.nextInt(arrayList.size()))).create(this, this.random);
