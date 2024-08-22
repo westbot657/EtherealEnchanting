@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class EtherealEnchantmentsTooltipAppender {
@@ -120,11 +121,12 @@ public class EtherealEnchantmentsTooltipAppender {
             remap.put(enchant.enchant(), enchant.level());
         }
 
-        boolean has_enchant = false;
+        AtomicBoolean has_enchant = new AtomicBoolean(false);
         ENCHANT_ORDER.forEach((enchant, color) -> {
             if (remap.containsKey(enchant)) {
-                if (!has_enchant) {
+                if (!has_enchant.get()) {
                     tooltip.accept(Text.translatable("tooltip.ethereal_enchanting.enchant.enchants"));
+                    has_enchant.set(true);
                 }
                 tooltip.accept(
                     Text.translatable(
