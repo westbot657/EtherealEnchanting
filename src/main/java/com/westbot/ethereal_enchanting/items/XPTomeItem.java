@@ -1,9 +1,13 @@
 package com.westbot.ethereal_enchanting.items;
 
+import com.westbot.ethereal_enchanting.Util;
 import com.westbot.ethereal_enchanting.data_components.ModComponents;
+import net.minecraft.entity.ExperienceOrbEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -58,6 +62,7 @@ public class XPTomeItem extends Item {
         tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line1").formatted(Formatting.GOLD));
         tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line2").formatted(Formatting.GOLD));
         tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line3", getXP(stack)).formatted(Formatting.LIGHT_PURPLE));
+        tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line4", Util.getXPLevelFromPoints(getXP(stack))).formatted(Formatting.LIGHT_PURPLE));
     }
 
     public static int getXP(ItemStack stack) {
@@ -70,4 +75,12 @@ public class XPTomeItem extends Item {
         }
     }
 
+    @Override
+    public void onItemEntityDestroyed(ItemEntity entity) {
+        super.onItemEntityDestroyed(entity);
+        if (entity.getWorld().isClient) return;
+        int xp = getXP(entity.getStack());
+        ExperienceOrbEntity.spawn((ServerWorld) entity.getWorld(), entity.getPos(), xp);
+
+    }
 }

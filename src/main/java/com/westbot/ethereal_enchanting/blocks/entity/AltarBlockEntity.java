@@ -6,6 +6,8 @@ import com.westbot.ethereal_enchanting.Util;
 import com.westbot.ethereal_enchanting.blocks.AltarBlock;
 import com.westbot.ethereal_enchanting.blocks.ModBlocks;
 import com.westbot.ethereal_enchanting.blocks.PedestalBlock;
+import com.westbot.ethereal_enchanting.data_components.EtherealEnchantComponent;
+import com.westbot.ethereal_enchanting.data_components.ModComponents;
 import com.westbot.ethereal_enchanting.entity.LivingEntityExtension;
 import com.westbot.ethereal_enchanting.items.XPTomeItem;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -17,6 +19,7 @@ import net.minecraft.component.type.PotionContentsComponent;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
@@ -42,10 +45,7 @@ import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 public class AltarBlockEntity extends BlockEntity {
@@ -117,7 +117,32 @@ public class AltarBlockEntity extends BlockEntity {
     private int animation_phase = 0;
 
     private int ticks = -1;
-    private Box entityBox;
+    private final Box entityBox;
+
+    private static final Map<String, List<Integer>> valid_enchants = new HashMap<>() {{
+        put("celestial_binding", List.of(1));
+        put("soulbound", List.of(1));
+        put("mending", List.of(1,2,3));
+        put("unbreaking", List.of(1,2,3));
+        put("chilled", List.of(1,2,3));
+        put("incendiary", List.of(1,2));
+        put("slashing", List.of(1,2,3,4,5,6));
+        put("weighted", List.of(-5,-4,-3,-2,-1));
+        put("conductive", List.of(1,2));
+        put("inductive", List.of(1,2));
+        put("resistive", List.of(1,2,3,4));
+        put("luck", List.of(1,2,3));
+        put("padded", List.of(1));
+        put("plated", List.of(1,2,3,4));
+        put("insulated", List.of(1,2,3,4));
+        put("elastic", List.of(1,2,3,4));
+        put("thorns", List.of(1,2,3,4));
+        put("inertial", List.of(1,2,3,4));
+        put("hydrodynamic", List.of(1,2,3));
+        put("swift_sneak", List.of(1,2,3));
+        put("soul_speed", List.of(1,2,3));
+        put("cruel_and_unusual", List.of(1,2,3,-6));
+    }};
 
     public AltarBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlocks.ALTAR_BLOCK_ENTITY_TYPE, pos, state);
@@ -311,7 +336,7 @@ public class AltarBlockEntity extends BlockEntity {
 
             }
             case "block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;" -> {
-                // Incindiary
+                // Incendiary
                 // 1: netherrack
                 // 2: blaze_rod (optional)
                 // 3: blaze powder
@@ -343,7 +368,7 @@ public class AltarBlockEntity extends BlockEntity {
                 }
 
                 if (recipeCheck == 2) {
-                    this.availableEnchant = "incindiary";
+                    this.availableEnchant = "incendiary";
                 }
 
             }
@@ -606,6 +631,56 @@ public class AltarBlockEntity extends BlockEntity {
 
     }
 
+    private static final List<Item> enchantable_items = List.of(
+        // Boats
+        Items.OAK_BOAT,
+        Items.OAK_CHEST_BOAT,
+        Items.BIRCH_BOAT,
+        Items.BIRCH_CHEST_BOAT,
+        Items.DARK_OAK_BOAT,
+        Items.DARK_OAK_CHEST_BOAT,
+        Items.ACACIA_BOAT,
+        Items.ACACIA_CHEST_BOAT,
+        Items.SPRUCE_BOAT,
+        Items.SPRUCE_CHEST_BOAT,
+        Items.JUNGLE_BOAT,
+        Items.JUNGLE_CHEST_BOAT,
+        Items.BAMBOO_RAFT,
+        Items.BAMBOO_CHEST_RAFT,
+
+        // Items that can't be enchanted via enchanting table in vanilla
+        Items.SHEARS,
+        Items.FLINT_AND_STEEL,
+        Items.SHIELD,
+        Items.CARROT_ON_A_STICK,
+        Items.WARPED_FUNGUS_ON_A_STICK,
+        Items.BRUSH,
+        Items.ELYTRA,
+        Items.CARVED_PUMPKIN,
+        Items.CREEPER_HEAD,
+        Items.DRAGON_HEAD,
+        Items.PIGLIN_HEAD,
+        Items.PLAYER_HEAD,
+        Items.ZOMBIE_HEAD
+    );
+
+    public boolean isItemEnchantable(ItemStack stack, @Nullable String enchant, int level) {
+        if (stack.isEnchantable() || enchantable_items.contains(stack.getItem())) {
+            if (enchant == null) return true;
+
+            if (valid_enchants.containsKey(enchant) && valid_enchants.get(enchant).contains(level)) {
+                List<EtherealEnchantComponent> enchants = stack.get(ModComponents.ETHEREAL_ENCHANTS);
+                if (enchants == null) return true;
+                for (EtherealEnchantComponent e : enchants) {
+                    if (Objects.equals(e.enchant(), enchant) && e.level() < level) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
 
     public boolean isValidItem(ItemStack stack, BlockState pedestalState) {
         World world = this.getWorld();
@@ -666,7 +741,7 @@ public class AltarBlockEntity extends BlockEntity {
                 }
             }
             case "block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;block.minecraft.magma_block;" -> {
-                // Incindiary
+                // Incendiary
                 // 1: netherrack
                 // 2: blaze_rod (optional)
                 // 3: blaze powder
@@ -1316,7 +1391,6 @@ public class AltarBlockEntity extends BlockEntity {
         }
     }
 
-
     private void dualHelixAnimation(World world, BlockPos pos, int red, int green) {
 
         double y = pos.getY() + (Math.abs(this.rotation_height-100)/100.0);
@@ -1329,6 +1403,7 @@ public class AltarBlockEntity extends BlockEntity {
         }
 
     }
+
 
     public static void tick(World world, BlockPos blockPos, BlockState blockState, AltarBlockEntity blockEntity) {
         blockEntity.verifyEnchant();
@@ -1448,6 +1523,9 @@ public class AltarBlockEntity extends BlockEntity {
                         usedTotem = true;
                         deathActivator = entity;
                         break;
+                    } else if (entity.isDead()) {
+                        deathActivation = true;
+                        deathActivator = entity;
                     }
 
                 }
@@ -1465,7 +1543,7 @@ public class AltarBlockEntity extends BlockEntity {
                         blockEntity.particle(point, world, ParticleTypes.SNOWFLAKE);
                     }
                 }
-                case "incindiary" -> {
+                case "incendiary" -> {
                     blockEntity.ticks++;
                     if (blockEntity.ticks >= 360) {
                         blockEntity.ticks = 0;

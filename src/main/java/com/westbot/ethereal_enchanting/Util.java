@@ -60,6 +60,18 @@ public class Util {
 
     }
 
+    public static int getXPLevelFromPoints(int points) {
+        int lvl = 0;
+
+        if (points < 352) {
+            lvl = (int) Math.sqrt(points+9)-3;
+        } else if (points < 1507) {
+            lvl = (int) ((81.0/10.0) + Math.sqrt((2.0/5.0)*(points - (7839.0/40.0))));
+        } else {
+            lvl = 32;
+        }
+        return lvl;
+    }
 
     public static Vec3d[] drawCircle(Vec3d center, Vec3d center_axis, double radius, int numPoints, double angleOffset) {
         Vec3d[] points = new Vec3d[numPoints];

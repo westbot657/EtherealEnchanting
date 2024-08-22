@@ -4,8 +4,6 @@ package com.westbot.ethereal_enchanting.mixin;
 import com.westbot.ethereal_enchanting.data_components.EtherealEnchantComponent;
 import com.westbot.ethereal_enchanting.data_components.ModComponents;
 import com.westbot.ethereal_enchanting.items.EtherealItemEntityMix;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;

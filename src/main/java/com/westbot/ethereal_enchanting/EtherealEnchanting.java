@@ -6,18 +6,19 @@ import com.westbot.ethereal_enchanting.loot_tables.ModLootTables;
 import com.westbot.ethereal_enchanting.networking.ModNetworking;
 import com.westbot.ethereal_enchanting.village.ModVillagerTrades;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EtherealEnchanting implements ModInitializer {
 
     public static final String MOD_ID = "ethereal_enchanting";
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     @Override
     public void onInitialize() {
 
-        Log.info(LogCategory.LOG, "Initializing Ethereal Enchanting...");
+        LOGGER.info("Initializing Ethereal Enchanting...");
 
         ModItems.initialize();
         ModBlocks.initialize();
@@ -29,7 +30,7 @@ public class EtherealEnchanting implements ModInitializer {
 
         ModNetworking.initialize();
 
-        Log.info(LogCategory.LOG, "Ethereal Enchanting initialized!");
+        LOGGER.info("Ethereal Enchanting initialized!");
     }
 
 }
