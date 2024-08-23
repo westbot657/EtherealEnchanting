@@ -16,13 +16,4 @@ public class CelestialBindingEnchant extends Enchant {
         return instance;
     }
 
-    @Override
-    public boolean postHit(LivingEntity target, PlayerEntity player) {
-        return false;
-    }
-
-    @Override
-    public boolean postDamageEntity(LivingEntity target, PlayerEntity player) {
-        return false;
-    }
 }

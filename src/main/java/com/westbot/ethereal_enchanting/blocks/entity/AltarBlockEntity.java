@@ -14,8 +14,6 @@ import com.westbot.ethereal_enchanting.items.XPTomeItem;
 import com.westbot.ethereal_enchanting.networking.ClearAltarIngredientsPayload;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.loader.impl.util.log.Log;
-import net.fabricmc.loader.impl.util.log.LogCategory;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.type.PotionContentsComponent;
@@ -34,12 +32,10 @@ import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.potion.Potions;
-import net.minecraft.predicate.entity.EntityPredicates;
 import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.EntityTypeTags;
+import net.minecraft.registry.tag.BiomeTags;
 import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ItemScatterer;
@@ -49,6 +45,7 @@ import net.minecraft.util.math.*;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
+import net.minecraft.world.biome.BiomeKeys;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -253,6 +250,7 @@ public class AltarBlockEntity extends BlockEntity {
         this.recipeCheck = 0;
         this.availableEnchant = "";
         int lvl = 0;
+        String enchant = "";
 
         switch (getFloorPattern().replace("waxed_","")) {
             case "block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;block.minecraft.blue_ice;" -> {
@@ -568,87 +566,761 @@ public class AltarBlockEntity extends BlockEntity {
                 // 1: copper ingot
                 // 2: lightning rod
                 // 3: copper ingot
+
+                dropSlot(2,3,4, 6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.COPPER_INGOT)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.LIGHTNING_ROD)) {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.COPPER_INGOT)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "conductive";
+                    this.availableLevel = 1;
+
+                    if (getWorld().isThundering()) {
+                        this.availableLevel = 3;
+                    } else if (getWorld().isRaining()) {
+                        this.availableLevel = 2;
+                    }
+                }
+
             }
             case "block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;block.minecraft.chiseled_copper;" -> {
                 // Inductive
                 // 1: copper ingot
                 // 2: redstone dust
                 // 3: copper ingot
+
+                dropSlot(2,3,4, 6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.COPPER_INGOT)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.REDSTONE)) {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.COPPER_INGOT)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "inductive";
+                    this.availableLevel = 1;
+
+                    if (getWorld().isThundering()) {
+                        this.availableLevel = 3;
+                    } else if (getWorld().isRaining()) {
+                        this.availableLevel = 2;
+                    }
+                }
+
             }
             case "block.minecraft.emerald_block;block.minecraft.amethyst_block;block.minecraft.emerald_block;block.minecraft.amethyst_block;" -> {
                 // Mending
                 // 1: bottle of xp
                 // 3: XP Tome (level determined by filled capacity)
+
+                dropSlot(2,3,4, 5,6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.EXPERIENCE_BOTTLE)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(ModItems.XP_TOME)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
+
+                    ItemStack stack = getStack(RIGHT_0);
+                    if (XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL30.getPoints()) {
+                        lvl = 3;
+                    } else if (XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL20.getPoints()) {
+                        lvl = 2;
+                    } else {
+                        lvl = 1;
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 2) {
+                    this.availableEnchant = "mending";
+                    this.availableLevel = lvl;
+                }
+
             }
             case "block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone;block.minecraft.emerald_block;block.minecraft.chiseled_polished_blackstone" -> {
                 // Unbreaking
                 // 1: iron block
                 // 3: XP Tome (level determined by filled capacity)
+
+                dropSlot(2,3,4, 5,6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.IRON_BLOCK)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(ModItems.XP_TOME)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
+
+                    ItemStack stack = getStack(RIGHT_0);
+                    if (XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL30.getPoints()) {
+                        lvl = 3;
+                    } else if (XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL20.getPoints()) {
+                        lvl = 2;
+                    } else {
+                        lvl = 1;
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 2) {
+                    this.availableEnchant = "unbreaking";
+                    this.availableLevel = lvl;
+                }
             }
             case "block.minecraft.moss_block;block.minecraft.moss_block;block.minecraft.moss_block;block.minecraft.moss_block;" -> {
                 // Luck
                 // 1: lapis
                 // 2: redstone dust
                 // 3: gold ingot
+
+                dropSlot(2,3,4, 6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.LAPIS_LAZULI)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
+                    lvl = 1;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.REDSTONE) && lvl == 1) {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                    lvl = 2;
+
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.GOLD_INGOT) && lvl == 2) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    lvl = 3;
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 1) {
+                    this.availableEnchant = "luck";
+                    this.availableLevel = lvl;
+                }
+
+
             }
             case "block.minecraft.white_wool;block.minecraft.white_wool;block.minecraft.white_wool;block.minecraft.white_wool;" -> {
                 // Padded
                 // 1: wool for silence, stone for silktouch
                 // 3: rabbit hide
+
+                dropSlot(2,3,4, 5,6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isIn(ItemTags.WOOL)) {
+                    enchant = "silence";
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else if (getStack(LEFT_0).isOf(Items.STONE)) {
+                    enchant = "silktouch";
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.RABBIT_HIDE)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (recipeCheck == 2) {
+                    this.availableEnchant = enchant;
+                    this.availableLevel = 1;
+                }
+
+
             }
             case "block.minecraft.iron_block;block.minecraft.dried_kelp_block;block.minecraft.iron_block;block.minecraft.dried_kelp_block;" -> {
                 // Resistive
                 // 1: copper ingot
                 // 2: dried kelp 1-4
                 // 3: copper ingot
+
+                dropSlot(2,3,4, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.COPPER_INGOT)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.COPPER_INGOT)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.DRIED_KELP)) {
+                    lvl = 1;
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN1);
+                    recipeCheck++;
+
+                    if (getStack(BACK_1).isOf(Items.DRIED_KELP)) {
+                        lvl = 2;
+                        setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN2);
+
+                        if (getStack(BACK_2).isOf(Items.DRIED_KELP)) {
+                            lvl = 3;
+                            setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN3);
+
+                            if (getStack(BACK_3).isOf(Items.DRIED_KELP)) {
+                                lvl = 4;
+                                setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                            } else {
+                                dropSlot(8);
+                            }
+
+                        } else {
+                            dropSlot(7,8);
+                        }
+
+                    } else {
+                        dropSlot(6,7,8);
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(5,6,7,8);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "resistive";
+                    this.availableLevel = lvl;
+                }
+
+
             }
             case "block.minecraft.iron_block;block.minecraft.smooth_stone;block.minecraft.iron_block;block.minecraft.smooth_stone;" -> {
                 // Plated
                 // 1: iron ingot
                 // 2: heavy weighted pressure plate 1-4
                 // 3: iron ingot
+
+                dropSlot(2,3,4, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.IRON_INGOT)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.IRON_INGOT)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.HEAVY_WEIGHTED_PRESSURE_PLATE)) {
+                    lvl = 1;
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN1);
+                    recipeCheck++;
+
+                    if (getStack(BACK_1).isOf(Items.HEAVY_WEIGHTED_PRESSURE_PLATE)) {
+                        lvl = 2;
+                        setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN2);
+
+                        if (getStack(BACK_2).isOf(Items.HEAVY_WEIGHTED_PRESSURE_PLATE)) {
+                            lvl = 3;
+                            setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN3);
+
+                            if (getStack(BACK_3).isOf(Items.HEAVY_WEIGHTED_PRESSURE_PLATE)) {
+                                lvl = 4;
+                                setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                            } else {
+                                dropSlot(8);
+                            }
+
+                        } else {
+                            dropSlot(7,8);
+                        }
+
+                    } else {
+                        dropSlot(6,7,8);
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(5,6,7,8);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "plated";
+                    this.availableLevel = lvl;
+                }
+
             }
             case "block.minecraft.iron_block;block.minecraft.white_wool;block.minecraft.iron_block;block.minecraft.white_wool;" -> {
                 // Insulated
                 // 1: magma block
                 // 2: wool 1-4
                 // 3: packed ice
+
+                dropSlot(2,3,4, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.MAGMA_BLOCK)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.PACKED_ICE)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (getStack(BACK_0).isIn(ItemTags.WOOL)) {
+                    lvl = 1;
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN1);
+                    recipeCheck++;
+
+                    if (getStack(BACK_1).isIn(ItemTags.WOOL)) {
+                        lvl = 2;
+                        setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN2);
+
+                        if (getStack(BACK_2).isIn(ItemTags.WOOL)) {
+                            lvl = 3;
+                            setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN3);
+
+                            if (getStack(BACK_3).isIn(ItemTags.WOOL)) {
+                                lvl = 4;
+                                setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                            } else {
+                                dropSlot(8);
+                            }
+
+                        } else {
+                            dropSlot(7,8);
+                        }
+
+                    } else {
+                        dropSlot(6,7,8);
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(5,6,7,8);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "insulated";
+                    this.availableLevel = lvl;
+                }
+
             }
             case "block.minecraft.iron_block;block.minecraft.sponge;block.minecraft.iron_block;block.minecraft.sponge;" -> {
                 // Elastic
                 // 1: feather
                 // 2: breeze rods 1-4
                 // 3: phantom membrane
+
+                dropSlot(2,3,4, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.FEATHER)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.PHANTOM_MEMBRANE)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.BREEZE_ROD)) {
+                    lvl = 1;
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN1);
+                    recipeCheck++;
+
+                    if (getStack(BACK_1).isOf(Items.BREEZE_ROD)) {
+                        lvl = 2;
+                        setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN2);
+
+                        if (getStack(BACK_2).isOf(Items.BREEZE_ROD)) {
+                            lvl = 3;
+                            setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN3);
+
+                            if (getStack(BACK_3).isOf(Items.BREEZE_ROD)) {
+                                lvl = 4;
+                                setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                            } else {
+                                dropSlot(8);
+                            }
+
+                        } else {
+                            dropSlot(7,8);
+                        }
+
+                    } else {
+                        dropSlot(6,7,8);
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(5,6,7,8);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "elastic";
+                    this.availableLevel = lvl;
+                }
             }
             case "block.minecraft.iron_block;block.minecraft.magma_block;block.minecraft.iron_block;block.minecraft.magma_block;" -> {
                 // Thorns
                 // 1: cactus
                 // 2: magma block 1-4
                 // 3: berry bush
+
+                dropSlot(2,3,4, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.CACTUS)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.SWEET_BERRIES)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.MAGMA_BLOCK)) {
+                    lvl = 1;
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN1);
+                    recipeCheck++;
+
+                    if (getStack(BACK_1).isOf(Items.MAGMA_BLOCK)) {
+                        lvl = 2;
+                        setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN2);
+
+                        if (getStack(BACK_2).isOf(Items.MAGMA_BLOCK)) {
+                            lvl = 3;
+                            setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN3);
+
+                            if (getStack(BACK_3).isOf(Items.MAGMA_BLOCK)) {
+                                lvl = 4;
+                                setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                            } else {
+                                dropSlot(8);
+                            }
+
+                        } else {
+                            dropSlot(7,8);
+                        }
+
+                    } else {
+                        dropSlot(6,7,8);
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(5,6,7,8);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "thorns";
+                    this.availableLevel = lvl;
+                }
             }
             case "block.minecraft.iron_block;block.minecraft.slime_block;block.minecraft.iron_block;block.minecraft.slime_block;" -> {
                 // Inertial
                 // 1: phantom membrane
                 // 2: nether star (1) slime block 0-3
                 // 3: wind charge
+
+                dropSlot(2,3,4, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.PHANTOM_MEMBRANE)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.WIND_CHARGE)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.NETHER_STAR)) {
+                    lvl = 1;
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN1);
+                    recipeCheck++;
+
+                    if (getStack(BACK_1).isOf(Items.SLIME_BLOCK)) {
+                        lvl = 2;
+                        setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN2);
+
+                        if (getStack(BACK_2).isOf(Items.SLIME_BLOCK)) {
+                            lvl = 3;
+                            setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN3);
+
+                            if (getStack(BACK_3).isOf(Items.SLIME_BLOCK)) {
+                                lvl = 4;
+                                setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                            } else {
+                                dropSlot(8);
+                            }
+
+                        } else {
+                            dropSlot(7,8);
+                        }
+
+                    } else {
+                        dropSlot(6,7,8);
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(5,6,7,8);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "inertial";
+                    this.availableLevel = lvl;
+                }
             }
             case "block.minecraft.blue_ice;block.minecraft.packed_ice;block.minecraft.magma_block;block.minecraft.packed_ice;" -> {
                 // Hydrodynamic
                 // 1: gold pickaxe
                 // 2: prismarine shard/crystal 1-3
                 // 3: turtle scute
+
+                dropSlot(2,3,4, 8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.GOLDEN_PICKAXE)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(LEFT_0);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.TURTLE_SCUTE)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(RIGHT_0);
+                }
+
+                if (getStack(BACK_0).isOf(Items.PRISMARINE_SHARD) || getStack(BACK_0).isOf(Items.PRISMARINE_CRYSTALS)) {
+                    lvl = 1;
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN1);
+                    recipeCheck++;
+
+                    if (getStack(BACK_1).isOf(Items.PRISMARINE_SHARD) || getStack(BACK_1).isOf(Items.PRISMARINE_CRYSTALS)) {
+                        lvl = 2;
+                        setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN2);
+
+                        if (getStack(BACK_2).isOf(Items.PRISMARINE_SHARD) || getStack(BACK_2).isOf(Items.PRISMARINE_CRYSTALS)) {
+                            lvl = 3;
+                            setPedestalState(PedestalPlacement.BACK, PedestalState.GREEN3);
+
+                        } else {
+                            dropSlot(7);
+                        }
+
+                    } else {
+                        dropSlot(6,7);
+                    }
+
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(5,6,7);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "inertial";
+                    this.availableLevel = lvl;
+                }
             }
             case "block.minecraft.sculk;block.minecraft.sculk;block.minecraft.sculk;block.minecraft.sculk;" -> {
                 // Swift Sneak
                 // 1: echo shard
                 // 2: XP Tome (level determined by filled capacity)
                 // 3: echo shard
+
+                dropSlot(2,3,4, 6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.ECHO_SHARD)) {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                    dropSlot(1);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.ECHO_SHARD)) {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                    dropSlot(1);
+                }
+
+                if (getStack(BACK_0).isOf(ModItems.XP_TOME)) {
+                    int xp = XPTomeItem.getXP(getStack(BACK_0));
+                    if (xp >= Util.XPLevel.LEVEL20.getPoints()) {
+                        lvl = 3;
+                    } else if (xp >= Util.XPLevel.LEVEL10.getPoints()) {
+                        lvl = 2;
+                    } else {
+                        lvl = 1;
+                    }
+                    setPedestalState(PedestalPlacement.BACK, lvl == 3 ? PedestalState.WHITE3 : lvl == 2 ? PedestalState.WHITE2 : PedestalState.WHITE1);
+                    recipeCheck++;
+                } else {
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                    dropSlot(BACK_0);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "swift_sneak";
+                    this.availableLevel = lvl;
+                }
+
             }
             case "block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;block.minecraft.soul_sand;" -> {
                 // Soul speed
                 // 1: wither skull
                 // 2: lost soul
                 // 3: soul sand
+                dropSlot(2,3,4, 6,7,8, 10,11,12);
+
+                if (getStack(LEFT_0).isOf(Items.WITHER_SKELETON_SKULL)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.WHITE3);
+                } else {
+                    dropSlot(LEFT_0);
+                    setPedestalState(PedestalPlacement.LEFT, PedestalState.OFF);
+                }
+
+                if (getStack(BACK_0).isOf(ModItems.LOST_SOUL)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.WHITE3);
+                } else {
+                    dropSlot(BACK_0);
+                    setPedestalState(PedestalPlacement.BACK, PedestalState.OFF);
+                }
+
+                if (getStack(RIGHT_0).isOf(Items.SOUL_SAND) || getStack(RIGHT_0).isOf(Items.SOUL_SOIL)) {
+                    recipeCheck++;
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.WHITE3);
+                } else {
+                    dropSlot(RIGHT_0);
+                    setPedestalState(PedestalPlacement.RIGHT, PedestalState.OFF);
+                }
+
+                if (recipeCheck == 3) {
+                    this.availableEnchant = "soul_speed";
+                    if (world.getBiome(getPos()) == BiomeKeys.SOUL_SAND_VALLEY) {
+                        this.availableLevel = 3;
+                    } else if (world.getBiome(getPos()).isIn(BiomeTags.IS_NETHER)) {
+                        this.availableLevel = 2;
+                    } else {
+                        this.availableLevel = 1;
+                    }
+                }
+
             }
             default -> {
                 dropSlot(1,2,3,4,5,6,7,8,9,10,11,12);
@@ -741,6 +1413,29 @@ public class AltarBlockEntity extends BlockEntity {
             "soul_speed"
     );
 
+    private static final List<String> PROTECTION_TYPES = List.of(
+        "resistive", "plated", "insulated",
+        "elastic", "thorns", "inertial"
+    );
+
+    public boolean checkProtection(ItemStack stack, String enchant) {
+        if (!PROTECTION_TYPES.contains(enchant)) return true;
+
+        List<EtherealEnchantComponent> enchants = stack.get(ModComponents.ETHEREAL_ENCHANTS);
+
+        if (enchants == null) return true;
+
+        int prot_count = 0;
+
+        for (EtherealEnchantComponent e : enchants) {
+            if (PROTECTION_TYPES.contains(enchant)) {
+                prot_count++;
+            }
+        }
+
+        return (prot_count < 4);
+
+    }
 
     public boolean itemSupportsEnchant(ItemStack stack, String enchant) {
         if (GLOBAL_SUPPORT.contains(enchant)) {
@@ -758,18 +1453,21 @@ public class AltarBlockEntity extends BlockEntity {
         else if (stack.isIn(ItemTags.HOES)) {
             return HOE_SUPPORT.contains(enchant);
         }
+        else if (stack.isIn(ItemTags.SHOVELS)) {
+            return SHOVEL_SUPPORT.contains(enchant);
+        }
 
         else if (stack.isIn(ItemTags.HEAD_ARMOR)) {
-            return ARMOR_SUPPORT.contains(enchant) || HELMET_SUPPORT.contains(enchant);
+            return checkProtection(stack, enchant) && (ARMOR_SUPPORT.contains(enchant) || HELMET_SUPPORT.contains(enchant));
         }
         else if (stack.isIn(ItemTags.CHEST_ARMOR)) {
-            return ARMOR_SUPPORT.contains(enchant) || CHESTPLATE_SUPPORT.contains(enchant);
+            return checkProtection(stack, enchant) && (ARMOR_SUPPORT.contains(enchant) || CHESTPLATE_SUPPORT.contains(enchant));
         }
         else if (stack.isIn(ItemTags.LEG_ARMOR)) {
-            return ARMOR_SUPPORT.contains(enchant) || LEGGINGS_SUPPORT.contains(enchant);
+            return checkProtection(stack, enchant) && (ARMOR_SUPPORT.contains(enchant) || LEGGINGS_SUPPORT.contains(enchant));
         }
         else if (stack.isIn(ItemTags.FOOT_ARMOR)) {
-            return ARMOR_SUPPORT.contains(enchant) || BOOTS_SUPPORT.contains(enchant);
+            return checkProtection(stack, enchant) && (ARMOR_SUPPORT.contains(enchant) || BOOTS_SUPPORT.contains(enchant));
         }
 
         return false;
@@ -781,7 +1479,7 @@ public class AltarBlockEntity extends BlockEntity {
 
     public boolean isItemEnchantable(ItemStack stack, @Nullable String enchant, int level) {
         if (stack.isEnchantable() || enchantable_items.contains(stack.getItem())) {
-            if (enchant == null) return true;
+            if (Objects.equals(enchant, "")) return true;
 
             if (valid_enchants.containsKey(enchant) && valid_enchants.get(enchant).contains(level)) {
                 List<EtherealEnchantComponent> enchants = stack.get(ModComponents.ETHEREAL_ENCHANTS);

@@ -115,7 +115,6 @@ public abstract class ItemEntityMixin extends Entity implements Ownable, Etherea
 
     public void tickInVoid() {
 
-
         List<EtherealEnchantComponent> enchants = this.getStack().get(ModComponents.ETHEREAL_ENCHANTS);
 
         if (enchants == null) {
