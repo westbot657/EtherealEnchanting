@@ -3,12 +3,14 @@ package com.westbot.ethereal_enchanting.mixin;
 
 import com.westbot.ethereal_enchanting.data_components.EtherealEnchantComponent;
 import com.westbot.ethereal_enchanting.data_components.ModComponents;
+import com.westbot.ethereal_enchanting.enchantments.EnchantmentManager;
 import com.westbot.ethereal_enchanting.items.EtherealItemEntityMix;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.Ownable;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -25,6 +27,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.List;
 
@@ -76,6 +79,16 @@ public abstract class ItemEntityMixin extends Entity implements Ownable, Etherea
     @Override
     public void enchantingRework$setCelestialBound(boolean isCelestialBound) {
         this.is_celestial_bound = isCelestialBound;
+    }
+
+    @Inject(method = "damage", at=@At("HEAD"), cancellable = true)
+    private void injectDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
+        if (
+            EnchantmentManager.hasEnchant(this.getStack(), "celestial_binding") ||
+                EnchantmentManager.hasEnchant(this.getStack(), "soulbound")
+        ) {
+            cir.setReturnValue(false);
+        }
     }
 
 

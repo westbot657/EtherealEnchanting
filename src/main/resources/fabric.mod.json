@@ -15,6 +15,9 @@
     ],
     "main": [
       "com.westbot.ethereal_enchanting.EtherealEnchanting"
+    ],
+    "fabric-datagen": [
+      "com.westbot.ethereal_enchanting.ModDataGenerator"
     ]
   },
   "mixins": [

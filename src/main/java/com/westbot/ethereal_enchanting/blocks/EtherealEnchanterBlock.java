@@ -3,10 +3,21 @@ package com.westbot.ethereal_enchanting.blocks;
 import com.mojang.serialization.MapCodec;
 import com.westbot.ethereal_enchanting.blocks.entity.AltarBlockEntity;
 import com.westbot.ethereal_enchanting.blocks.entity.EtherealEnchanterBlockEntity;
+import com.westbot.ethereal_enchanting.screen.EtherealEnchanterScreenHandler;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.entity.EnchantingTableBlockEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.screen.EnchantmentScreenHandler;
+import net.minecraft.screen.NamedScreenHandlerFactory;
+import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.text.Text;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Nameable;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
@@ -53,4 +64,27 @@ public class EtherealEnchanterBlock extends BlockWithEntity {
         return BlockRenderType.MODEL;
     }
 
+    @Nullable
+    @Override
+    protected NamedScreenHandlerFactory createScreenHandlerFactory(BlockState state, World world, BlockPos pos) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof EtherealEnchanterBlockEntity) {
+            Text text = ((Nameable)blockEntity).getDisplayName();
+            return new SimpleNamedScreenHandlerFactory(
+                (syncId, inventory, player) -> new EtherealEnchanterScreenHandler(syncId, inventory, ScreenHandlerContext.create(world, pos), ((EtherealEnchanterBlockEntity) blockEntity).inventory), text
+            );
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    protected ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, BlockHitResult hit) {
+        if (world.isClient) {
+            return ActionResult.SUCCESS;
+        } else {
+            player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
+            return ActionResult.CONSUME;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.westbot.ethereal_enchanting;
 
+import com.westbot.ethereal_enchanting.advancement.ModAdvancements;
 import com.westbot.ethereal_enchanting.blocks.ModBlocks;
 import com.westbot.ethereal_enchanting.entity.ModEntities;
 import com.westbot.ethereal_enchanting.loot_tables.ModLootTables;
@@ -28,7 +29,11 @@ public class EtherealEnchanting implements ModInitializer {
         ModVillagerTrades.registerVillagerTrades();
         ModEntities.initialize();
 
+        ModAdvancements.initialize();
+
         ModNetworking.initialize();
+
+
 
         LOGGER.info("Ethereal Enchanting initialized!");
     }

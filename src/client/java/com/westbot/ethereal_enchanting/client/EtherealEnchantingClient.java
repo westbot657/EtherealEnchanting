@@ -2,6 +2,7 @@ package com.westbot.ethereal_enchanting.client;
 
 import com.westbot.ethereal_enchanting.blocks.ModBlocks;
 import com.westbot.ethereal_enchanting.client.networking.ModNetworkingClient;
+import com.westbot.ethereal_enchanting.client.render.ModScreens;
 import com.westbot.ethereal_enchanting.client.render.block.AltarBlockEntityRendererFactory;
 import com.westbot.ethereal_enchanting.client.render.block.EtherealEnchanterBlockEntityRendererFactory;
 import com.westbot.ethereal_enchanting.client.render.entity.CelestialTrailEntityModel;
@@ -33,6 +34,8 @@ public class EtherealEnchantingClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.ETHEREAL_ENCHANTER_BLOCK, RenderLayer.getCutout());
 
         ModNetworkingClient.initialize();
+
+        ModScreens.initialize();
 
         ModelPredicateProviderRegistry.register(Identifier.of("ethereal_enchanting", "rune_id"), (stack, world, entity, seed) -> {
             if (stack.contains(ModComponents.RUNE_ID)) {

@@ -5,7 +5,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.entity.InventoryOwner;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.text.Text;
@@ -28,6 +31,8 @@ public class EtherealEnchanterBlockEntity extends BlockEntity implements Nameabl
     public float bookRotation;
     public float lastBookRotation;
     public float targetBookRotation;
+
+    public SimpleInventory inventory = new SimpleInventory(3);
 
     private static final Random RANDOM = Random.create();
 
@@ -137,5 +142,4 @@ public class EtherealEnchanterBlockEntity extends BlockEntity implements Nameabl
         super.addComponents(componentMapBuilder);
         componentMapBuilder.add(DataComponentTypes.CUSTOM_NAME, this.customName);
     }
-
 }

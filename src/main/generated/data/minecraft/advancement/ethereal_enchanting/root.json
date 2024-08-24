@@ -1,0 +1,28 @@
+{
+  "criteria": {
+    "root": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "ethereal_enchanting:textures/gui/advancements/ethereal_enchanting.png",
+    "description": {
+      "translate": "advancements.ethereal_enchanting.root.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "ethereal_enchanting:enchanted_rune"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancements.ethereal_enchanting.root.label"
+    }
+  },
+  "requirements": [
+    [
+      "root"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

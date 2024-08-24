@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:ethereal_enchanting/root",
+  "criteria": {
+    "ethereal_enchanting_got_enchanter": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ethereal_enchanting:ethereal_enchanter"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "ethereal_enchanting:textures/gui/advancements/ethereal_enchanting.png",
+    "description": {
+      "translate": "advancements.ethereal_enchanting.enchanter.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "ethereal_enchanting:ethereal_enchanter"
+    },
+    "title": {
+      "translate": "advancements.ethereal_enchanting.enchanter.label"
+    }
+  },
+  "requirements": [
+    [
+      "ethereal_enchanting_got_enchanter"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
