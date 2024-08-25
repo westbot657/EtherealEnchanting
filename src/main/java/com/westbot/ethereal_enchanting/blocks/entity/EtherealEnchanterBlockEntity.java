@@ -7,6 +7,7 @@ import net.minecraft.component.ComponentMap;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.InventoryOwner;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.nbt.NbtCompound;
@@ -32,7 +33,7 @@ public class EtherealEnchanterBlockEntity extends BlockEntity implements Nameabl
     public float lastBookRotation;
     public float targetBookRotation;
 
-    public SimpleInventory inventory = new SimpleInventory(3);
+    public SimpleInventory inventory = new SimpleInventory(4);
 
     private static final Random RANDOM = Random.create();
 
@@ -49,6 +50,7 @@ public class EtherealEnchanterBlockEntity extends BlockEntity implements Nameabl
         if (this.hasCustomName()) {
             nbt.putString("CustomName", Text.Serialization.toJsonString(this.customName, registryLookup));
         }
+        Inventories.writeNbt(nbt, this.inventory.heldStacks, registryLookup);
 
     }
 
@@ -58,8 +60,10 @@ public class EtherealEnchanterBlockEntity extends BlockEntity implements Nameabl
         if (nbt.contains("CustomName", 8)) {
             this.customName = tryParseCustomName(nbt.getString("CustomName"), registryLookup);
         }
+        Inventories.readNbt(nbt, this.inventory.heldStacks, registryLookup);
 
     }
+
 
 
     public static void tick(World world, BlockPos pos, BlockState state, EtherealEnchanterBlockEntity blockEntity) {

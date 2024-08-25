@@ -16,6 +16,7 @@ import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -86,5 +87,14 @@ public class EtherealEnchanterBlock extends BlockWithEntity {
             player.openHandledScreen(state.createScreenHandlerFactory(world, pos));
             return ActionResult.CONSUME;
         }
+    }
+
+    @Override
+    protected void onStateReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean moved) {
+        EtherealEnchanterBlockEntity blockEntity = (EtherealEnchanterBlockEntity) world.getBlockEntity(pos);
+        if (blockEntity != null) {
+            ItemScatterer.spawn(world, pos, blockEntity.inventory);
+        }
+        super.onStateReplaced(state, world, pos, newState, moved);
     }
 }

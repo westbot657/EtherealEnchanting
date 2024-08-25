@@ -29,11 +29,11 @@ public class ModComponents {
         ComponentType.<Float>builder().codec(Codec.FLOAT).build()
     );
 
-//    public static final ComponentType<EtherealEnchantComponent> ETHEREAL_ENCHANT = Registry.register(
-//        Registries.DATA_COMPONENT_TYPE,
-//        Identifier.of("ethereal_enchanting", "ethereal_enchant"),
-//        ComponentType.<EtherealEnchantComponent>builder().codec(EtherealEnchantComponent.CODEC).build()
-//    );
+    public static final ComponentType<String> CIPHER_LETTERS = Registry.register(
+        Registries.DATA_COMPONENT_TYPE,
+        Identifier.of("ethereal_enchanting", "cipher_letters"),
+        ComponentType.<String>builder().codec(Codec.STRING).build()
+    );
 
     public static final ComponentType<List<EtherealEnchantComponent>> ETHEREAL_ENCHANTS = Registry.register(
         Registries.DATA_COMPONENT_TYPE,

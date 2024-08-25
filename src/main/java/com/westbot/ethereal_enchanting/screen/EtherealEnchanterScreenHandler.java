@@ -1,7 +1,10 @@
 package com.westbot.ethereal_enchanting.screen;
 
+import com.westbot.ethereal_enchanting.EtherealEnchanting;
 import com.westbot.ethereal_enchanting.ModItems;
 import com.westbot.ethereal_enchanting.blocks.ModBlocks;
+import com.westbot.ethereal_enchanting.data_components.EtherealEnchantComponent;
+import com.westbot.ethereal_enchanting.data_components.ModComponents;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -18,26 +21,18 @@ import java.util.List;
 
 public class EtherealEnchanterScreenHandler extends ScreenHandler implements InventoryChangedListener {
 
-    static class UIEnchant {
-        private String name;
-        private String lore;
-        private String description;
-
-        public UIEnchant(String name, String lore, String description) {
-            this.name = name;
-            this.lore = lore;
-            this.description = description;
-        }
-    }
-
     private final SimpleInventory inventory;
+    private final PlayerInventory playerInventory;
     private final ScreenHandlerContext context;
 
-    private List<UIEnchant> enchantList;
+    public List<EtherealEnchantComponent> enchantList;
     public int[] scrollY = new int[]{0};
 
+    public ItemStack lastStack = ItemStack.EMPTY;
+    public boolean dirty = false;
+
     public EtherealEnchanterScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, ScreenHandlerContext.EMPTY, new SimpleInventory(3));
+        this(syncId, playerInventory, ScreenHandlerContext.EMPTY, new SimpleInventory(4));
     }
 
     /*
@@ -46,7 +41,9 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
      * xp slider end pos: 117,76
      * xp overlay: 1,187          (64x6)
      * xp pointer: 1,194          (4x14)
+     * xp pointer highlighted: 16,194
      * scroller: 6,194            (9x4)
+     * scroller highlighted: 6,199
      * scroll top: 140,15
      * scroll bottom: 140,57
      * pos1: 38,16
@@ -56,7 +53,20 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
      * slot1: 17,65
      * slot2: 143,65
      * slot overlay: 66,187       (100x18)
+     * cipher slot: 152,16
      */
+
+    public boolean scrollUp() {
+        int i = scrollY[0];
+        scrollY[0] = Math.max(0, scrollY[0]-1);
+        return i != scrollY[0];
+    }
+
+    public boolean scrollDown() {
+        int i = scrollY[0];
+        scrollY[0] = Math.min(scrollY[0]+1, Math.max(enchantList.size()-3, 0));
+        return i != scrollY[0];
+    }
 
     public EtherealEnchanterScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context, SimpleInventory blockInventory) {
         super(ScreenHandlers.ENCHANTER, syncId);
@@ -64,8 +74,7 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
         this.inventory = blockInventory;
         this.inventory.addListener(this);
         this.enchantList = new ArrayList<>();
-
-
+        this.playerInventory = playerInventory;
 
         // SLOT 0: enchantment manager slot
         this.addSlot(new Slot(this.inventory, 0, 17, 35) {
@@ -93,6 +102,17 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
             }
         });
 
+        // SLOT 3: enchanted cipher
+        this.addSlot(new Slot(this.inventory, 3, 152, 16) {
+            @Override
+            public int getMaxItemCount() { return 1; }
+            @Override
+            public boolean canInsert(ItemStack stack) {
+                return stack.isOf(ModItems.ENCHANTED_CIPHER) || stack.isOf(ModItems.WRITTEN_CIPHER);
+            }
+        });
+
+
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 9; j++) {
                 this.addSlot(new Slot(playerInventory, j + i * 9 + 9, 8 + j * 18, 104 + i * 18));
@@ -106,7 +126,14 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
 
         this.addProperty(Property.create(this.scrollY, 0));
 
+    }
 
+    public int getPlayerXp() {
+        return playerInventory.player.totalExperience;
+    }
+
+    public void setPlayerXp(int xp) {
+        playerInventory.player.totalExperience = xp;
     }
 
     @Override
@@ -122,19 +149,27 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
             ItemStack itemStack2 = slot.getStack();
             itemStack = itemStack2.copy();
             if (slotIndex == 0) {
-                if (!this.insertItem(itemStack2, 3, 39, true)) {
+                if (!this.insertItem(itemStack2, 4, 40, true)) {
                     return ItemStack.EMPTY;
                 }
             } else if (slotIndex == 1) {
-                if (!this.insertItem(itemStack2, 3, 39, false)) {
+                if (!this.insertItem(itemStack2, 4, 40, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (slotIndex == 2) {
-                if (!this.insertItem(itemStack2, 3, 39, false)) {
+                if (!this.insertItem(itemStack2, 4, 40, false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (slotIndex == 3) {
+                if (!this.insertItem(itemStack2, 4, 40, false)) {
                     return ItemStack.EMPTY;
                 }
             } else if (itemStack2.isOf(ModItems.XP_TOME)) {
-                if (!this.insertItem(itemStack2, 1, 3, false)) {
+                if (!this.insertItem(itemStack2, 1, 2, false)) {
+                    return ItemStack.EMPTY;
+                }
+            } else if (itemStack2.isOf(ModItems.ENCHANTED_CIPHER) || itemStack2.isOf(ModItems.WRITTEN_CIPHER)) {
+                if (!this.insertItem(itemStack2, 3, 4, false)) {
                     return ItemStack.EMPTY;
                 }
             } else {
@@ -171,7 +206,17 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
     @Override
     public void onContentChanged(Inventory inventory) {
         if (inventory == this.inventory) {
-
+            dirty = true;
+            ItemStack stack = inventory.getStack(0);
+            if (stack != lastStack) {
+                lastStack = stack;
+                enchantList.clear();
+                if (stack != ItemStack.EMPTY) {
+                    List<EtherealEnchantComponent> enchants = stack.get(ModComponents.ETHEREAL_ENCHANTS);
+                    if (enchants == null) return;
+                    enchantList.addAll(enchants);
+                }
+            }
         }
     }
 

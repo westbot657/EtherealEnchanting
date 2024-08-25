@@ -3,6 +3,8 @@
   "item.ethereal_enchanting.written_rune": "Written Rune",
   "item.ethereal_enchanting.enchanted_rune": "Enchanted Rune",
   "item.ethereal_enchanting.lost_soul": "Lost Soul",
+  "item.ethereal_enchanting.written_cipher": "Written Cipher",
+  "item.ethereal_enchanting.enchanted_cipher": "Enchanted Cipher",
 
   "itemTooltip.ethereal_enchanting.xp_tome_tooltip_line1": "Stores up to 32 levels of XP",
   "itemTooltip.ethereal_enchanting.xp_tome_tooltip_line2": "Place in an enchanting table to manage XP",
@@ -11,6 +13,10 @@
 
   "itemTooltip.ethereal_enchanting.written_rune_tooltip_line2": "You'll want to keep this for later",
   "itemTooltip.ethereal_enchanting.rune_tooltip_line2": "Place in a spell book to decipher automatically",
+
+  "itemTooltip.ethereal_enchanting.cipher.missing": "Cipher is incomplete",
+  "itemTooltip.ethereal_enchanting.cipher.full": "Cipher completed",
+
 
   "block.ethereal_enchanting.altar": "Enchanting Altar",
   "block.ethereal_enchanting.pedestal": "Pedestal",
@@ -52,7 +58,7 @@
   "tooltip.ethereal_enchanting.enchant.thieving":          "  Thieving %1$s",
 
   "lore.ethereal_enchanting.enchant.celestial_binding": "Cannot be destroyed and doesn't obey gravity.",
-  "lore.ethereal_enchanting.enchant.soulbound": "Will never leave you.\nDon't let other souls get their hands on it though...",
+  "lore.ethereal_enchanting.enchant.soulbound": "Will never leave you. Don't let other souls get their hands on it though...",
   "lore.ethereal_enchanting.enchant.mending": "Uses XP to repair itself.",
   "lore.ethereal_enchanting.enchant.unbreaking": "Prevents some durability from being used.",
   "lore.ethereal_enchanting.enchant.chilled": "Cold to the touch.",
@@ -62,7 +68,7 @@
   "lore.ethereal_enchanting.enchant.conductive": "Leaves a conductive residue behind.",
   "lore.ethereal_enchanting.enchant.inductive": "Holds an electric charge. Not the most conductive though.",
   "lore.ethereal_enchanting.enchant.resistive": "Resists electricity.",
-  "lore.ethereal_enchanting.enchant.luck": "May grant more items when hunting or mining.\nBeware of inventory cluttering.",
+  "lore.ethereal_enchanting.enchant.luck": "May grant more items when hunting or mining. Beware of inventory cluttering.",
   "lore.ethereal_enchanting.enchant.padded": "Soft and delicate. Absorbs some sounds.",
   "lore.ethereal_enchanting.enchant.plated": "Extra defensive against sharp and pointy objects.",
   "lore.ethereal_enchanting.enchant.insulated": "Protects against thermal dangers.",
@@ -73,6 +79,7 @@
   "lore.ethereal_enchanting.enchant.swift_sneak": "Silent but fast.",
   "lore.ethereal_enchanting.enchant.soul_speed": "Souls in the sand/soil will help however they can, friend.",
   "lore.ethereal_enchanting.enchant.cruel_and_unusual": "Why would you do that?",
+  "lore.ethereal_enchanting.enchant.thieving": "Give me the precious!",
 
   "description.ethereal_enchanting.enchant.celestial_binding": "Item is immune to all damage, cannot despawn, disobeys gravity, and can only be picked up by whoever throws it.",
   "description.ethereal_enchanting.enchant.soulbound": "Item teleports back to whoever throws it as soon as it hits the ground, unless it lands on soul sand/soil.",
@@ -96,6 +103,7 @@
   "description.ethereal_enchanting.enchant.swift_sneak": "Move faster while sneaking.",
   "description.ethereal_enchanting.enchant.soul_speed": "Move faster over soul sand and soul soil.",
   "description.ethereal_enchanting.enchant.cruel_and_unusual": "§kI dunno what to put here§r",
+  "description.ethereal_enchanting.enchant.thieving": "Mobs may drop small amounts of loot before they die. Players may drop items from their inventory (except from hotbar)",
 
   "advancements.ethereal_enchanting.root.label": "Ethereal Enchanting",
   "advancements.ethereal_enchanting.root.description": "The Minecraft enchanting rework by Westbot.",
@@ -104,6 +112,11 @@
   "advancements.ethereal_enchanting.enchanter.description": "Obtain an ethereal enchanter.",
 
   "advancements.ethereal_enchanting.altar.label": "An enchanter's BEST friend",
-  "advancements.ethereal_enchanting.altar.description": "Place an enchanting altar."
+  "advancements.ethereal_enchanting.altar.description": "Place an enchanting altar.",
+
+  "gui.ethereal_enchanting.enchanter.cipher_slot.hover": "Insert Cipher",
+  "gui.ethereal_enchanting.enchanter.battery_slot.hover1": "Insert XP Tome to collect xp",
+  "gui.ethereal_enchanting.enchanter.battery_slot.hover2": "when managing enchantments",
+  "gui.ethereal_enchanting.enchanter.xp_tome.hover": "Insert XP Tome to manage levels"
 
 }

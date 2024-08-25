@@ -28,7 +28,6 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, Li
     @WrapOperation(method="tryUseTotem", at=@At(value="INVOKE", target="Lnet/minecraft/entity/LivingEntity;setHealth(F)V"))
     private void enchantingRework$tryUseTotemWrapSetHealth(LivingEntity instance, float health, Operation<Void> original) {
         original.call(instance, health);
-        Log.info(LogCategory.LOG, "Used totem!");
         enchantingRework$used_totem = true;
     }
 

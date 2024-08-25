@@ -62,7 +62,7 @@ public class XPTomeItem extends Item {
         tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line1").formatted(Formatting.GOLD));
         tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line2").formatted(Formatting.GOLD));
         tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line3", getXP(stack)).formatted(Formatting.LIGHT_PURPLE));
-        tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line4", Util.getXPLevelFromPoints(getXP(stack))).formatted(Formatting.LIGHT_PURPLE));
+        tooltip.add(Text.translatable("itemTooltip.ethereal_enchanting.xp_tome_tooltip_line4", (int) Util.getXpLevelFromPoints(getXP(stack))).formatted(Formatting.LIGHT_PURPLE));
     }
 
     public static int getXP(ItemStack stack) {

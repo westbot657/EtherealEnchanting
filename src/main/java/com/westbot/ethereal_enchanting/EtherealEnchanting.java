@@ -5,6 +5,7 @@ import com.westbot.ethereal_enchanting.blocks.ModBlocks;
 import com.westbot.ethereal_enchanting.entity.ModEntities;
 import com.westbot.ethereal_enchanting.loot_tables.ModLootTables;
 import com.westbot.ethereal_enchanting.networking.ModNetworking;
+import com.westbot.ethereal_enchanting.recipe.ModRecipeSerializer;
 import com.westbot.ethereal_enchanting.village.ModVillagerTrades;
 import net.fabricmc.api.ModInitializer;
 import org.slf4j.Logger;
@@ -30,6 +31,7 @@ public class EtherealEnchanting implements ModInitializer {
         ModEntities.initialize();
 
         ModAdvancements.initialize();
+        ModRecipeSerializer.initialize();
 
         ModNetworking.initialize();
 

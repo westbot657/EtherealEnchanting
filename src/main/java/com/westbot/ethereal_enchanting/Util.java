@@ -1,7 +1,6 @@
 package com.westbot.ethereal_enchanting;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -60,17 +59,30 @@ public class Util {
 
     }
 
-    public static int getXPLevelFromPoints(int points) {
-        int lvl = 0;
+    public static double getXpLevelFromPoints(int points) {
+        double lvl = 0;
 
         if (points < 352) {
-            lvl = (int) Math.sqrt(points+9)-3;
+            lvl = Math.sqrt(points+9)-3;
         } else if (points < 1507) {
-            lvl = (int) ((81.0/10.0) + Math.sqrt((2.0/5.0)*(points - (7839.0/40.0))));
+            lvl = ((81.0/10.0) + Math.sqrt((2.0/5.0)*(points - (7839.0/40.0))));
         } else {
             lvl = 32;
         }
         return lvl;
+    }
+
+    public static int getXpPointsFromLevel(double lvl) {
+        int points = 0;
+        if (lvl < 16) {
+            points = (int) (Math.pow(lvl + 3, 2) - 9);
+        } else if (lvl < 31) {
+            points = (int) ((Math.pow(lvl - 81.0 / 10.0, 2) / (2.0 / 5.0)) + 7839.0 / 40.0);
+        } else {
+            points = 1628;
+        }
+
+        return points;
     }
 
     public static Vec3d[] drawCircle(Vec3d center, Vec3d center_axis, double radius, int numPoints, double angleOffset) {
