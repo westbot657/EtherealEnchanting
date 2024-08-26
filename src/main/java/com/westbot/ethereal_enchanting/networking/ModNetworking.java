@@ -8,15 +8,10 @@ import com.westbot.ethereal_enchanting.data_components.ModComponents;
 import com.westbot.ethereal_enchanting.entity.CelestialTrailEntity;
 import com.westbot.ethereal_enchanting.items.XPTomeItem;
 import com.westbot.ethereal_enchanting.screen.EtherealEnchanterScreenHandler;
-import com.westbot.ethereal_enchanting.screen.ScreenHandlers;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.ScreenHandler;
-import net.minecraft.screen.ScreenHandlerSyncHandler;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
@@ -44,7 +39,7 @@ public class ModNetworking {
         PayloadTypeRegistry.playS2C().register(SyncTrailPayload.ID, SyncTrailPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(BatchSyncTrailPayload.ID, BatchSyncTrailPayload.CODEC);
         PayloadTypeRegistry.playS2C().register(ClearAltarIngredientsPayload.ID, ClearAltarIngredientsPayload.CODEC);
-        PayloadTypeRegistry.playS2C().register(SyncAltarInventoryPayload.ID, SyncAltarInventoryPayload.CODEC);
+        PayloadTypeRegistry.playS2C().register(RemoveAltarSlot0Payload.ID, RemoveAltarSlot0Payload.CODEC);
 
         PayloadTypeRegistry.playC2S().register(BatchSyncTrailRequestPayload.ID, BatchSyncTrailRequestPayload.CODEC);
         PayloadTypeRegistry.playC2S().register(EnchanterXPSyncPayload.ID, EnchanterXPSyncPayload.CODEC);

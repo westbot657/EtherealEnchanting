@@ -16,6 +16,7 @@ public class ModItems {
     public static final Item LOST_SOUL = register(new LostSoulItem(), "lost_soul");
     public static final Item WRITTEN_CIPHER = register(new WrittenCipherItem(), "written_cipher");
     public static final Item ENCHANTED_CIPHER = register(new EnchantedCipherItem(), "enchanted_cipher");
+    public static final Item SPELL_BOOK = register(new SpellBookItem(), "spell_book");
 
     public static Item register(Item item, String id) {
 

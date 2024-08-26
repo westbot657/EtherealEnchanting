@@ -4,19 +4,14 @@ import com.westbot.ethereal_enchanting.blocks.entity.AltarBlockEntity;
 import com.westbot.ethereal_enchanting.entity.CelestialTrailEntity;
 import com.westbot.ethereal_enchanting.networking.BatchSyncTrailPayload;
 import com.westbot.ethereal_enchanting.networking.ClearAltarIngredientsPayload;
-import com.westbot.ethereal_enchanting.networking.SyncAltarInventoryPayload;
+import com.westbot.ethereal_enchanting.networking.RemoveAltarSlot0Payload;
 import com.westbot.ethereal_enchanting.networking.SyncTrailPayload;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.RegistryWrapper;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.UUID;
 
 public class ModNetworkingClient {
 
@@ -70,7 +65,7 @@ public class ModNetworkingClient {
             });
         });
 
-        ClientPlayNetworking.registerGlobalReceiver(SyncAltarInventoryPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(RemoveAltarSlot0Payload.ID, (payload, context) -> {
             context.client().execute(() -> {
                 World world = context.client().world;
                 if (world == null) return;
@@ -85,8 +80,8 @@ public class ModNetworkingClient {
                 AltarBlockEntity blockEntity = (AltarBlockEntity) world.getBlockEntity(pos);
                 if (blockEntity == null) return;
 
-                // TODO: figure out how to access the WrapperLookup on the client.
-                // Inventories.readNbt(payload.inventory(), blockEntity.inventory);
+                blockEntity.inventory.set(0, ItemStack.EMPTY);
+
             });
         });
 

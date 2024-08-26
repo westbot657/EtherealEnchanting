@@ -281,20 +281,17 @@ public class EnchanterScreen extends HandledScreen<EtherealEnchanterScreenHandle
         ItemStack tome = handler.getSlot(1).getStack();
 
         if ((!tome.isEmpty()) && tome.isOf(ModItems.XP_TOME)) {
-            // int xpOld = XPTomeItem.getXP(tome);
             int xp = Util.getXpPointsFromLevel(newPos / 2.0);
 
             int delta = Math.abs(xp - xpOld);
             int playerXp;
 
-            // delta is guaranteed to always be available from the
-            // tome when moving to the player
             if (!playerInventory.player.isCreative()) {
                 if (xp > xpOld) {
                     if (handler.getPlayerXp() > delta) {
                         playerXp = handler.getPlayerXp() - delta;
                     } else {
-                        xpSliderX = x; // cap the position of the xp bar
+                        xpSliderX = x;
                         return;
                     }
                 } else {
@@ -306,6 +303,13 @@ public class EnchanterScreen extends HandledScreen<EtherealEnchanterScreenHandle
                     playerXp,
                     this.handler.syncId,
                     xp
+                ));
+            } else {
+                ClientPlayNetworking.send(new EnchanterXPSyncPayload(
+                        playerInventory.player.getUuid(),
+                        handler.getPlayerXp(),
+                        this.handler.syncId,
+                        xp
                 ));
             }
 

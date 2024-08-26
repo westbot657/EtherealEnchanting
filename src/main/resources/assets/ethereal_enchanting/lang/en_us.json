@@ -120,5 +120,7 @@
   "gui.ethereal_enchanting.enchanter.xp_tome.hover": "Insert XP Tome to manage levels",
   "gui.ethereal_enchanting.enchanter.remove_enchant_prompt": "Are you sure you want to remove:",
   "gui.ethereal_enchanting.enchanter.delete_enchant": "Remove Enchantment",
-  "gui.ethereal_enchanting.enchanter.cancel": "Cancel"
+  "gui.ethereal_enchanting.enchanter.cancel": "Cancel",
+
+  "gui.ethereal_enchanting.spell_book.title": "Spell Book"
 }

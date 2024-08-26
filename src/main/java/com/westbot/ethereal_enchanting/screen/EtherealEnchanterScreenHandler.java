@@ -184,12 +184,12 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
                     return ItemStack.EMPTY;
                 }
             } else {
-                if (this.slots.get(0).hasStack() || !this.slots.get(0).canInsert(itemStack2)) {
+                if (this.slots.getFirst().hasStack() || !this.slots.getFirst().canInsert(itemStack2)) {
                     return ItemStack.EMPTY;
                 }
                 ItemStack itemStack3 = itemStack2.copyWithCount(1);
                 itemStack2.decrement(1);
-                this.slots.get(0).setStack(itemStack3);
+                this.slots.getFirst().setStack(itemStack3);
             }
 
             if (itemStack2.isEmpty()) {
