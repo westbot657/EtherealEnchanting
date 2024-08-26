@@ -3,6 +3,9 @@ package com.westbot.ethereal_enchanting.blocks;
 import com.mojang.serialization.MapCodec;
 import com.westbot.ethereal_enchanting.ModSounds;
 import com.westbot.ethereal_enchanting.blocks.entity.AltarBlockEntity;
+import com.westbot.ethereal_enchanting.networking.SyncAltarInventoryPayload;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
@@ -10,6 +13,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -151,6 +155,19 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
                     player.getInventory().offerOrDrop(stack);
                     blockEntity.markDirty();
                     world.playSound(player, pos, SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 0.5F, world.getRandom().nextFloat() * 1.8F + 1.6F);
+
+                    for (PlayerEntity p : PlayerLookup.tracking(blockEntity)) {
+                        NbtCompound blockPos = new NbtCompound();
+                        blockPos.putInt("x", pos.getX());
+                        blockPos.putInt("y", pos.getY());
+                        blockPos.putInt("z", pos.getZ());
+
+                        // TODO: figure out how to access WrapperLookup from server
+                        //ServerPlayNetworking.send(p, new SyncAltarInventoryPayload(
+
+                        //));
+                    }
+
                 }
             }
         }

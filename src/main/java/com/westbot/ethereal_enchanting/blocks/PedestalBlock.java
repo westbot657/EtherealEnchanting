@@ -208,10 +208,6 @@ public class PedestalBlock extends Block {
     @Override
     public void onBroken(WorldAccess world, BlockPos pos, BlockState state) {
 
-//        if (world.isClient()) {
-//            return;
-//        }
-
         removePedestal((World) world, pos, state);
     }
 

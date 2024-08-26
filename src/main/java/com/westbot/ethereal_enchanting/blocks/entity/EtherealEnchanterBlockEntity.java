@@ -33,7 +33,7 @@ public class EtherealEnchanterBlockEntity extends BlockEntity implements Nameabl
     public float lastBookRotation;
     public float targetBookRotation;
 
-    public SimpleInventory inventory = new SimpleInventory(4);
+    public final SimpleInventory inventory = new SimpleInventory(4);
 
     private static final Random RANDOM = Random.create();
 

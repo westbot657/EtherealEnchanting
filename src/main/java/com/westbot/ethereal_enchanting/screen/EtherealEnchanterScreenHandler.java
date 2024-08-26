@@ -1,10 +1,12 @@
 package com.westbot.ethereal_enchanting.screen;
 
+import com.jcraft.jorbis.Block;
 import com.westbot.ethereal_enchanting.EtherealEnchanting;
 import com.westbot.ethereal_enchanting.ModItems;
 import com.westbot.ethereal_enchanting.blocks.ModBlocks;
 import com.westbot.ethereal_enchanting.data_components.EtherealEnchantComponent;
 import com.westbot.ethereal_enchanting.data_components.ModComponents;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -15,6 +17,7 @@ import net.minecraft.screen.Property;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,15 +27,21 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
     private final SimpleInventory inventory;
     private final PlayerInventory playerInventory;
     private final ScreenHandlerContext context;
+    public final BlockPos pos;
 
-    public List<EtherealEnchantComponent> enchantList;
-    public int[] scrollY = new int[]{0};
+
+    public final List<EtherealEnchantComponent> enchantList;
+    public final int[] scrollY = new int[]{0};
+
+    // [0]: dirty flag, [1]: player xp, [2]: tome xp
+    public final int[] xp_tome_properties = new int[]{0, 0, 0};
 
     public ItemStack lastStack = ItemStack.EMPTY;
     public boolean dirty = false;
 
+
     public EtherealEnchanterScreenHandler(int syncId, PlayerInventory playerInventory) {
-        this(syncId, playerInventory, ScreenHandlerContext.EMPTY, new SimpleInventory(4));
+        this(syncId, playerInventory, ScreenHandlerContext.EMPTY, new SimpleInventory(4), null);
     }
 
     /*
@@ -56,22 +65,21 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
      * cipher slot: 152,16
      */
 
-    public boolean scrollUp() {
+    public void scrollUp() {
         int i = scrollY[0];
         scrollY[0] = Math.max(0, scrollY[0]-1);
-        return i != scrollY[0];
     }
 
-    public boolean scrollDown() {
+    public void scrollDown() {
         int i = scrollY[0];
         scrollY[0] = Math.min(scrollY[0]+1, Math.max(enchantList.size()-3, 0));
-        return i != scrollY[0];
     }
 
-    public EtherealEnchanterScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context, SimpleInventory blockInventory) {
+    public EtherealEnchanterScreenHandler(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context, SimpleInventory blockInventory, BlockPos pos) {
         super(ScreenHandlers.ENCHANTER, syncId);
         this.context = context;
         this.inventory = blockInventory;
+        this.pos = pos;
         this.inventory.addListener(this);
         this.enchantList = new ArrayList<>();
         this.playerInventory = playerInventory;
@@ -125,6 +133,9 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
         }
 
         this.addProperty(Property.create(this.scrollY, 0));
+        this.addProperty(Property.create(this.xp_tome_properties, 0));
+        this.addProperty(Property.create(this.xp_tome_properties, 1));
+        this.addProperty(Property.create(this.xp_tome_properties, 2));
 
     }
 
@@ -220,6 +231,7 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
         }
     }
 
+
     @Override
     public void onClosed(PlayerEntity player) {
         this.inventory.removeListener(this);
@@ -230,4 +242,7 @@ public class EtherealEnchanterScreenHandler extends ScreenHandler implements Inv
     public void onInventoryChanged(Inventory sender) {
         this.onContentChanged(sender);
     }
+
+
+
 }

@@ -72,7 +72,7 @@ public class EtherealEnchanterBlock extends BlockWithEntity {
         if (blockEntity instanceof EtherealEnchanterBlockEntity) {
             Text text = ((Nameable)blockEntity).getDisplayName();
             return new SimpleNamedScreenHandlerFactory(
-                (syncId, inventory, player) -> new EtherealEnchanterScreenHandler(syncId, inventory, ScreenHandlerContext.create(world, pos), ((EtherealEnchanterBlockEntity) blockEntity).inventory), text
+                (syncId, inventory, player) -> new EtherealEnchanterScreenHandler(syncId, inventory, ScreenHandlerContext.create(world, pos), ((EtherealEnchanterBlockEntity) blockEntity).inventory, pos), text
             );
         } else {
             return null;

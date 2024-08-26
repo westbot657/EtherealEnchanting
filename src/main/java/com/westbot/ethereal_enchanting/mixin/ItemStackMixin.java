@@ -40,8 +40,6 @@ public abstract class ItemStackMixin implements ComponentHolder {
         boolean ret = original.call(target, player);
 
         List<EtherealEnchantComponent> enchants = this.get(ModComponents.ETHEREAL_ENCHANTS);
-        if (enchants == null) return ret;
-
 
 
         return ret;

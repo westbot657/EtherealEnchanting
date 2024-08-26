@@ -6,6 +6,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+@SuppressWarnings("SameReturnValue")
 public abstract class Enchant {
 
     public boolean postHit(LivingEntity target, PlayerEntity player) {

@@ -7,7 +7,7 @@ import net.minecraft.registry.Registry;
 
 public class ModRecipeSerializer {
 
-    public static net.minecraft.recipe.RecipeSerializer<CipherRecipe> CIPHER_RECIPE = register("cipher_recipe", new SpecialRecipeSerializer<>(CipherRecipe::new));
+    public static final net.minecraft.recipe.RecipeSerializer<CipherRecipe> CIPHER_RECIPE = register("cipher_recipe", new SpecialRecipeSerializer<>(CipherRecipe::new));
 
     static <S extends net.minecraft.recipe.RecipeSerializer<T>, T extends Recipe<?>> S register(String id, S serializer) {
         return Registry.register(Registries.RECIPE_SERIALIZER, id, serializer);

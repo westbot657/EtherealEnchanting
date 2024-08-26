@@ -77,7 +77,7 @@ public class AltarBlockEntity extends BlockEntity {
         WHITE2(12),
         WHITE3(13);
 
-        ;
+
         private final int state;
 
         PedestalState(int state) {
@@ -90,7 +90,7 @@ public class AltarBlockEntity extends BlockEntity {
 
     }
 
-    private final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(16, ItemStack.EMPTY);
+    public final DefaultedList<ItemStack> inventory = DefaultedList.ofSize(16, ItemStack.EMPTY);
     private final DefaultedList<ItemStack> floorBlocks = DefaultedList.ofSize(4, ItemStack.EMPTY);
 
     public String availableEnchant = "";
@@ -169,6 +169,7 @@ public class AltarBlockEntity extends BlockEntity {
             return;
         }
         BlockState altarState = world.getBlockState(this.getPos());
+        if (!altarState.isOf(ModBlocks.ALTAR_BLOCK)) return;
 
         this.floorBlocks.set(0, world.getBlockState(this.getPos().offset(altarState.get(AltarBlock.FACING), 1).down()).getBlock().asItem().getDefaultStack());
         this.floorBlocks.set(1, world.getBlockState(this.getPos().offset(altarState.get(AltarBlock.FACING).rotateYClockwise(), 1).down()).getBlock().asItem().getDefaultStack());
@@ -1428,7 +1429,7 @@ public class AltarBlockEntity extends BlockEntity {
         int prot_count = 0;
 
         for (EtherealEnchantComponent e : enchants) {
-            if (PROTECTION_TYPES.contains(enchant)) {
+            if (PROTECTION_TYPES.contains(e.enchant())) {
                 prot_count++;
             }
         }
@@ -2016,59 +2017,29 @@ public class AltarBlockEntity extends BlockEntity {
         if (forward.rotateYClockwise() == pedestalState.get(PedestalBlock.ALTAR_DIRECTION)) {
             // Pedestal is in the right direction
             switch (slot) {
-                case 0 -> {
-                    setStack(9, stack);
-                }
-                case 1 -> {
-                    setStack(10, stack);
-                }
-                case 2 -> {
-                    setStack(11, stack);
-                }
-                case 3 -> {
-                    setStack(12, stack);
-                }
-                case 4 -> {
-                    setStack(13, stack);
-                }
+                case 0 -> setStack(9, stack);
+                case 1 -> setStack(10, stack);
+                case 2 -> setStack(11, stack);
+                case 3 -> setStack(12, stack);
+                case 4 -> setStack(13, stack);
             }
         } else if (forward == pedestalState.get(PedestalBlock.ALTAR_DIRECTION)) {
             // Pedestal is in the back direction
             switch (slot) {
-                case 0 -> {
-                    setStack(5, stack);
-                }
-                case 1 -> {
-                    setStack(6, stack);
-                }
-                case 2 -> {
-                    setStack(7, stack);
-                }
-                case 3 -> {
-                    setStack(8, stack);
-                }
-                case 4 -> {
-                    setStack(14, stack);
-                }
+                case 0 -> setStack(5, stack);
+                case 1 -> setStack(6, stack);
+                case 2 -> setStack(7, stack);
+                case 3 -> setStack(8, stack);
+                case 4 -> setStack(14, stack);
             }
         } else if (forward.rotateYCounterclockwise() == pedestalState.get(PedestalBlock.ALTAR_DIRECTION)) {
             // Pedestal is in the left direction
             switch (slot) {
-                case 0 -> {
-                    setStack(1, stack);
-                }
-                case 1 -> {
-                    setStack(2, stack);
-                }
-                case 2 -> {
-                    setStack(3, stack);
-                }
-                case 3 -> {
-                    setStack(4, stack);
-                }
-                case 4 -> {
-                    setStack(15, stack);
-                }
+                case 0 -> setStack(1, stack);
+                case 1 -> setStack(2, stack);
+                case 2 -> setStack(3, stack);
+                case 3 -> setStack(4, stack);
+                case 4 -> setStack(15, stack);
             }
         }
 

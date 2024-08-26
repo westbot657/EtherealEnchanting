@@ -67,7 +67,7 @@ public class Util {
         } else if (points < 1507) {
             lvl = ((81.0/10.0) + Math.sqrt((2.0/5.0)*(points - (7839.0/40.0))));
         } else {
-            lvl = 32;
+            lvl = (325.0/18.0) + Math.sqrt((2.0/9.0) * (points - (54215.0/72.0)));
         }
         return lvl;
     }
@@ -79,7 +79,7 @@ public class Util {
         } else if (lvl < 31) {
             points = (int) ((Math.pow(lvl - 81.0 / 10.0, 2) / (2.0 / 5.0)) + 7839.0 / 40.0);
         } else {
-            points = 1628;
+            points = (int) ((Math.pow(lvl - 325.0 / 18.0, 2) / (2.0 / 9.0)) + 54215.0 / 72.0);
         }
 
         return points;

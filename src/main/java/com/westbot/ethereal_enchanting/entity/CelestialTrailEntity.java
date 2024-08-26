@@ -23,10 +23,10 @@ import java.util.UUID;
 public class CelestialTrailEntity extends Entity {
 
     public static class LineSegment {
-        public Vec3d start;
-        public Vec3d end;
-        public Quaternionf rotation;
-        public double length;
+        public final Vec3d start;
+        public final Vec3d end;
+        public final Quaternionf rotation;
+        public final double length;
 
         public LineSegment(Vec3d start, Vec3d end) {
             this.start = start;

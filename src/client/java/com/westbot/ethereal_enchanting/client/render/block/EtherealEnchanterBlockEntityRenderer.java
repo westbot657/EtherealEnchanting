@@ -20,7 +20,9 @@ import net.minecraft.util.math.RotationAxis;
 @Environment(EnvType.CLIENT)
 public class EtherealEnchanterBlockEntityRenderer implements BlockEntityRenderer<EtherealEnchanterBlockEntity> {
 
-    public static final SpriteIdentifier BOOK_TEXTURE = new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, Identifier.ofVanilla("entity/enchanting_table_book"));;
+    public static final SpriteIdentifier BOOK_TEXTURE = new SpriteIdentifier(Identifier.ofVanilla("textures/atlas/blocks.png"), Identifier.ofVanilla("entity/enchanting_table_book"));
+
+
 
     private final BookModel book;
 

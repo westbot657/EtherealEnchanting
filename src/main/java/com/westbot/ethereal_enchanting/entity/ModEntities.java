@@ -17,16 +17,6 @@ public class ModEntities {
         EntityType.Builder.create(CelestialTrailEntity::new, SpawnGroup.MISC).dimensions(0.1f, 0.1f).build()
     );
 
-//    public static final EntityType<CelestialTrailEntity> CELESTIAL_TRAIL_TYPE = (EntityType<CelestialTrailEntity>) register("celestial_trail", CelestialTrailEntity::new);
-//
-//    public static EntityType<? extends MobEntity> register(String name, EntityType.EntityFactory<? extends Entity> factory) {
-//        return (EntityType<? extends MobEntity>) Registry.register(
-//            Registries.ENTITY_TYPE,
-//            Identifier.of("ethereal_enchanting", name),
-//            EntityType.Builder.create(factory, SpawnGroup.MISC).dimensions(0.2f, 0.2f).build()
-//        );
-//    }
-
     public static void initialize() {
 
     }
