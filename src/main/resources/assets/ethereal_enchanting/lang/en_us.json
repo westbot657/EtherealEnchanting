@@ -5,6 +5,7 @@
   "item.ethereal_enchanting.lost_soul": "Lost Soul",
   "item.ethereal_enchanting.written_cipher": "Written Cipher",
   "item.ethereal_enchanting.enchanted_cipher": "Enchanted Cipher",
+  "item.ethereal_enchanting.spell_book": "Spell Book",
 
   "itemTooltip.ethereal_enchanting.xp_tome_tooltip_line1": "Stores up to 32 levels of XP",
   "itemTooltip.ethereal_enchanting.xp_tome_tooltip_line2": "Place in an enchanting table to manage XP",

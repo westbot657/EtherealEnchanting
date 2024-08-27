@@ -4,7 +4,8 @@
   "package": "com.westbot.ethereal_enchanting.client.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "DrawContextMixin"
+    "DrawContextMixin",
+    "HandledScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1

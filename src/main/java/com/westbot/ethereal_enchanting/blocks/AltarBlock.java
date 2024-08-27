@@ -62,6 +62,8 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
         return CODEC;
     }
 
+
+
     public AltarBlock(Settings settings) {
         super(settings);
 
@@ -71,6 +73,8 @@ public class AltarBlock extends BlockWithEntity implements BlockEntityProvider {
             .with(BACK_PEDESTAL, false).with(ON_FIRE, false));
 
     }
+
+
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

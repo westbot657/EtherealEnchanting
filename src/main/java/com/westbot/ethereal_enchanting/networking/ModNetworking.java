@@ -75,9 +75,7 @@ public class ModNetworking {
 
                     ItemStack tome = blockEntity.inventory.getStack(1);
                     if ((!tome.isEmpty()) && (tome.isOf(ModItems.XP_TOME))) {
-                        EtherealEnchanting.LOGGER.info("Server Player xp before change: {}", player.totalExperience);
                         player.addExperience((-player.totalExperience)+payload.playerXp());
-                        EtherealEnchanting.LOGGER.info("Server player xp after change: {}", player.totalExperience);
 
                         XPTomeItem.setXP(tome, payload.tomeXp());
 
