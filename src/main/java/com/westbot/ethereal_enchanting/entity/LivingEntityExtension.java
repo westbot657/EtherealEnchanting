@@ -10,4 +10,7 @@ public interface LivingEntityExtension {
 
     void enchantingRework$setUsedTotem(boolean value);
 
+    boolean enchantingRework$shouldHideSpellBook();
+    void enchantingRework$setHideSpellBook(boolean value);
+
 }

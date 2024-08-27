@@ -546,6 +546,8 @@ public class EnchanterScreen extends HandledScreen<EtherealEnchanterScreenHandle
         super.render(context, mouseX, mouseY, delta);
         this.drawMouseoverTooltip(context, mouseX, mouseY);
 
+
+
         if (focusedSlot != null && !focusedSlot.hasStack()) {
             List<Text> hover_text = new ArrayList<>();
             if (focusedSlot.id == 3) {

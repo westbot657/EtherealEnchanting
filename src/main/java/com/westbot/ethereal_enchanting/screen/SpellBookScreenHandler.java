@@ -2,6 +2,7 @@ package com.westbot.ethereal_enchanting.screen;
 
 import com.westbot.ethereal_enchanting.ModItems;
 import com.westbot.ethereal_enchanting.data_components.ModComponents;
+import com.westbot.ethereal_enchanting.entity.LivingEntityExtension;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -22,6 +23,11 @@ public class SpellBookScreenHandler extends ScreenHandler implements InventoryCh
         this.inventory = inventory;
         addProperty(Property.create(page, 0));
         buildCipher();
+    }
+
+    @Override
+    public void onClosed(PlayerEntity player) {
+        ((LivingEntityExtension) player).enchantingRework$setHideSpellBook(false);
     }
 
     private void buildCipher() {

@@ -20,6 +20,9 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, Li
     @Unique
     public boolean enchantingRework$used_totem = false;
 
+    @Unique
+    public boolean enchantingRework$hide_spell_book = false;
+
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -40,6 +43,16 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, Li
     @Unique
     public void enchantingRework$setUsedTotem(boolean usedTotem) {
         enchantingRework$used_totem = usedTotem;
+    }
+
+    @Unique
+    public void enchantingRework$setHideSpellBook(boolean value) {
+        enchantingRework$hide_spell_book = value;
+    }
+
+    @Unique
+    public boolean enchantingRework$shouldHideSpellBook() {
+        return enchantingRework$hide_spell_book;
     }
 
 }
