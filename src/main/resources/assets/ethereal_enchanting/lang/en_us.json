@@ -123,5 +123,6 @@
   "gui.ethereal_enchanting.enchanter.delete_enchant": "Remove Enchantment",
   "gui.ethereal_enchanting.enchanter.cancel": "Cancel",
 
-  "gui.ethereal_enchanting.spell_book.title": "Spell Book"
+  "gui.ethereal_enchanting.spell_book.title": "Spell Book",
+  "gui.ethereal_enchanting.spell_book.pages": "Page %1$s of %2$s"
 }

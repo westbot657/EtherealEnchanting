@@ -1,5 +1,6 @@
 package com.westbot.ethereal_enchanting.items;
 
+import com.westbot.ethereal_enchanting.EtherealEnchanting;
 import com.westbot.ethereal_enchanting.entity.LivingEntityExtension;
 import com.westbot.ethereal_enchanting.screen.SpellBookScreenHandler;
 import net.minecraft.entity.player.PlayerEntity;
@@ -19,9 +20,9 @@ public class SpellBookItem extends Item {
 
     @Override
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
-
-
         ((LivingEntityExtension) user).enchantingRework$setHideSpellBook(true);
+
+        EtherealEnchanting.LOGGER.info("Should hide book: {}", ((LivingEntityExtension) user).enchantingRework$shouldHideSpellBook());
 
         user.openHandledScreen(
             new SimpleNamedScreenHandlerFactory(

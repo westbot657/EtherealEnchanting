@@ -4,10 +4,11 @@ import com.westbot.ethereal_enchanting.client.accessors.HandledScreenMixinInterf
 import com.westbot.ethereal_enchanting.screen.SpellBookScreenHandler;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.math.MathHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +21,12 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
     private boolean pf_hovered = false;
 
     // page forward/backward are 23x13
-    public static final Identifier PAGE_BACKWARD = Identifier.of("minecraft", "textures/gui/sprites/widget/page_backward.png");
-    public static final Identifier PAGE_FORWARD = Identifier.of("minecraft", "textures/gui/sprites/widget/page_forward.png");
-    public static final Identifier PAGE_BACKWARD_HIGHLIGHTED = Identifier.of("minecraft", "textures/gui/sprites/widget/page_backward_highlighted.png");
-    public static final Identifier PAGE_FORWARD_HIGHLIGHTED = Identifier.of("minecraft", "textures/gui/sprites/widget/page_forward_highlighted.png");
+    public static final Identifier PAGE_BACKWARD = Identifier.of("ethereal_enchanting", "textures/gui/sprites/widget/page_backward.png");
+    public static final Identifier PAGE_FORWARD = Identifier.of("ethereal_enchanting", "textures/gui/sprites/widget/page_forward.png");
+    public static final Identifier PAGE_BACKWARD_HIGHLIGHTED = Identifier.of("ethereal_enchanting", "textures/gui/sprites/widget/page_backward_highlighted.png");
+    public static final Identifier PAGE_FORWARD_HIGHLIGHTED = Identifier.of("ethereal_enchanting", "textures/gui/sprites/widget/page_forward_highlighted.png");
+
+    protected static int BLACK = MathHelper.packRgb(0,0,0);
 
     // 46,151
     // 187, 151
@@ -45,7 +48,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                 return true;
             }
             if (pf_hovered) {
-                handler.page[0] = Math.min(handler.page[0]+1, PAGES.size());
+                handler.page[0] = Math.min(handler.page[0]+1, PAGES.size()-1);
                 return true;
             }
         }
@@ -111,20 +114,27 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
         }
 
         if (isPointWithinBounds(46, 151, 22, 12, mouseX, mouseY)) {
-            context.drawTexture(PAGE_BACKWARD_HIGHLIGHTED, uiX+46, uiY+151, 0, 0, 23, 13);
+            context.drawTexture(PAGE_BACKWARD_HIGHLIGHTED, uiX+46, uiY+151, 0, 0, 23, 13, 23, 13);
             pb_hovered = true;
         } else {
-            context.drawTexture(PAGE_BACKWARD, uiX+46, uiY+151, 0, 0, 23, 13);
+            context.drawTexture(PAGE_BACKWARD, uiX+46, uiY+151, 0, 0, 23, 13, 23, 13);
             pb_hovered = false;
         }
 
         if (isPointWithinBounds(187, 151, 22, 12, mouseX, mouseY)) {
-            context.drawTexture(PAGE_FORWARD_HIGHLIGHTED, uiX+187, uiY+151, 0, 0, 23, 13);
+            context.drawTexture(PAGE_FORWARD_HIGHLIGHTED, uiX+187, uiY+151, 0, 0, 23, 13, 23, 13);
             pf_hovered = true;
         } else {
-            context.drawTexture(PAGE_FORWARD, uiX+187, uiY+151, 0, 0, 23, 13);
+            context.drawTexture(PAGE_FORWARD, uiX+187, uiY+151, 0, 0, 23, 13, 23, 13);
             pf_hovered = false;
         }
+
+        MatrixStack matrices = context.getMatrices();
+        matrices.push();
+        matrices.scale(0.5f, 0.5f, 0.5f);
+        context.drawText(this.textRenderer, Text.translatable("gui.ethereal_enchanting.spell_book.pages", handler.page[0]+1, PAGES.size()), (uiX+70)*2, (uiY+160)*2, BLACK, false);
+        matrices.pop();
+
     }
 
     @Override
