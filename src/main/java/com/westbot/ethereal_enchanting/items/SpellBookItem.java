@@ -7,6 +7,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
@@ -22,7 +23,7 @@ public class SpellBookItem extends Item {
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ((LivingEntityExtension) user).enchantingRework$setHideSpellBook(true);
 
-        EtherealEnchanting.LOGGER.info("Should hide book: {}", ((LivingEntityExtension) user).enchantingRework$shouldHideSpellBook());
+        user.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, 0.5f, 1);
 
         user.openHandledScreen(
             new SimpleNamedScreenHandlerFactory(

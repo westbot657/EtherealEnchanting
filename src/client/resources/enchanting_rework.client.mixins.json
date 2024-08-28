@@ -6,7 +6,7 @@
   "client": [
     "DrawContextMixin",
     "HandledScreenMixin",
-    "HeldItemFeatureRendererMixin"
+    "HeldItemRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
