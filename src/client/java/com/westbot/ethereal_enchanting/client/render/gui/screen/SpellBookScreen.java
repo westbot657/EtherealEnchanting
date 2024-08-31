@@ -3,7 +3,7 @@ package com.westbot.ethereal_enchanting.client.render.gui.screen;
 import com.westbot.ethereal_enchanting.client.accessors.HandledScreenMixinInterface;
 import com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book.AltarDisplay;
 import com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book.Element;
-import com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book.Page;
+import com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book.RuneDisplay;
 import com.westbot.ethereal_enchanting.screen.SpellBookScreenHandler;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -22,7 +22,7 @@ import java.util.List;
 public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
 
     public SpellBookScreenHandler handler;
-    public TextRenderer textRenderer;
+    public TextRenderer textRenderer2;
 
     private static final Identifier FONT_ID = Identifier.ofVanilla("alt");
     private static final Style STYLE = Style.EMPTY.withFont(FONT_ID);
@@ -30,8 +30,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
 
     public static final Identifier BACKGROUND = Identifier.of("ethereal_enchanting", "textures/gui/spell_book/spell_book_screen_bg.png");
 
-    public static final Identifier GRADIENT = Identifier.of("ethereal_enchanting", "textures/gui/spell_book/gradient.png");
-    public static final Identifier WIREFRAME = Identifier.of("ethereal_enchanting", "textures/gui/spell_book/altar_wireframe.png");
+
 
 
     private final PlayerInventory playerInventory;
@@ -67,6 +66,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                 handler.page[0] = Math.max(0, handler.page[0]-1);
                 if (t != handler.page[0]) {
                     playerInventory.player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, 0.5f, 1);
+                    handler.buildCipher();
                 }
                 return true;
             }
@@ -74,6 +74,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                 handler.page[0] = Math.min(handler.page[0]+1, PAGES.size()-1);
                 if (t != handler.page[0]) {
                     playerInventory.player.playSound(SoundEvents.ITEM_BOOK_PAGE_TURN, 0.2f, 1);
+                    handler.buildCipher();
                 }
                 return true;
             }
@@ -81,6 +82,16 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
 
         return super.mouseClicked(mouseX, mouseY, button);
     }
+
+    protected static abstract class Page implements Element {
+
+        protected Page() {
+        }
+
+        public abstract void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler);
+        public abstract void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler);
+    }
+
 
     private static final List<Page> PAGES = new ArrayList<>() {{
 
@@ -99,15 +110,25 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
 
             private final AltarDisplay altarDisplay = new AltarDisplay(
                     "block.minecraft.blue_ice",
-                    "block.minecraft.bamboo_mosaic",
-                    "block.minecraft.chiseled_copper",
-                    "block.minecraft.chiseled_polished_blackstone"
+                    "block.minecraft.blue_ice",
+                    "block.minecraft.blue_ice",
+                    "block.minecraft.blue_ice"
+            );
+
+            private final RuneDisplay leftRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.chilled.arrow",
+                "",
+                "",
+                "",
+                -40, 64
             );
 
             @Override
             public void drawBg(DrawContext context, float delta, int mouseX, int mouseY, com.westbot.ethereal_enchanting.client.render.gui.screen.SpellBookScreen handler) {
                 context.drawTexture(BACKGROUND, handler.uiX, handler.uiY+offsetY, 0, 0, 256, 256);
                 altarDisplay.drawBg(context, delta, mouseX, mouseY, handler);
+                leftRune.drawRune(context, delta, mouseX, mouseY, handler);
             }
 
             @Override
@@ -132,6 +153,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
 
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY) {
+        this.textRenderer2 = this.textRenderer;
         Element page = PAGES.get(handler.page[0]);
 
         uiX = (this.width - backgroundWidth) / 2;

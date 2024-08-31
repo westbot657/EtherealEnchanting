@@ -30,7 +30,7 @@ public class SpellBookScreenHandler extends ScreenHandler implements InventoryCh
         ((LivingEntityExtension) player).enchantingRework$setHideSpellBook(false);
     }
 
-    private void buildCipher() {
+    public void buildCipher() {
         this.cipher = "";
 
         for (int i = 0; i<inventory.size(); i++) {

@@ -124,5 +124,19 @@
   "gui.ethereal_enchanting.enchanter.cancel": "Cancel",
 
   "gui.ethereal_enchanting.spell_book.title": "Spell Book",
-  "gui.ethereal_enchanting.spell_book.pages": "Page %1$s of %2$s"
+  "gui.ethereal_enchanting.spell_book.pages": "Page %1$s of %2$s",
+
+  "spell.chilled.arrow": "Projectile of the frozen bones",
+  "spell.chilled.ice": "Cold Water",
+  "spell.chilled.packed_ice": "Compacted",
+  "spell.chilled.blue_ice": "Blue",
+
+  "spell.incendiary.netherrack": "Rock from hell",
+  "spell.incendiary.blaze_rod": "§7Rod of fire§r",
+  "spell.incendiary.blaze_powder": "Dust of flame",
+
+  "spell.celestial_binding.nether_star": "Star of the beast",
+  "spell.celestial_binding.end_stone": "Stone from the void",
+  "spell.celestial_binding.eye_of_ender": "Eye of the end"
+
 }

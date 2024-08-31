@@ -1,5 +1,6 @@
 package com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.westbot.ethereal_enchanting.client.render.gui.screen.SpellBookScreen;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -8,11 +9,15 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
+import java.util.Objects;
+
 
 public class AltarDisplay implements Element {
-
+    public static final Identifier GRADIENT = Identifier.of("ethereal_enchanting", "textures/gui/spell_book/gradient.png");
+    public static final Identifier WIREFRAME = Identifier.of("ethereal_enchanting", "textures/gui/spell_book/altar_wireframe.png");
 
     private SpellBookScreen handler;
+    private String cipher = "";
     private Text block1SGA;
     private Text block1;
     private Text block2SGA;
@@ -60,19 +65,20 @@ public class AltarDisplay implements Element {
     }
 
     // right-aligned
-    private static final int b1X = 40/2;
-    private static final int b1Y = 262/2;
-    private static final int b2X = 33/2;
-    private static final int b2Y = 186/2;
+    private static final int b1X = 20;
+    private static final int b1Y = 394;
+    private static final int b2X = 13;
+    private static final int b2Y = 321;
 
     // left-aligned
-    private static final int b3X = 522/2;
-    private static final int b3Y = 186/2;
-    private static final int b4X = 515/2;
-    private static final int b4Y = 262/2;
+    private static final int b3X = 502;
+    private static final int b3Y = 323;
+    private static final int b4X = 495;
+    private static final int b4Y = 396;
 
     public void setup(SpellBookScreen handler, String block1key, String block2key, String block3key, String block4key) {
-        if (this.handler == null) {
+        if (this.handler == null || !this.cipher.equals(handler.handler.cipher)) {
+            this.cipher = handler.handler.cipher;
             this.handler = handler;
 
             block1SGA = Text.translatable(block1key).setStyle(STYLE);
@@ -84,30 +90,45 @@ public class AltarDisplay implements Element {
             block4SGA = Text.translatable(block4key).setStyle(STYLE);
             block4 = getDecryptedText(block4SGA, handler);
 
-            sgaw1 = (int) (handler.textRenderer.getWidth(block1SGA)/1.1);
-            w1 = (int) (handler.textRenderer.getWidth(block1)/1.1);
-            sgaw2 = (int) (handler.textRenderer.getWidth(block2SGA)/1.1);
-            w2 = (int) (handler.textRenderer.getWidth(block2)/1.1);
+            sgaw1 = (handler.textRenderer2.getWidth(block1SGA));
+            w1 = (handler.textRenderer2.getWidth(block1));
+            sgaw2 = (handler.textRenderer2.getWidth(block2SGA));
+            w2 = (handler.textRenderer2.getWidth(block2));
         }
     }
 
+
+    private static final float SCALE = 2.5f;
+    private static final float FACTOR = 1.0f/SCALE;
+    private static final int DELTA_X = (int) (64/SCALE);
+    private static final int DELTA_Y = (int) (64/SCALE);
+    private static final boolean SHADOW = true;
     @Override
     public void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler) {
         setup(handler, b1, b2, b3, b4);
         MatrixStack matrices = context.getMatrices();
+        RenderSystem.enableBlend();
         matrices.push();
         matrices.scale(0.5f, 0.5f, 0.5f);
-        context.drawText(handler.textRenderer, block1SGA, (handler.uiX+b1X-sgaw1)*2, (handler.uiY+b1Y)*2, GRAY, false);
-        context.drawText(handler.textRenderer, block1, (handler.uiX+b1X-w1)*2, (handler.uiY+b1Y+4)*2, WHITE, false);
+        context.drawTexture(GRADIENT, (handler.uiX)*2, (handler.uiY+16)*2, 0, 0, 512, 512, 512, 512);
+        matrices.pop();
 
-        context.drawText(handler.textRenderer, block2SGA, (handler.uiX+b2X-sgaw2)*2, (handler.uiY+b2Y)*2, GRAY, false);
-        context.drawText(handler.textRenderer, block2, (handler.uiX+b2X-w2)*2, (handler.uiY+b2Y+4)*2, WHITE, false);
+        matrices.push();
+        matrices.scale(FACTOR, FACTOR, FACTOR);
+        context.drawTexture(WIREFRAME, (int) ((handler.uiX+DELTA_X)*SCALE), (int) ((handler.uiY+DELTA_Y)*SCALE), 0, 0, 512, 512, 512, 512);
+        RenderSystem.disableBlend();
 
-        context.drawText(handler.textRenderer, block3SGA, (handler.uiX+b3X)*2, (handler.uiY+b3Y)*2, GRAY, false);
-        context.drawText(handler.textRenderer, block3, (handler.uiX+b3X)*2, (handler.uiY+b3Y+4)*2, WHITE, false);
+        context.drawText(handler.textRenderer2, block1SGA, (int) ((handler.uiX+DELTA_X)*SCALE+b1X-sgaw1), (int) ((handler.uiY+DELTA_Y)*SCALE+b1Y), GRAY, SHADOW);
+        context.drawText(handler.textRenderer2, block1, (int) ((handler.uiX+DELTA_X)*SCALE+b1X-w1), (int) ((handler.uiY+4+DELTA_Y)*SCALE+b1Y), WHITE, SHADOW);
 
-        context.drawText(handler.textRenderer, block4SGA, (handler.uiX+b4X)*2, (handler.uiY+b4Y)*2, GRAY, false);
-        context.drawText(handler.textRenderer, block4, (handler.uiX+b4X)*2, (handler.uiY+b4Y+4)*2, WHITE, false);
+        context.drawText(handler.textRenderer2, block2SGA, (int) ((handler.uiX+DELTA_X)*SCALE+b2X-sgaw2), (int) ((handler.uiY+DELTA_Y)*SCALE+b2Y), GRAY, SHADOW);
+        context.drawText(handler.textRenderer2, block2, (int) ((handler.uiX+DELTA_X)*SCALE+b2X-w2), (int) ((handler.uiY+4+DELTA_Y)*SCALE+b2Y), WHITE, SHADOW);
+
+        context.drawText(handler.textRenderer2, block3SGA, (int) ((handler.uiX+DELTA_X)*SCALE+b3X), (int) ((handler.uiY+DELTA_Y)*SCALE+b3Y), GRAY, SHADOW);
+        context.drawText(handler.textRenderer2, block3, (int) ((handler.uiX+DELTA_X)*SCALE+b3X), (int) ((handler.uiY+4+DELTA_Y)*SCALE+b3Y), WHITE, SHADOW);
+
+        context.drawText(handler.textRenderer2, block4SGA, (int) ((handler.uiX+DELTA_X)*SCALE+b4X), (int) ((handler.uiY+DELTA_Y)*SCALE+b4Y), GRAY, SHADOW);
+        context.drawText(handler.textRenderer2, block4, (int) ((handler.uiX+DELTA_X)*SCALE+b4X), (int) ((handler.uiY+4+DELTA_Y)*SCALE+b4Y), WHITE, SHADOW);
         matrices.pop();
     }
 
