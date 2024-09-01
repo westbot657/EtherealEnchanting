@@ -674,7 +674,7 @@ public class AltarBlockEntity extends BlockEntity {
                         lvl = 3;
                     } else if (XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL20.getPoints()) {
                         lvl = 2;
-                    } else {
+                    } else if (XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL10.getPoints()) {
                         lvl = 1;
                     }
 
@@ -713,7 +713,7 @@ public class AltarBlockEntity extends BlockEntity {
                         lvl = 3;
                     } else if (XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL20.getPoints()) {
                         lvl = 2;
-                    } else {
+                    } else if (XPTomeItem.getXP(stack) >= Util.XPLevel.LEVEL10.getPoints()) {
                         lvl = 1;
                     }
 
@@ -1260,11 +1260,11 @@ public class AltarBlockEntity extends BlockEntity {
 
                 if (getStack(BACK_0).isOf(ModItems.XP_TOME)) {
                     int xp = XPTomeItem.getXP(getStack(BACK_0));
-                    if (xp >= Util.XPLevel.LEVEL20.getPoints()) {
+                    if (xp >= Util.XPLevel.LEVEL30.getPoints()) {
                         lvl = 3;
-                    } else if (xp >= Util.XPLevel.LEVEL10.getPoints()) {
+                    } else if (xp >= Util.XPLevel.LEVEL20.getPoints()) {
                         lvl = 2;
-                    } else {
+                    } else if (xp >= Util.XPLevel.LEVEL10.getPoints()) {
                         lvl = 1;
                     }
                     setPedestalState(PedestalPlacement.BACK, lvl == 3 ? PedestalState.WHITE3 : lvl == 2 ? PedestalState.WHITE2 : PedestalState.WHITE1);

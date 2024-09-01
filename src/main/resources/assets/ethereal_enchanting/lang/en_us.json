@@ -127,16 +127,80 @@
   "gui.ethereal_enchanting.spell_book.pages": "Page %1$s of %2$s",
 
   "spell.chilled.arrow": "Projectile of the frozen bones",
-  "spell.chilled.ice": "Cold Water",
+  "spell.chilled.ice": "Cold water",
   "spell.chilled.packed_ice": "Compacted",
   "spell.chilled.blue_ice": "Blue",
 
   "spell.incendiary.netherrack": "Rock from hell",
-  "spell.incendiary.blaze_rod": "§7Rod of fire§r",
+  "spell.incendiary.blaze_rod": "Rod of fire",
   "spell.incendiary.blaze_powder": "Dust of flame",
 
   "spell.celestial_binding.nether_star": "Star of the beast",
   "spell.celestial_binding.end_stone": "Stone from the void",
-  "spell.celestial_binding.eye_of_ender": "Eye of the end"
+  "spell.celestial_binding.eye_of_ender": "Eye of the end",
+
+  "spell.soulbound.nether_star": "Star of the beast",
+  "spell.soulbound.lost_soul": "A Lost soul",
+  "spell.soulbound.eye_of_ender": "Eye of the end",
+
+  "spell.slashing.strength": "A strengthening brew",
+  "spell.slashing.flint": "A sharp loose stone",
+  "spell.slashing.sword": "A fighters weapon",
+
+  "spell.weighted.iron_block": "A block of metal",
+  "spell.weighted.anvil": "Forge of steel",
+
+  "spell.conductive.copper_ingot": "A piece of copper",
+  "spell.conductive.lightning_rod": "Magnet of thunder",
+
+  "spell.inductive.copper_ingot": "A piece of copper",
+  "spell.inductive.redstone_dust": "Blood of technology",
+
+  "spell.mending.xp_bottle": "Experience in a bottle",
+  "spell.mending.xp_tome": "Tome of ten",
+
+  "spell.unbreaking.iron_block": "A block of metal",
+  "spell.unbreaking.xp_tome": "Tome of ten",
+
+  "spell.luck.lapis": "Blue of magic",
+  "spell.luck.redstone_dust": "Blood of technology",
+  "spell.luck.gold_ingot": "Metal butter",
+
+  "spell.padded.wool": "Wool of a sheep",
+  "spell.padded.stone": "Smooth rock",
+  "spell.padded.rabbit_hide": "Hide of a rabbit",
+
+  "spell.resistive.copper_ingot": "A piece of copper",
+  "spell.resistive.dried_kelp": "Cooked ocean tendrils",
+
+  "spell.plated.iron_ingot": "Hardware",
+  "spell.plated.pressure_plate": "Weighted plate",
+
+  "spell.insulated.magma_block": "Block of cooling lava",
+  "spell.insulated.wool": "Wool of a sheep",
+  "spell.insulated.packed_ice": "Compact cooled water",
+
+  "spell.elastic.feather": "Light as a feather",
+  "spell.elastic.breeze_rod": "Rod of wind",
+  "spell.elastic.phantom_membrane": "Membrane of the night terrors",
+
+  "spell.thorns.cactus": "Desert plant",
+  "spell.thorns.magma_block": "Block of cooling lava",
+  "spell.thorns.berry_bush": "Sweet and spiky",
+
+  "spell.inertial.phantom_membrane": "Membrane of the night terrors",
+  "spell.inertial.nether_star": "Star of the beast",
+  "spell.inertial.wind_charge": "A gust of wind",
+
+  "spell.hydrodynamic.gold_pickaxe": "The fastest miner",
+  "spell.hydrodynamic.prismarine": "Scrap of the ocean monument",
+  "spell.hydrodynamic.turtle_scute": "Scute of a turtle",
+
+  "spell.swift_sneak.echo_shard": "Fragmented echo",
+  "spell.swift_sneak.xp_tome": "Tome of ten",
+
+  "spell.soul_speed.wither_skull": "Head of a skeleton from hell",
+  "spell.soul_speed.lost_soul": "A Lost soul",
+  "spell.soul_speed.soul_sand": "Soulful hell turf"
 
 }
