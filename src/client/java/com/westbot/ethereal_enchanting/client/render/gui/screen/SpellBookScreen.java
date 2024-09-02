@@ -124,16 +124,77 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                 -40, 64
             );
 
+            private final RuneDisplay rightRune = new RuneDisplay(
+                RuneDisplay.RuneType.SCALE_3,
+                "spell.chilled.ice",
+                "spell.chilled.packed_ice",
+                "spell.chilled.blue_ice",
+                "",
+                256, 64
+            );
+
             @Override
             public void drawBg(DrawContext context, float delta, int mouseX, int mouseY, com.westbot.ethereal_enchanting.client.render.gui.screen.SpellBookScreen handler) {
                 context.drawTexture(BACKGROUND, handler.uiX, handler.uiY+offsetY, 0, 0, 256, 256);
                 altarDisplay.drawBg(context, delta, mouseX, mouseY, handler);
                 leftRune.drawRune(context, delta, mouseX, mouseY, handler);
+                rightRune.drawRune(context, delta, mouseX, mouseY, handler);
             }
 
             @Override
             public void draw(DrawContext context, int mouseX, int mouseY, float delta, com.westbot.ethereal_enchanting.client.render.gui.screen.SpellBookScreen handler) {
                 altarDisplay.draw(context, mouseX, mouseY, delta, handler);
+            }
+        });
+
+        add(new Page() {
+
+            private final AltarDisplay altarDisplay = new AltarDisplay(
+                "block.minecraft.magma_block",
+                "block.minecraft.magma_block",
+                "block.minecraft.magma_block",
+                "block.minecraft.magma_block"
+            );
+
+            private final RuneDisplay leftRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.incendiary.netherrack",
+                "",
+                "",
+                "",
+                -40, 64
+            );
+
+            private final RuneDisplay middleRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.incendiary.blaze_rod",
+                "",
+                "",
+                "",
+                108, 40
+            );
+
+            private final RuneDisplay rightRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.incendiary.blaze_powder",
+                "",
+                "",
+                "",
+                256, 64
+            );
+
+            @Override
+            public void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler) {
+                context.drawTexture(BACKGROUND, handler.uiX, handler.uiY+offsetY, 0, 0, 256, 256);
+                altarDisplay.drawBg(context, delta, mouseX, mouseY, handler);
+                leftRune.drawRune(context, delta, mouseX, mouseY, handler);
+                middleRune.drawRune(context, delta, mouseX, mouseY, handler);
+                rightRune.drawRune(context, delta, mouseX, mouseY, handler);
+            }
+
+            @Override
+            public void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler) {
+
             }
         });
 
@@ -182,7 +243,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
         MatrixStack matrices = context.getMatrices();
         matrices.push();
         matrices.scale(0.5f, 0.5f, 0.5f);
-        context.drawText(this.textRenderer, Text.translatable("gui.ethereal_enchanting.spell_book.pages", handler.page[0]+1, PAGES.size()), (uiX+70)*2, (uiY+160+offsetY)*2, BLACK, false);
+        context.drawText(this.textRenderer, Text.translatable("gui.ethereal_enchanting.spell_book.pages", handler.page[0]+1, PAGES.size()), (uiX+70)*2, (uiY+160+offsetY)*2, WHITE, true);
         matrices.pop();
 
     }

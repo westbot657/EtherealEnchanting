@@ -87,6 +87,18 @@ public class RuneDisplay implements Element {
             t3 = getDecryptedText(t3SGA, handler);
             t4 = getDecryptedText(t4SGA, handler);
 
+            w1 = handler.textRenderer2.getWidth(t1);
+            w1SGA = handler.textRenderer2.getWidth(t1SGA);
+
+            w2 = handler.textRenderer2.getWidth(t2);
+            w2SGA = handler.textRenderer2.getWidth(t2SGA);
+
+            w3 = handler.textRenderer2.getWidth(t3);
+            w3SGA = handler.textRenderer2.getWidth(t3SGA);
+
+            w4 = handler.textRenderer2.getWidth(t4);
+            w4SGA = handler.textRenderer2.getWidth(t4SGA);
+
         }
     }
 
@@ -110,29 +122,40 @@ public class RuneDisplay implements Element {
         matrices.scale(0.5f, 0.5f, 0.5f);
 
         switch (type) {
-            case SINGLE_ITEM -> {
+            case SINGLE_ITEM, SEQUENCE_0, SEQUENCE_1, SEQUENCE_2 -> {
                 context.drawCenteredTextWithShadow(handler.textRenderer2, t1SGA, (handler.uiX+x+20)*2, (handler.uiY+y+19)*2, GRAY);
                 context.drawCenteredTextWithShadow(handler.textRenderer2, t1, (handler.uiX+x+20)*2, (handler.uiY+y+23)*2, WHITE);
             }
-            case DOUBLE_ITEM -> {
+            case DOUBLE_ITEM, EITHER -> {
                 context.drawCenteredTextWithShadow(handler.textRenderer2, t1SGA, (handler.uiX+x+20)*2, (handler.uiY+y+5)*2, GRAY);
                 context.drawCenteredTextWithShadow(handler.textRenderer2, t1, (handler.uiX+x+20)*2, (handler.uiY+y+9)*2, WHITE);
 
-                context.drawCenteredTextWithShadow(handler.textRenderer2, t2SGA, (handler.uiX+x+20)*2, (handler.uiY+y+35)*2, GRAY);
-                context.drawCenteredTextWithShadow(handler.textRenderer2, t2, (handler.uiX+x+20)*2, (handler.uiY+y+39)*2, WHITE);
+                context.drawCenteredTextWithShadow(handler.textRenderer2, t2SGA, (handler.uiX+x+20)*2, (handler.uiY+y+33)*2, GRAY);
+                context.drawCenteredTextWithShadow(handler.textRenderer2, t2, (handler.uiX+x+20)*2, (handler.uiY+y+37)*2, WHITE);
             }
-            case TRIPLE_ITEM -> {
-                context.drawCenteredTextWithShadow(handler.textRenderer2, t1SGA, (handler.uiX+x+20)*2, (handler.uiY+y+5)*2, GRAY);
-                context.drawCenteredTextWithShadow(handler.textRenderer2, t1, (handler.uiX+x+20)*2, (handler.uiY+y+9)*2, WHITE);
+            case TRIPLE_ITEM, SCALE_3 -> {
+                context.drawText(handler.textRenderer2, t1SGA, (handler.uiX+x+7)*2-w1SGA, (handler.uiY+y+27)*2, GRAY, true);
+                context.drawText(handler.textRenderer2, t1, (handler.uiX+x+7)*2-w1, (handler.uiY+y+31)*2, WHITE, true);
 
+                context.drawCenteredTextWithShadow(handler.textRenderer2, t2SGA, (handler.uiX+x+20)*2, (handler.uiY+y+5)*2, GRAY);
+                context.drawCenteredTextWithShadow(handler.textRenderer2, t2, (handler.uiX+x+20)*2, (handler.uiY+y+9)*2, WHITE);
+
+                context.drawText(handler.textRenderer2, t3SGA, (handler.uiX+x+33)*2, (handler.uiY+y+27)*2, GRAY, true);
+                context.drawText(handler.textRenderer2, t3, (handler.uiX+x+33)*2, (handler.uiY+y+31)*2, WHITE, true);
             }
-            case QUAD_ITEM -> {}
-            case SEQUENCE_0 -> {}
-            case SEQUENCE_1 -> {}
-            case SEQUENCE_2 -> {}
-            case SCALE_3 -> {}
-            case SCALE_4 -> {}
-            case EITHER -> {}
+            case QUAD_ITEM, SCALE_4 -> {
+                context.drawText(handler.textRenderer2, t1SGA, (handler.uiX+x+6)*2-w1SGA, (handler.uiY+y+19)*2, GRAY, true);
+                context.drawText(handler.textRenderer2, t1, (handler.uiX+x+6)*2-w1, (handler.uiY+y+23)*2, WHITE, true);
+
+                context.drawCenteredTextWithShadow(handler.textRenderer2, t2SGA, (handler.uiX+x+20)*2, (handler.uiY+y+5)*2, GRAY);
+                context.drawCenteredTextWithShadow(handler.textRenderer2, t2, (handler.uiX+x+20)*2, (handler.uiY+y+9)*2, WHITE);
+
+                context.drawText(handler.textRenderer2, t3SGA, (handler.uiX+x+34)*2, (handler.uiY+y+19)*2, GRAY, true);
+                context.drawText(handler.textRenderer2, t3, (handler.uiX+x+34)*2, (handler.uiY+y+23)*2, WHITE, true);
+
+                context.drawCenteredTextWithShadow(handler.textRenderer2, t4SGA, (handler.uiX+x+20)*2, (handler.uiY+y+33)*2, GRAY);
+                context.drawCenteredTextWithShadow(handler.textRenderer2, t4, (handler.uiX+x+20)*2, (handler.uiY+y+37)*2, WHITE);
+            }
         }
 
         matrices.pop();
