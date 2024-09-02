@@ -47,7 +47,7 @@ public class CipherRecipe extends SpecialCraftingRecipe {
                 if (numEnchanted > 0 || hasBook || hasEnchantedCipher || hasWrittenCipher) return false;
                 hasWrittenCipher = true;
             } else if (stack.isOf(ModItems.ENCHANTED_CIPHER)) {
-                if (numEnchanted > 0 || hasBook || hasEnchantedCipher || hasWrittenCipher) return false;
+                if (numWritten > 0 || hasBook || hasEnchantedCipher || hasWrittenCipher) return false;
                 hasEnchantedCipher = true;
             } else if (!stack.isEmpty()) {
                 return false;

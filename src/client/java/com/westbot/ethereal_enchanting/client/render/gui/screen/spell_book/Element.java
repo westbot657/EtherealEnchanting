@@ -6,4 +6,5 @@ import net.minecraft.client.gui.DrawContext;
 public interface Element {
     void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler);
     void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler);
+    boolean onClick(double mouseX, double mouseY, int button);
 }

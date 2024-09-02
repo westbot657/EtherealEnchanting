@@ -46,6 +46,8 @@ public class ModDataGenerator implements DataGeneratorEntrypoint {
                 )
                 .criterion("root", TickCriterion.Conditions.createTick())
                 .build(consumer, EtherealEnchanting.MOD_ID + "/root");
+
+
             AdvancementEntry getEnchanter = Advancement.Builder.create()
                 .display(
                     ModBlocks.ETHEREAL_ENCHANTER_BLOCK,
@@ -60,6 +62,21 @@ public class ModDataGenerator implements DataGeneratorEntrypoint {
                 .criterion("ethereal_enchanting_got_enchanter", InventoryChangedCriterion.Conditions.items(ModBlocks.ETHEREAL_ENCHANTER_BLOCK))
                 .parent(rootAdvancement)
                 .build(consumer, EtherealEnchanting.MOD_ID + "/get_enchanter");
+
+            AdvancementEntry getSpellBook = Advancement.Builder.create()
+                .display(
+                    ModBlocks.ETHEREAL_ENCHANTER_BLOCK,
+                    Text.translatable("advancements.ethereal_enchanting.spell_book.label"),
+                    Text.translatable("advancements.ethereal_enchanting.spell_book.description"),
+                    Identifier.of("ethereal_enchanting", "textures/gui/advancements/ethereal_enchanting.png"),
+                    AdvancementFrame.TASK,
+                    true,
+                    true,
+                    false
+                )
+                .criterion("ethereal_enchanting_got_spell_book", InventoryChangedCriterion.Conditions.items(ModItems.SPELL_BOOK))
+                .parent(getEnchanter)
+                .build(consumer, EtherealEnchanting.MOD_ID + "/get_spell_book");
 
         }
     }

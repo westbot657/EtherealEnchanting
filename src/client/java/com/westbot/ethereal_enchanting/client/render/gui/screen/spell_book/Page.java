@@ -10,5 +10,9 @@ public abstract class Page implements Element {
 
     public abstract void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler);
     public abstract void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler);
+
+    public boolean onClick(double mouseX, double mouseY, int button) {
+        return false;
+    }
 }
 

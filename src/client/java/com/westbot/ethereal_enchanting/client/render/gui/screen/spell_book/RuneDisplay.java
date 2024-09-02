@@ -78,7 +78,7 @@ public class RuneDisplay implements Element {
     }
 
     public void setup(SpellBookScreen handler) {
-        if (this.handler == null || !this.cipher.equals(handler.handler.cipher)) {
+        if (this.handler != handler || !this.cipher.equals(handler.handler.cipher)) {
             this.cipher = handler.handler.cipher;
             this.handler = handler;
 
@@ -170,5 +170,10 @@ public class RuneDisplay implements Element {
     @Override
     public void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler) {
 
+    }
+
+    @Override
+    public boolean onClick(double mouseX, double mouseY, int button) {
+        return false;
     }
 }

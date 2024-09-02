@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " # ",
+    "DED",
+    " # "
+  ],
+  "key": {
+    "#": {
+      "item": "minecraft:obsidian"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "E": {
+      "item": "ethereal_enchanting:xp_tome"
+    }
+  },
+  "result": {
+    "id": "ethereal_enchanting:spell_book",
+    "count": 1
+  }
+}

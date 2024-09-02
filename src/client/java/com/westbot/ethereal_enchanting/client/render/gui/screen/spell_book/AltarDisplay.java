@@ -136,6 +136,11 @@ public class AltarDisplay implements Element {
     public void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler) {
 
     }
+
+    @Override
+    public boolean onClick(double mouseX, double mouseY, int button) {
+        return false;
+    }
 }
 
 

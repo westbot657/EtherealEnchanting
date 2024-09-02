@@ -1,13 +1,13 @@
 package com.westbot.ethereal_enchanting.client.render.gui.screen;
 
 import com.westbot.ethereal_enchanting.client.accessors.HandledScreenMixinInterface;
-import com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book.AltarDisplay;
-import com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book.Element;
-import com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book.RuneDisplay;
+import com.westbot.ethereal_enchanting.client.render.gui.screen.spell_book.*;
 import com.westbot.ethereal_enchanting.screen.SpellBookScreenHandler;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.sound.SoundEvents;
@@ -31,9 +31,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
     public static final Identifier BACKGROUND = Identifier.of("ethereal_enchanting", "textures/gui/spell_book/spell_book_screen_bg.png");
 
 
-
-
-    private final PlayerInventory playerInventory;
+    public final PlayerInventory playerInventory;
     private boolean pb_hovered = false;
     private boolean pf_hovered = false;
 
@@ -55,10 +53,10 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
     public int uiX;
     public int uiY;
 
-
-
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+
+        Page page = PAGES.get(handler.page[0]);
 
         if (button == 0) {
             int t = handler.page[0];
@@ -80,29 +78,52 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
             }
         }
 
+        if (page.onClick(mouseX, mouseY, button)) {
+            return true;
+        }
+
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    protected static abstract class Page implements Element {
 
-        protected Page() {
-        }
-
-        public abstract void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler);
-        public abstract void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler);
+    public boolean collides(int x, int y, int width, int height, double px, double py) {
+        return isPointWithinBounds(x, y, width, height, px, py);
     }
-
 
     private static final List<Page> PAGES = new ArrayList<>() {{
 
         add(new Page() {
+            private SpellBookScreen handler;
+
+            private final List<TextLink> links = new ArrayList<>() {{
+                add(new TextLink(0, 60, "spell.chilled", 1));
+                add(new TextLink(0, 80, "spell.incendiary", 2));
+            }};
+
             @Override
             public void drawBg(DrawContext context, float delta, int mouseX, int mouseY, com.westbot.ethereal_enchanting.client.render.gui.screen.SpellBookScreen handler) {
+                this.handler = handler;
                 context.drawTexture(BACKGROUND, handler.uiX, handler.uiY+offsetY, 0, 0, 256, 256);
+                for (TextLink link : links) {
+                    link.drawBg(context, delta, mouseX, mouseY, handler);
+                }
             }
             @Override
             public void draw(DrawContext context, int mouseX, int mouseY, float delta, com.westbot.ethereal_enchanting.client.render.gui.screen.SpellBookScreen handler) {
+                for (TextLink link : links) {
+                    link.draw(context, mouseX, mouseY, delta, handler);
+                }
+            }
 
+            @Override
+            public boolean onClick(double mouseX, double mouseY, int button) {
+                if (this.handler == null) return false;
+                for (TextLink link : links) {
+                    if (link.onClick(mouseX, mouseY, button)) {
+                        return true;
+                    }
+                }
+                return false;
             }
         });
 
@@ -145,6 +166,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
             public void draw(DrawContext context, int mouseX, int mouseY, float delta, com.westbot.ethereal_enchanting.client.render.gui.screen.SpellBookScreen handler) {
                 altarDisplay.draw(context, mouseX, mouseY, delta, handler);
             }
+
         });
 
         add(new Page() {
@@ -196,6 +218,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
             public void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler) {
 
             }
+
         });
 
 
