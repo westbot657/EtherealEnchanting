@@ -102,6 +102,18 @@ public class RuneDisplay implements Element {
         }
     }
 
+    public RuneDisplay(RuneType type, String t1, int x, int y) {
+        this(type, t1, "", "", "", x, y);
+    }
+
+    public RuneDisplay(RuneType type, String t1, String t2, int x, int y) {
+        this(type, t1, t2, "", "", x, y);
+    }
+
+    public RuneDisplay(RuneType type, String t1, String t2, String t3, int x, int y) {
+        this(type, t1, t2, t3, "", x, y);
+    }
+
     public RuneDisplay(RuneType type, String t1, String t2, String t3, String t4, int x, int y) {
         this.type = type;
         this.t1SGA = Text.translatable(t1).setStyle(STYLE);

@@ -53,6 +53,15 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
     public int uiX;
     public int uiY;
 
+    public static final int lRuneX = 0;
+    public static final int lRuneY = 64;
+
+    public static final int mRuneX = 108;
+    public static final int mRuneY = 40;
+
+    public static final int rRuneX = 216;
+    public static final int rRuneY = 64;
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
 
@@ -92,12 +101,14 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
 
     private static final List<Page> PAGES = new ArrayList<>() {{
 
-        add(new Page() {
+        add(new Page() { // Pg 0 : table of contents
             private SpellBookScreen handler;
 
             private final List<TextLink> links = new ArrayList<>() {{
                 add(new TextLink(0, 60, "spell.chilled", 1));
                 add(new TextLink(0, 80, "spell.incendiary", 2));
+                add(new TextLink(0, 100, "spell.luck", 3));
+                add(new TextLink(0, 120, "spell.swift_sneak", 4));
             }};
 
             @Override
@@ -114,7 +125,6 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                     link.draw(context, mouseX, mouseY, delta, handler);
                 }
             }
-
             @Override
             public boolean onClick(double mouseX, double mouseY, int button) {
                 if (this.handler == null) return false;
@@ -125,9 +135,9 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                 }
                 return false;
             }
-        });
+        }); // Pg 0 : table of contents
 
-        add(new Page() {
+        add(new Page() { // Pg 1 : Chilled
 
             private final AltarDisplay altarDisplay = new AltarDisplay(
                     "block.minecraft.blue_ice",
@@ -139,10 +149,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
             private final RuneDisplay leftRune = new RuneDisplay(
                 RuneDisplay.RuneType.SINGLE_ITEM,
                 "spell.chilled.arrow",
-                "",
-                "",
-                "",
-                -40, 64
+                lRuneX, lRuneY
             );
 
             private final RuneDisplay rightRune = new RuneDisplay(
@@ -151,7 +158,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                 "spell.chilled.packed_ice",
                 "spell.chilled.blue_ice",
                 "",
-                256, 64
+                rRuneX, rRuneY
             );
 
             @Override
@@ -167,9 +174,9 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                 altarDisplay.draw(context, mouseX, mouseY, delta, handler);
             }
 
-        });
+        }); // Pg 1 : Chilled
 
-        add(new Page() {
+        add(new Page() { // Pg 2 : Incendiary
 
             private final AltarDisplay altarDisplay = new AltarDisplay(
                 "block.minecraft.magma_block",
@@ -181,28 +188,19 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
             private final RuneDisplay leftRune = new RuneDisplay(
                 RuneDisplay.RuneType.SINGLE_ITEM,
                 "spell.incendiary.netherrack",
-                "",
-                "",
-                "",
-                -40, 64
+                lRuneX, lRuneY
             );
 
             private final RuneDisplay middleRune = new RuneDisplay(
                 RuneDisplay.RuneType.SINGLE_ITEM,
                 "spell.incendiary.blaze_rod",
-                "",
-                "",
-                "",
-                108, 40
+                mRuneX, mRuneY
             );
 
             private final RuneDisplay rightRune = new RuneDisplay(
                 RuneDisplay.RuneType.SINGLE_ITEM,
                 "spell.incendiary.blaze_powder",
-                "",
-                "",
-                "",
-                256, 64
+                rRuneX, rRuneY
             );
 
             @Override
@@ -219,8 +217,92 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
 
             }
 
-        });
+        }); // Pg 2 : Incendiary
 
+        add(new Page() { // Pg 3 : Luck
+
+            private final AltarDisplay altarDisplay = new AltarDisplay(
+                "block.minecraft.moss_block",
+                "block.minecraft.moss_block",
+                "block.minecraft.moss_block",
+                "block.minecraft.moss_block"
+            );
+
+            private final RuneDisplay leftRune = new RuneDisplay(
+                RuneDisplay.RuneType.SEQUENCE_0,
+                "spell.luck.lapis",
+                lRuneX, lRuneY
+            );
+
+            private final RuneDisplay middleRune = new RuneDisplay(
+                RuneDisplay.RuneType.SEQUENCE_1,
+                "spell.luck.redstone_dust",
+                mRuneX, mRuneY
+            );
+
+            private final RuneDisplay rightRune = new RuneDisplay(
+                RuneDisplay.RuneType.SEQUENCE_2,
+                "spell.luck.gold_ingot",
+                rRuneX, rRuneY
+            );
+
+
+            @Override
+            public void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler) {
+                context.drawTexture(BACKGROUND, handler.uiX, handler.uiY+offsetY, 0, 0, 256, 256);
+                altarDisplay.drawBg(context, delta, mouseX, mouseY, handler);
+                leftRune.drawRune(context, delta, mouseX, mouseY, handler);
+                middleRune.drawRune(context, delta, mouseX, mouseY, handler);
+                rightRune.drawRune(context, delta, mouseX, mouseY, handler);
+            }
+
+            @Override
+            public void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler) {
+
+            }
+        }); // Pg 3 : Luck
+
+        add(new Page() { // Pg 4 : Swift sneak
+
+            private final AltarDisplay altarDisplay = new AltarDisplay(
+                "block.minecraft.sculk",
+                "block.minecraft.sculk",
+                "block.minecraft.sculk",
+                "block.minecraft.sculk"
+            );
+
+            private final RuneDisplay leftRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.swift_sneak.echo_shard",
+                lRuneX, lRuneY
+            );
+
+            private final RuneDisplay middleRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.swift_sneak.xp_tome",
+                mRuneX, mRuneY
+            );
+
+            private final RuneDisplay rightRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.swift_sneak.echo_shard",
+                rRuneX, rRuneY
+            );
+
+            @Override
+            public void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler) {
+                context.drawTexture(BACKGROUND, handler.uiX, handler.uiY+offsetY, 0, 0, 256, 256);
+                altarDisplay.drawBg(context, delta, mouseX, mouseY, handler);
+                leftRune.drawRune(context, delta, mouseX, mouseY, handler);
+                middleRune.drawRune(context, delta, mouseX, mouseY, handler);
+                rightRune.drawRune(context, delta, mouseX, mouseY, handler);
+            }
+
+            @Override
+            public void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler) {
+
+            }
+        }); // Pg 4 : Swift sneak
 
     }};
 
