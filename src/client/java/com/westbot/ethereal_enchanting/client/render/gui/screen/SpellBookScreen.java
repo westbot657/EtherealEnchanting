@@ -6,8 +6,6 @@ import com.westbot.ethereal_enchanting.screen.SpellBookScreenHandler;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.TextWidget;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.sound.SoundEvents;
@@ -109,6 +107,7 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
                 add(new TextLink(0, 80, "spell.incendiary", 2));
                 add(new TextLink(0, 100, "spell.luck", 3));
                 add(new TextLink(0, 120, "spell.swift_sneak", 4));
+                add(new TextLink(0, 140, "spell.soul_speed", 5));
             }};
 
             @Override
@@ -303,6 +302,48 @@ public class SpellBookScreen extends HandledScreen<SpellBookScreenHandler> {
 
             }
         }); // Pg 4 : Swift sneak
+
+        add(new Page() { // Pg 5 : Soul speed
+
+            private final AltarDisplay altarDisplay = new AltarDisplay(
+                "block.minecraft.soul_sand",
+                "block.minecraft.soul_sand",
+                "block.minecraft.soul_sand",
+                "block.minecraft.soul_sand"
+            );
+
+            private final RuneDisplay leftRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.soul_speed.wither_skull",
+                lRuneX, lRuneY
+            );
+
+            private final RuneDisplay middleRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.soul_speed.lost_soul",
+                mRuneX, mRuneY
+            );
+
+            private final RuneDisplay rightRune = new RuneDisplay(
+                RuneDisplay.RuneType.SINGLE_ITEM,
+                "spell.soul_speed.soul_sand",
+                rRuneX, rRuneY
+            );
+
+            @Override
+            public void drawBg(DrawContext context, float delta, int mouseX, int mouseY, SpellBookScreen handler) {
+                context.drawTexture(BACKGROUND, handler.uiX, handler.uiY+offsetY, 0, 0, 256, 256);
+                altarDisplay.drawBg(context, delta, mouseX, mouseY, handler);
+                leftRune.drawRune(context, delta, mouseX, mouseY, handler);
+                middleRune.drawRune(context, delta, mouseX, mouseY, handler);
+                rightRune.drawRune(context, delta, mouseX, mouseY, handler);
+            }
+
+            @Override
+            public void draw(DrawContext context, int mouseX, int mouseY, float delta, SpellBookScreen handler) {
+
+            }
+        }); // Pg 5 : Soul speed
 
     }};
 
