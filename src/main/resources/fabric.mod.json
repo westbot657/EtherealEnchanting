@@ -27,6 +27,7 @@
       "environment": "client"
     }
   ],
+  "accessWidener": "ethereal_enchanting.accesswidener",
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",

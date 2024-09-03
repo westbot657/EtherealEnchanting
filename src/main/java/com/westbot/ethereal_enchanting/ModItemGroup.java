@@ -14,7 +14,7 @@ import net.minecraft.util.Identifier;
 public class ModItemGroup {
 
     public static final RegistryKey<ItemGroup> ETHEREAL_ENCHANTING_GROUP_KEY = RegistryKey.of(Registries.ITEM_GROUP.getKey(), Identifier.of("ethereal_enchanting", "item_group"));
-    public static final ItemGroup ETHEREAL_ENCHANTING_GROUP = FabricItemGroup.builder().icon(() -> new ItemStack(ModItems.XP_TOME)).displayName(Text.translatable("itemGroup.ethereal_enchanting.group1")).build();
+    public static final ItemGroup ETHEREAL_ENCHANTING_GROUP = FabricItemGroup.builder().icon(() -> new ItemStack(ModItems.SPELL_BOOK)).displayName(Text.translatable("itemGroup.ethereal_enchanting.group1")).build();
 
     public static void initialize() {
 
@@ -27,6 +27,7 @@ public class ModItemGroup {
             group.add(ModBlocks.ETHEREAL_ENCHANTER_BLOCK);
 
             // Items
+            group.add(ModItems.SPELL_BOOK);
             group.add(ModItems.XP_TOME);
             group.add(ModItems.ENCHANTED_RUNE);
             group.add(ModItems.WRITTEN_RUNE);

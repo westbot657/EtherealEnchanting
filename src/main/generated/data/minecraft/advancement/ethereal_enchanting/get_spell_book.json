@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:ethereal_enchanting/get_altar",
+  "criteria": {
+    "ethereal_enchanting_got_spell_book": {
+      "conditions": {
+        "items": [
+          {
+            "items": "ethereal_enchanting:spell_book"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "background": "ethereal_enchanting:textures/gui/advancements/ethereal_enchanting.png",
+    "description": {
+      "translate": "advancements.ethereal_enchanting.spell_book.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "ethereal_enchanting:ethereal_enchanter"
+    },
+    "title": {
+      "translate": "advancements.ethereal_enchanting.spell_book.label"
+    }
+  },
+  "requirements": [
+    [
+      "ethereal_enchanting_got_spell_book"
+    ]
+  ],
+  "sends_telemetry_event": true
+}

@@ -13,6 +13,8 @@ base {
 loom {
     splitEnvironmentSourceSets()
 
+    accessWidenerPath = file("src/main/resources/ethereal_enchanting.accesswidener")
+
     mods {
         "enchanting_rework" {
             sourceSet sourceSets.main

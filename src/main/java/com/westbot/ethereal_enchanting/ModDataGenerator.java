@@ -63,9 +63,25 @@ public class ModDataGenerator implements DataGeneratorEntrypoint {
                 .parent(rootAdvancement)
                 .build(consumer, EtherealEnchanting.MOD_ID + "/get_enchanter");
 
+            AdvancementEntry getAltar = Advancement.Builder.create()
+                .display(
+                    ModBlocks.ALTAR_BLOCK,
+                    Text.translatable("advancements.ethereal_enchanting.altar.label"),
+                    Text.translatable("advancements.ethereal_enchanting.altar.description"),
+                    Identifier.of("ethereal_enchanting", "textures/gui/advancements/ethereal_enchanting.png"),
+                    AdvancementFrame.TASK,
+                    true,
+                    true,
+                    false
+                )
+                .criterion("ethereal_enchanting_got_altar", InventoryChangedCriterion.Conditions.items(ModItems.SPELL_BOOK))
+                .parent(getEnchanter)
+                .build(consumer, EtherealEnchanting.MOD_ID + "/get_altar");
+
+
             AdvancementEntry getSpellBook = Advancement.Builder.create()
                 .display(
-                    ModBlocks.ETHEREAL_ENCHANTER_BLOCK,
+                    ModItems.SPELL_BOOK,
                     Text.translatable("advancements.ethereal_enchanting.spell_book.label"),
                     Text.translatable("advancements.ethereal_enchanting.spell_book.description"),
                     Identifier.of("ethereal_enchanting", "textures/gui/advancements/ethereal_enchanting.png"),
@@ -75,7 +91,7 @@ public class ModDataGenerator implements DataGeneratorEntrypoint {
                     false
                 )
                 .criterion("ethereal_enchanting_got_spell_book", InventoryChangedCriterion.Conditions.items(ModItems.SPELL_BOOK))
-                .parent(getEnchanter)
+                .parent(getAltar)
                 .build(consumer, EtherealEnchanting.MOD_ID + "/get_spell_book");
 
         }

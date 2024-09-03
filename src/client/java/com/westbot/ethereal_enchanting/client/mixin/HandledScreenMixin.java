@@ -1,9 +1,6 @@
 package com.westbot.ethereal_enchanting.client.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.westbot.ethereal_enchanting.client.accessors.HandledScreenMixinInterface;
-import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
@@ -13,6 +10,8 @@ import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(HandledScreen.class)
 public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen implements ScreenHandlerProvider<T>, HandledScreenMixinInterface {
@@ -26,13 +25,11 @@ public abstract class HandledScreenMixin<T extends ScreenHandler> extends Screen
     }
 
 
-    @WrapOperation(method="drawForeground", at= @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawText(Lnet/minecraft/client/font/TextRenderer;Lnet/minecraft/text/Text;IIIZ)I", ordinal = 1))
-    protected int wrapDrawInventoryTitle(DrawContext instance, TextRenderer textRenderer, Text text, int x, int y, int color, boolean shadow, Operation<Integer> original) {
-
+    @Inject(method="drawForeground", at=@At("HEAD"), cancellable = true)
+    protected void wrapDrawInventoryTitle(DrawContext context, int mouseX, int mouseY, CallbackInfo ci) {
         if (this.ethereal_enchanting$hideInventoryTitle) {
-            return 0;
+            ci.cancel();
         }
-        return original.call(instance, textRenderer, text, x, y, color, shadow);
     }
 
     @Unique
