@@ -9,8 +9,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 
-import java.util.Objects;
-
 
 public class AltarDisplay implements Element {
     public static final Identifier GRADIENT = Identifier.of("ethereal_enchanting", "textures/gui/spell_book/gradient.png");
