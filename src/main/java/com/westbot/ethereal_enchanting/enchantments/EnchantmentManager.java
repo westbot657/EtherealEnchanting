@@ -86,6 +86,8 @@ public class EnchantmentManager {
 
         put("cruel_and_unusual", Formatting.LIGHT_PURPLE);
         // I haven't figured out what this'll do
+
+        // TODO: add vein miner
     }};
 
     public static final Map<String, Integer> MAX_LEVELS = new HashMap<>() {{
