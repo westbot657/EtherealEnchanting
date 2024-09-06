@@ -2,5 +2,5 @@
   "_comment": "this file is used by my website",
   "description": "A Minecraft mod that overhauls enchanting",
   "version": "1.0-SNAPSHOT",
-  "languages": ["fabric_mc"]
+  "languages": ["mc", "fabric_mc"]
 }
