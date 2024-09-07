@@ -55,4 +55,8 @@ public abstract class LivingEntityMixin extends Entity implements Attackable, Li
         return enchantingRework$hide_spell_book;
     }
 
+
+    // modifyAppliedDamage <- mixin to do fun damage scaling
+
+
 }
